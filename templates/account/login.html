@@ -3,11 +3,15 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<h1>Login</h1>
+<div class="login">
+<h1>Triage</h1>
+<p>Existing users please log in.</p>
 <form action="{% url 'account:login' %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
-    <input type="submit" />
+
+    <button type="submit" class="btn btn-primary">Log in</button>
 </form>
+</div>
 {% endblock %}
