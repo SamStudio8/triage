@@ -1,0 +1,11 @@
+<html>
+<head><title>Hello</title></head>
+<body>
+    <h1>Add or Edit Task</h1>
+    <form action="." method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" />
+    </form>
+</body>
+</html>

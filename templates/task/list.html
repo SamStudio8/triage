@@ -1,0 +1,36 @@
+<html>
+<head><title>Hello!</title></head>
+<body>
+<h1>Tasks</h1>
+<p>{{ user.username }}, you have {{ user.tasklists.all|length }} task lists:</p>
+<a href="{% url 'task:add_tasklist' %}">Add Task List</a>
+<hr>
+
+{% for tasklist in user.tasklists.all %}
+    <h2>{{ tasklist.name }}</h2>
+    <p>{{ tasklist.tasks.all|length }} items</p>
+    <a href="{% url 'task:add_task' tasklist.id %}">Add Task</a>
+    {% if tasklist.tasks.all %}
+    <table>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Created</th>
+            <th>Due</th>
+        </tr>
+    {% for task in tasklist.tasks.all %}
+        <tr>
+            <td>{{ task.id }}</td>
+            <td>{{ task.name }}</td>
+            <td>{{ task.description }}</td>
+            <td>{{ task.creation_date }}</td>
+            <td>{{ task.due_date }}</td>
+        </tr>
+    {% endfor %}
+    {% endif %}
+</table>
+<hr>
+{% endfor %}
+</body>
+</html>
