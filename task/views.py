@@ -20,7 +20,7 @@ def add_tasklist(request, tasklist_id=0):
         tasklist = form.save(commit=False)
         tasklist.user = request.user
         tasklist.save()
-        return HttpResponseRedirect(reverse('task:list_tasks'))
+        return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changelist.html", {"form": form, "tasklist": tasklist})
 
 
@@ -41,5 +41,5 @@ def edit_task(request, task_id, tasklist_id=0):
         task = form.save(commit=False)
         task.tasklist_id = tasklist_id #What if 0?
         task.save()
-        return HttpResponseRedirect(reverse('task:list_tasks'))
+        return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changetask.html", {"form": form, "task": task})
