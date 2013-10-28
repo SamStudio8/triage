@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head><title>Add or Edit Task</title></head>
-<body>
-    <h1>Add or Edit Task</h1>
-    <form action="." method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" />
-    </form>
-</body>
-</html>
+{% extends "base/base.html" %}
+
+{% block title %}Add or Edit Task{% endblock %}
+
+{% block content %}
+<h1>Add or Edit Task</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" />
+</form>
+{% endblock %}

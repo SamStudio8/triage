@@ -1,7 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head><title>Tasks</title></head>
-<body>
+{% extends "base/base.html" %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
 <h1>Tasks</h1>
 {% if user.is_authenticated %}
     <a href="{% url 'account:logout' %}">Logout</a>
@@ -39,5 +40,4 @@
 {% else %}
     <a href="{% url 'account:login' %}">Login</a>
 {% endif %}
-</body>
-</html>
+{% endblock %}
