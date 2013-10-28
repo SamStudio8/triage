@@ -24,6 +24,9 @@ class Task(models.Model):
 
     completed = models.BooleanField()
 
+    def __unicode__(self):
+        return "#%d %s" % (self.id, self.name)
+
     # Update timestamps
     def save(self, *args, **kwargs):
         if not self.id:
@@ -38,6 +41,9 @@ class TaskList(models.Model):
                             related_name="tasklists")
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=255, blank=True)
+
+    def __unicode__(self):
+        return self.name
 
 class TaskTarget(models.Model):
     pass
