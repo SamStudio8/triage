@@ -1,37 +1,43 @@
+<!DOCTYPE html>
 <html>
-<head><title>Hello!</title></head>
+<head><title>Tasks</title></head>
 <body>
 <h1>Tasks</h1>
-<p>Hello, {{ user.username }}, you have {{ user.tasklists.all|length }} task lists:</p>
-<a href="{% url 'task:add_tasklist' %}">Add Task List</a>
-<hr>
+{% if user.is_authenticated %}
+    <a href="{% url 'account:logout' %}">Logout</a>
+    <p>Hello, {{ user.username }}, you have {{ user.tasklists.all|length }} task lists:</p>
+    <a href="{% url 'task:add_tasklist' %}">Add Task List</a>
+    <hr>
 
-{% for tasklist in user.tasklists.all %}
-    <h2>{{ tasklist.name }}</h2>
-    <h3>{{ tasklist.description }}</h3>
-    <p>{{ tasklist.tasks.all|length }} tasks</p>
-    <a href="{% url 'task:add_task' tasklist.id %}">Add Task</a>
-    {% if tasklist.tasks.all %}
-    <table>
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Created</th>
-            <th>Due</th>
-        </tr>
-    {% for task in tasklist.tasks.all %}
-        <tr>
-            <td>{{ task.id }}</td>
-            <td>{{ task.name }}</td>
-            <td>{{ task.description }}</td>
-            <td>{{ task.creation_date }}</td>
-            <td>{{ task.due_date }}</td>
-        </tr>
+    {% for tasklist in user.tasklists.all %}
+        <h2>{{ tasklist.name }}</h2>
+        <h3>{{ tasklist.description }}</h3>
+        <p>{{ tasklist.tasks.all|length }} tasks</p>
+        <a href="{% url 'task:add_task' tasklist.id %}">Add Task</a>
+        {% if tasklist.tasks.all %}
+        <table>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th>Due</th>
+            </tr>
+        {% for task in tasklist.tasks.all %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td>{{ task.name }}</td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.creation_date }}</td>
+                <td>{{ task.due_date }}</td>
+            </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+    <hr>
     {% endfor %}
-    {% endif %}
-</table>
-<hr>
-{% endfor %}
+{% else %}
+    <a href="{% url 'account:login' %}">Login</a>
+{% endif %}
 </body>
 </html>

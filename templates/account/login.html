@@ -1,5 +1,13 @@
-<form action="{% url 'account:login' %}" method="post">
-{% csrf_token %}
-{{ form.as_p }}
-<input type="submit" />
-</form>
+<!DOCTYPE html>
+<html>
+<head><title>Login</title></head>
+<body>
+    <h1>Login</h1>
+    <form action="{% url 'account:login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="/" />
+        <input type="submit" />
+    </form>
+</body>
+</html>
