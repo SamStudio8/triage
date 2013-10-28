@@ -6,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 import task.models as TaskModels
 import task.forms as TaskForms
 
+@login_required
 def list_tasks(request):
     return render(request, "task/list.html")
 
