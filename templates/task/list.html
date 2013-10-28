@@ -2,13 +2,14 @@
 <head><title>Hello!</title></head>
 <body>
 <h1>Tasks</h1>
-<p>{{ user.username }}, you have {{ user.tasklists.all|length }} task lists:</p>
+<p>Hello, {{ user.username }}, you have {{ user.tasklists.all|length }} task lists:</p>
 <a href="{% url 'task:add_tasklist' %}">Add Task List</a>
 <hr>
 
 {% for tasklist in user.tasklists.all %}
     <h2>{{ tasklist.name }}</h2>
-    <p>{{ tasklist.tasks.all|length }} items</p>
+    <h3>{{ tasklist.description }}</h3>
+    <p>{{ tasklist.tasks.all|length }} tasks</p>
     <a href="{% url 'task:add_task' tasklist.id %}">Add Task</a>
     {% if tasklist.tasks.all %}
     <table>
