@@ -32,7 +32,7 @@ class SimpleTaskTest(TestCase):
                 username=TEST_DATA['user']['username'],
                 password=TEST_DATA['user']['password']
         )
-        url = reverse("task:list_tasks")
+        url = reverse("home")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'task/list.html')
