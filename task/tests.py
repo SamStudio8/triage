@@ -27,6 +27,15 @@ class SimpleTaskTest(TestCase):
                 TEST_DATA['user']['email'],
                 TEST_DATA['user']['password'])
 
+    def test_login_required(self):
+        url = reverse("task:add_tasklist")
+        response = self.client.get(url)
+        self.assertRedirects(response, '/account/login/?next=/task/addlist/')
+
+        url = reverse("task:add_task", kwargs={"tasklist_id":1})
+        response = self.client.get(url)
+        self.assertRedirects(response, '/account/login/?next=/task/add/1/')
+
     def test_first_listing(self):
         self.client.login(
                 username=TEST_DATA['user']['username'],

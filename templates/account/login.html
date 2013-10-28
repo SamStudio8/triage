@@ -6,7 +6,7 @@
     <form action="{% url 'account:login' %}" method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="hidden" name="next" value="/" />
+        <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
         <input type="submit" />
     </form>
 </body>

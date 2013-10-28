@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -8,6 +9,7 @@ import task.forms as TaskForms
 def list_tasks(request):
     return render(request, "task/list.html")
 
+@login_required
 def add_tasklist(request, tasklist_id=0):
     # Permissions
     try:
@@ -23,12 +25,13 @@ def add_tasklist(request, tasklist_id=0):
         return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changelist.html", {"form": form, "tasklist": tasklist})
 
-
+@login_required
 def add_task(request, tasklist_id):
     # Permissions
     tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
     return edit_task(request, 0, tasklist_id)
 
+@login_required
 def edit_task(request, task_id, tasklist_id=0):
     # Permissions
     try:
