@@ -3,15 +3,32 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="login">
-<h1>Triage</h1>
-<p>Existing users please log in.</p>
-<form action="{% url 'account:login' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
+<style>
+    input {
+        margin-bottom: 8px;
+    }
+</style>
+<div class="col-md-4 col-md-offset-4">
+    <h1>Triage</h1>
+    <h2>A todo manager for the disaster that is your day.</h2>
+    <p>Existing users please log in.</p>
+    {% if form.errors %}
+        {% for message in form.non_field_errors %}
+            <div class="alert alert-warning">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form action="{% url 'account:login' %}" method="post" role="form">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" name="username" class="form-control" placeholder="Username" autofocus="" required />
 
-    <button type="submit" class="btn btn-primary">Log in</button>
-</form>
+        <label for="password">Password:</label>
+        <input type="password" name="password" class="form-control" placeholder="Password" required />
+        <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
+
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    </form>
 </div>
 {% endblock %}
