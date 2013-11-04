@@ -11,13 +11,14 @@
 
     {% for tasklist in tasklists %}
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-9">
                 <h2>{{ tasklist.name }}</h2>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="btn-group pull-right">
-                    <a class="btn btn-success" href="{% url 'task:add_task' tasklist.id %}"><span class="glyphicon glyphicon-plus"></span> Add Task</a>
-                    <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a class="btn btn-sm btn-success" href="{% url 'task:add_task' tasklist.id %}"><span class="glyphicon glyphicon-plus"></span> Add Task</a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                 </div>
             </div>
         </div>
@@ -27,10 +28,9 @@
         <table class="table">
             <tr>
                 <th></th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Created</th>
-                <th>Due</th>
+                <th class="col-md-3">Name</th>
+                <th class="col-md-6">Description</th>
+                <th class="col-md-1">Due</th>
                 <th></th>
             </tr>
         {% for task in tasklist.tasks.all %}
@@ -53,7 +53,6 @@
                     <td>{{ task.name }}</td>
                     <td>{{ task.description }}</td>
                 {% endif %}
-                <td>{{ task.creation_date }}</td>
                 <td>{% if task.due_date != task.modified_date %}{{ task.due_date }}{% endif %}</td>
                 <td>
                 {% if task.completed %}

@@ -31,6 +31,9 @@ class Task(models.Model):
         return "#%d %s" % (self.id, self.name)
 
     def is_due(self):
+        if self.due_date == self.modified_date:
+            return 0
+
         if self.due_date < datetime.datetime.utcnow().replace(tzinfo=utc):
             # Overdue
             return -1
