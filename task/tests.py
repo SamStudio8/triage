@@ -50,6 +50,22 @@ class SimpleTaskTest(TestCase):
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next=/task/add/1/')
 
+        url = reverse("task:edit_task", kwargs={"task_id":1})
+        response = self.client.get(url)
+        self.assertRedirects(response, '/account/login/?next=/task/edit/1/')
+
+        url = reverse("task:complete_task", kwargs={"task_id":1})
+        response = self.client.get(url)
+        self.assertRedirects(response, '/account/login/?next=/task/complete/1/')
+
+        url = reverse("task:add_tasklist")
+        response = self.client.get(url)
+        self.assertRedirects(response, '/account/login/?next=/task/list/')
+
+        url = reverse("task:edit_tasklist", kwargs={"tasklist_id":1})
+        response = self.client.get(url)
+        self.assertRedirects(response, '/account/login/?next=/task/list/1/')
+
     def test_first_listing(self):
         self.client.login(
                 username=TEST_DATA['user']['username'],
