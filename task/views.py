@@ -63,6 +63,7 @@ def edit_task(request, task_id, tasklist_id=None):
     if task_id:
         try:
             task = TaskModels.Task.objects.get(pk=task_id)
+            tasklist_id = task.tasklist_id
         except TaskModels.Task.DoesNotExist:
             pass
 
