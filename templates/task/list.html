@@ -5,21 +5,22 @@
 {% block content %}
 <h1>Tasks</h1>
 {% if user.is_authenticated %}
-    <p>Hello, {{ user.username }}, you have {{ user.tasklists.all|length }} task lists:</p>
+    <p>Hello, {{ user.username }}, you have {{ tasklists.count }} task lists:</p>
     <a class="btn btn-success" href="{% url 'task:add_tasklist' %}">Add Task List</a>
     <hr>
 
-    {% for tasklist in user.tasklists.all %}
+    {% for tasklist in tasklists %}
         <div class="row">
             <div class="col-md-10">
                 <h2>{{ tasklist.name }}</h2>
             </div>
             <div class="col-md-2">
                 <a class="btn btn-success pull-right" href="{% url 'task:add_task' tasklist.id %}">Add Task</a>
+                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
             </div>
         </div>
         <h3>{{ tasklist.description }}</h3>
-        <p>{{ tasklist.tasks.all|length }} tasks</p>
+        <p>{{ tasklist.uncompleted }} tasks ({{ tasklist.completed }} completed)</p>
         {% if tasklist.tasks.all %}
         <table class="table">
             <tr>
@@ -28,14 +29,32 @@
                 <th>Description</th>
                 <th>Created</th>
                 <th>Due</th>
+                <th></th>
             </tr>
         {% for task in tasklist.tasks.all %}
             <tr>
                 <td>{{ task.id }}</td>
-                <td>{{ task.name }}</td>
-                <td>{{ task.description }}</td>
+                {% if task.completed %}
+                    <td><strike>{{ task.name }}</strike></td>
+                    <td><strike>{{ task.description }}</strike></td>
+                {% else %}
+                    <td>{{ task.name }}</td>
+                    <td>{{ task.description }}</td>
+                {% endif %}
                 <td>{{ task.creation_date }}</td>
                 <td>{{ task.due_date }}</td>
+                <td>
+                {% if task.completed %}
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+                    </div>
+                {% else %}
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                    </div>
+                {% endif %}
+                </td>
             </tr>
         {% endfor %}
         {% endif %}

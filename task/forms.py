@@ -5,7 +5,6 @@ import task.models as TaskModels
 class TaskForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
-        del self.fields['tasklist']
         del self.fields['creation_date']
         del self.fields['modified_date']
 
