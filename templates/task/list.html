@@ -15,8 +15,10 @@
                 <h2>{{ tasklist.name }}</h2>
             </div>
             <div class="col-md-2">
-                <a class="btn btn-success pull-right" href="{% url 'task:add_task' tasklist.id %}">Add Task</a>
-                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                <div class="btn-group pull-right">
+                    <a class="btn btn-success" href="{% url 'task:add_task' tasklist.id %}"><span class="glyphicon glyphicon-plus"></span> Add Task</a>
+                    <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                </div>
             </div>
         </div>
         <h3>{{ tasklist.description }}</h3>
