@@ -30,6 +30,17 @@ class Task(models.Model):
     def __unicode__(self):
         return "#%d %s" % (self.id, self.name)
 
+    def is_due(self):
+        if self.due_date < datetime.datetime.utcnow().replace(tzinfo=utc):
+            # Overdue
+            return -1
+        elif self.due_date.date() == self.due_date.today().date():
+            # Today
+            return 1
+        else:
+            # OK
+            return 0
+
     # Update timestamps
     def save(self, *args, **kwargs):
         if not self.id:

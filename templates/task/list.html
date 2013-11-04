@@ -34,7 +34,17 @@
                 <th></th>
             </tr>
         {% for task in tasklist.tasks.all %}
-            <tr>
+            {% if task.completed %}
+                <tr>
+            {% else %}
+                {% if task.is_due == -1 %}
+                    <tr class="danger">
+                {% elif task.is_due == 1 %}
+                    <tr class="warning">
+                {% else %}
+                    <tr>
+                {% endif %}
+            {% endif %}
                 <td>{{ task.id }}</td>
                 {% if task.completed %}
                     <td><strike>{{ task.name }}</strike></td>
