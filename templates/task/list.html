@@ -44,7 +44,7 @@
                     <td>{{ task.description }}</td>
                 {% endif %}
                 <td>{{ task.creation_date }}</td>
-                <td>{{ task.due_date }}</td>
+                <td>{% if task.due_date != task.modified_date %}{{ task.due_date }}{% endif %}</td>
                 <td>
                 {% if task.completed %}
                     <div class="btn-group pull-right">

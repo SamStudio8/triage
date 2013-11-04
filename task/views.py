@@ -60,14 +60,19 @@ def add_task(request, tasklist_id=None):
 def edit_task(request, task_id, tasklist_id=None):
     # Permissions
     task = None
+    due = None
     if task_id:
         try:
             task = TaskModels.Task.objects.get(pk=task_id)
             tasklist_id = task.tasklist_id
+            if task.modified_date != task.due_date:
+                due = task.due_date
         except TaskModels.Task.DoesNotExist:
             pass
 
-    form = TaskForms.TaskForm(request.POST or None, initial={'tasklist': tasklist_id}, instance=task)
+    form = TaskForms.TaskForm(request.POST or None,
+            initial={'tasklist': tasklist_id, 'due_date': due},
+            instance=task)
     if form.is_valid():
         task = form.save(commit=False)
         if not form.instance.pk:

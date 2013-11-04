@@ -24,6 +24,9 @@ class Task(models.Model):
 
     completed = models.BooleanField()
 
+    class Meta:
+        ordering = ["completed", "due_date"]
+
     def __unicode__(self):
         return "#%d %s" % (self.id, self.name)
 
@@ -32,6 +35,11 @@ class Task(models.Model):
         if not self.id:
             self.creation_date = datetime.datetime.utcnow().replace(tzinfo=utc)
         self.modified_date = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+        if not self.completed and not self.due_date:
+            # Update the due date to now if the task is not completed yet
+            #TODO Future: User preference as to how to order due_date of None
+            self.due_date = self.modified_date
         super(Task, self).save(*args, **kwargs)
 
 class TaskList(models.Model):
