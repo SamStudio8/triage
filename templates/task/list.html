@@ -36,8 +36,8 @@
     <table class="table">
         <tr>
             <th></th>
-            <th></th>
-            <th class="col-md-3">Name</th>
+            <th class="col-md-1"></th>
+            <th class="col-md-2">Name</th>
             <th class="col-md-6">Description</th>
             <th class="col-md-1">Due</th>
             <th></th>
@@ -54,8 +54,8 @@
                 <tr>
             {% endif %}
         {% endif %}
-            <td>{{ task.id }}</td>
-            <td>
+            <td class="text-center">{{ task.id }}</td>
+            <td class="text-center">
                 <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
             </td>
             {% if task.completed %}
