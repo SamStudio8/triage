@@ -1,6 +1,7 @@
+#Triage Installation
 **Please don't use in prod**
 
-### Dependancies
+### Dependencies
 
     pip install Django south
 
