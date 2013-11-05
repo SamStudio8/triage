@@ -21,7 +21,7 @@
         <th class="col-md-1"></th>
         <th></th>
     </tr>
-    {% for tcat in triages|dictsort:"priority" %}
+    {% for tcat in triages|dictsortreversed:"priority" %}
         <tr>
             <td style="background-color:#{{ tcat.bg_colour }}; color:#{{ tcat.fg_colour }}"><b>{{ tcat.name }}</b></td>
             <td>
