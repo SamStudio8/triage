@@ -68,6 +68,9 @@ class TaskTriageCategory(models.Model):
     fg_colour = models.CharField(max_length=6)
     bg_colour = models.CharField(max_length=6)
 
+    def __unicode__(self):
+        return self.name
+
 class TaskList(models.Model):
     # Future; Colour Coded
     user = models.ForeignKey(User,
