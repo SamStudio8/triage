@@ -28,7 +28,7 @@ class Task(models.Model):
     completed = models.BooleanField()
 
     class Meta:
-        ordering = ["completed", "due_date"]
+        ordering = ["completed", "due_date", "triage__priority"]
 
     def __unicode__(self):
         return "#%d %s" % (self.id, self.name)
