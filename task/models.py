@@ -29,7 +29,7 @@ class Task(models.Model):
     completed_date = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        ordering = ["completed", "due_date", "triage__priority"]
+        ordering = ["completed", "due_date", "-triage__priority"]
 
     def __unicode__(self):
         return "#%d %s" % (self.id, self.name)
