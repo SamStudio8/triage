@@ -12,5 +12,5 @@ urlpatterns = patterns('',
 
     url(r'^category/$', TaskViews.list_triage_category, name="list_triage_category"),
     url(r'^category/add/$', TaskViews.add_triage_category, name="add_triage_category"),
-    url(r'^category/edit/(?P<triage_category_id>\w+)$', TaskViews.edit_triage_category, name="edit_triage_category"),
+    url(r'^category/edit/(?P<triage_category_id>\w+)/$', TaskViews.edit_triage_category, name="edit_triage_category"),
 )
