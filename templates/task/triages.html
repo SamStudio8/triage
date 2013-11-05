@@ -21,9 +21,9 @@
         <th class="col-md-1"></th>
         <th></th>
     </tr>
-    {% for tcat in triages %}
+    {% for tcat in triages|dictsort:"priority" %}
         <tr>
-            <td>{{ tcat.name }}</td>
+            <td style="background-color:#{{ tcat.bg_colour }}; color:#{{ tcat.fg_colour }}"><b>{{ tcat.name }}</b></td>
             <td>
                 <div class="btn-group pull-right">
                     <a class="btn btn-sm btn-warning" href="{% url 'task:edit_triage_category' tcat.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
