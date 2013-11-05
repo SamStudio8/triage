@@ -28,6 +28,7 @@
         <table class="table">
             <tr>
                 <th></th>
+                <th></th>
                 <th class="col-md-3">Name</th>
                 <th class="col-md-6">Description</th>
                 <th class="col-md-1">Due</th>
@@ -46,6 +47,9 @@
                 {% endif %}
             {% endif %}
                 <td>{{ task.id }}</td>
+                <td>
+                    <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
+                </td>
                 {% if task.completed %}
                     <td><strike>{{ task.name }}</strike></td>
                     <td><strike>{{ task.description }}</strike></td>

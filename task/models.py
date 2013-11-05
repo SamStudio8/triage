@@ -16,6 +16,9 @@ class Task(models.Model):
     description = models.TextField(blank=True)
 
     priority = models.IntegerField(default=0)
+    triage = models.ForeignKey('TaskTriageCategory',
+                               null=True,
+                               blank=True)
     progress = models.IntegerField(default=0)
 
     creation_date = models.DateTimeField()
@@ -55,6 +58,15 @@ class Task(models.Model):
             #TODO Future: User preference as to how to order due_date of None
             self.due_date = self.modified_date
         super(Task, self).save(*args, **kwargs)
+
+class TaskTriageCategory(models.Model):
+    user = models.ForeignKey(User,
+                            verbose_name="owner",
+                            related_name="triages")
+    name = models.CharField(max_length=30)
+    priority = models.IntegerField(default=0)
+    fg_colour = models.CharField(max_length=6)
+    bg_colour = models.CharField(max_length=6)
 
 class TaskList(models.Model):
     # Future; Colour Coded

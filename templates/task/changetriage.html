@@ -1,0 +1,12 @@
+{% extends "base/base.html" %}
+
+{% block title %}Add or Edit Task Triage Category{% endblock %}
+
+{% block content %}
+<h1>Add or Edit Task Triage Category</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" />
+</form>
+{% endblock %}

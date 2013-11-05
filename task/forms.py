@@ -18,3 +18,11 @@ class TaskListForm(forms.ModelForm):
 
     class Meta:
         model = TaskModels.TaskList
+
+class TaskTriageCategoryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TaskTriageCategoryForm, self).__init__(*args, **kwargs)
+        del self.fields['user']
+
+    class Meta:
+        model = TaskModels.TaskTriageCategory
