@@ -12,3 +12,9 @@ Copy settings_example.py to settings.py and fill in with the correct details suc
     python manage.py syncdb
     python manage.py migrate task
     python manage.py collectstatic
+
+### Testing
+
+To deploy the modest test suite;
+    
+    python manage.py test task
