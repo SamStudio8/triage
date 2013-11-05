@@ -86,7 +86,7 @@ def edit_task(request, task_id, tasklist_id=None):
     return render(request, "task/changetask.html", {"form": form, "task": task})
 
 @login_required
-def list_task_triages(request):
+def list_triage_category(request):
     # Permissions
     triages = request.user.triages.all()
     return render(request, "task/triages.html", {"triages": triages})
@@ -113,5 +113,5 @@ def edit_triage_category(request, triage_category_id=None):
             # New instance, attach user
             triage.user = request.user
         triage.save()
-        return HttpResponseRedirect(reverse('list_triage_category'))
+        return HttpResponseRedirect(reverse('task:list_triage_category'))
     return render(request, "task/changetriage.html", {"form": form, "triage": triage})
