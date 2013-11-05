@@ -1,7 +1,9 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.utils.timezone import utc
 
 import task.models as TaskModels
 import task.forms as TaskForms
@@ -43,6 +45,7 @@ def complete_task(request, task_id):
     try:
         task = get_object_or_404(TaskModels.Task, pk=task_id)
         task.completed = True
+        task.completed_date = datetime.datetime.utcnow().replace(tzinfo=utc)
         task.save()
     except:
         #TODO Return error message

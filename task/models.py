@@ -26,6 +26,7 @@ class Task(models.Model):
     due_date = models.DateTimeField(null=True, blank=True)
 
     completed = models.BooleanField()
+    completed_date = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["completed", "due_date", "triage__priority"]
