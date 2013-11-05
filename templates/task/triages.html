@@ -17,14 +17,11 @@
 
 <table class="table">
     <tr>
-        <th class="col-md-11">Name</th>
-        <th class="col-md-1"></th>
-        <th></th>
+        <th>Name</th>
     </tr>
     {% for tcat in triages|dictsortreversed:"priority" %}
         <tr>
-            <td style="background-color:#{{ tcat.bg_colour }}; color:#{{ tcat.fg_colour }}"><b>{{ tcat.name }}</b></td>
-            <td>
+            <td style="background-color:#{{ tcat.bg_colour }}; color:#{{ tcat.fg_colour }}"><b>{{ tcat.name }}</b>
                 <div class="btn-group pull-right">
                     <a class="btn btn-sm btn-warning" href="{% url 'task:edit_triage_category' tcat.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
                 </div>

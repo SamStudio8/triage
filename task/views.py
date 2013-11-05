@@ -110,5 +110,5 @@ def edit_triage_category(request, triage_category_id=None):
             # New instance, attach user
             triage.user = request.user
         triage.save()
-        return HttpResponseRedirect(reverse('home'))
+        return HttpResponseRedirect(reverse('list_triage_category'))
     return render(request, "task/changetriage.html", {"form": form, "triage": triage})
