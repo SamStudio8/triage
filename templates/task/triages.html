@@ -3,33 +3,33 @@
 {% block title %}Triage Categories{% endblock %}
 
 {% block content %}
-<h1>Triage Categories</h1>
-    <div class="row">
-        <div class="col-md-6">
-            <p>Hello, {{ user.username }}, you have {{ triages.count }} triage categories:</p>
-        </div>
-        <div class="col-md-6">
-            <div class="btn-group pull-right">
-                <a class="btn btn-success" href="{% url 'task:add_triage_category' %}">Add Triage Category</a>
-            </div>
+<div class="row">
+    <div class="col-md-6">
+        <h1>Triage Categories</h1>
+        <p>Hello, {{ user.username }}, you have {{ triages.count }} triage categories:</p>
+    </div>
+    <div class="col-md-6">
+        <div class="btn-group pull-right">
+            <a class="btn btn-success" href="{% url 'task:add_triage_category' %}">Add Triage Category</a>
         </div>
     </div>
+</div>
 
-    <table class="table">
+<table class="table">
+    <tr>
+        <th class="col-md-11">Name</th>
+        <th class="col-md-1"></th>
+        <th></th>
+    </tr>
+    {% for tcat in triages %}
         <tr>
-            <th class="col-md-11">Name</th>
-            <th class="col-md-1"></th>
-            <th></th>
+            <td>{{ tcat.name }}</td>
+            <td>
+                <div class="btn-group pull-right">
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_triage_category' tcat.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                </div>
+            </td>
         </tr>
-        {% for tcat in triages %}
-            <tr>
-                <td>{{ tcat.name }}</td>
-                <td>
-                    <div class="btn-group pull-right">
-                        <a class="btn btn-sm btn-warning" href="{% url 'task:edit_triage_category' tcat.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    {% endfor %}
+</table>
 {% endblock %}
