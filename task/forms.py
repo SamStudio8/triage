@@ -15,24 +15,6 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = TaskModels.Task
 
-    # Are these necessary? Django appears to check whether the form contains a
-    # selection from the dropdown that matches an element in the original qset?
-    def _check_user(self, field_name):
-        data = self.cleaned_data[field_name]
-        if data:
-            if data.user_id != self._user_id:
-                raise forms.ValidationError("Invalid selection for "+ field_name +"!")
-        return data
-
-    def clean_parent(self):
-        return self._check_user("parent")
-
-    def clean_tasklist(self):
-        return self._check_user("tasklist")
-
-    def clean_triage(self):
-        return self._check_user("triage")
-
 class TaskListForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskListForm, self).__init__(*args, **kwargs)
