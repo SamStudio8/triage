@@ -29,7 +29,6 @@ def edit_task(request, task_id, tasklist_id=None):
             return HttpResponseRedirect(reverse('home'))
 
     task = None
-    due = None
     if task_id:
         try:
             task = TaskModels.Task.objects.get(pk=task_id)
@@ -39,11 +38,9 @@ def edit_task(request, task_id, tasklist_id=None):
             tasklist_id = task.tasklist_id
             if task.tasklist.user.id != request.user.id:
                 return HttpResponseRedirect(reverse('home'))
-            if task.modified_date != task.due_date:
-                due = task.due_date
 
     form = TaskForms.TaskForm(request.POST or None,
-            initial={'tasklist': tasklist_id, 'due_date': due},
+            initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
         task = form.save(commit=False)

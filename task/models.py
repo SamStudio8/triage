@@ -52,11 +52,6 @@ class Task(models.Model):
         if not self.id:
             self.creation_date = datetime.datetime.utcnow().replace(tzinfo=utc)
         self.modified_date = datetime.datetime.utcnow().replace(tzinfo=utc)
-
-        if not self.completed and not self.due_date:
-            # Update the due date to now if the task is not completed yet
-            #TODO Future: User preference as to how to order due_date of None
-            self.due_date = self.modified_date
         super(Task, self).save(*args, **kwargs)
 
 class TaskTriageCategory(models.Model):
