@@ -72,7 +72,6 @@ class TaskTriageCategory(models.Model):
         return self.name
 
 class TaskList(models.Model):
-    # Future; Colour Coded
     user = models.ForeignKey(User,
                             verbose_name="owner",
                             related_name="tasklists")
@@ -82,8 +81,3 @@ class TaskList(models.Model):
     def __unicode__(self):
         return self.name
 
-class TaskTarget(models.Model):
-    pass
-
-class TaskGoal(models.Model):
-    pass
