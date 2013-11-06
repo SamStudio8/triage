@@ -63,11 +63,11 @@ TEST_DATA = {
 }
 class SimpleTaskTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(
+        User.objects.create_user(
                 TEST_DATA['user']['username'],
                 TEST_DATA['user']['email'],
                 TEST_DATA['user']['password'])
-        self.user = User.objects.create_user(
+        User.objects.create_user(
                 TEST_DATA['user2']['username'],
                 TEST_DATA['user2']['email'],
                 TEST_DATA['user2']['password'])
