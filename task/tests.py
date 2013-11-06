@@ -17,14 +17,12 @@ TEST_DATA = {
         "tasklist": 1,
         "name": "Create a todo list manager",
         "description": "Procrastinate by writing a todo list manager.",
-        "priority": 0,
         "progress": 0
     },
     "task_edit": {
         "tasklist": 1,
         "name": "Become a watermelon farmer",
         "description": "Give up on everything and farm for watermelons.",
-        "priority": 0,
         "progress": 0
     },
     "task_edit_triage": {
@@ -32,13 +30,11 @@ TEST_DATA = {
         "tasklist": 1,
         "name": "Become a watermelon farmer",
         "description": "Give up on everything and farm for watermelons.",
-        "priority": 0,
         "progress": 0
     },
     "tasklist_edit": {
         "name": "Life Goals",
         "description": "A detailed task list for your adventures.",
-        "priority": 0,
         "progress": 0
     },
     "triage_category_low": {

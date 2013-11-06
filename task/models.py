@@ -15,7 +15,6 @@ class Task(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
-    priority = models.IntegerField(default=0)
     triage = models.ForeignKey('TaskTriageCategory',
                                null=True,
                                blank=True)
