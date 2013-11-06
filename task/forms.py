@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
 import task.models as TaskModels
 
 class TaskForm(forms.ModelForm):
@@ -7,6 +6,7 @@ class TaskForm(forms.ModelForm):
         super(TaskForm, self).__init__(*args, **kwargs)
         del self.fields['creation_date']
         del self.fields['modified_date']
+        del self.fields['completed_date']
 
     class Meta:
         model = TaskModels.Task

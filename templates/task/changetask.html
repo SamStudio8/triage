@@ -3,6 +3,17 @@
 {% block title %}Add or Edit Task{% endblock %}
 
 {% block content %}
+
+<script src="/static/js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+<link href="/static/css/jquery-ui-timepicker-addon.css" rel="stylesheet">
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#id_due_date').datetimepicker({
+            dateFormat: "yy-mm-dd",
+            timeFormat: "HH:mm:ss",
+        });
+    });
+</script>
 <h1>Add or Edit Task</h1>
 <form method="post">
     {% csrf_token %}
