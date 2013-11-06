@@ -47,6 +47,10 @@ class Task(models.Model):
             # OK
             return 0
 
+    @property
+    def user_id(self):
+        return self.tasklist.user_id
+
     # Update timestamps
     def save(self, *args, **kwargs):
         if not self.id:

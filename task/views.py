@@ -35,18 +35,15 @@ def edit_task(request, task_id, tasklist_id=None):
         except TaskModels.Task.DoesNotExist:
             pass
         else:
-            tasklist_id = task.tasklist_id
             if task.tasklist.user.id != request.user.id:
                 return HttpResponseRedirect(reverse('home'))
+            tasklist_id = task.tasklist_id
 
     form = TaskForms.TaskForm(request.user.id, request.POST or None,
             initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
         task = form.save(commit=False)
-        if not form.instance.pk:
-            # New instance, attach tasklist id
-            task.tasklist_id = tasklist_id
         task.save()
         return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changetask.html", {"form": form, "task": task})
