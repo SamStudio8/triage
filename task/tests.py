@@ -30,6 +30,12 @@ TEST_DATA = {
         "description": "Give up on everything and farm for watermelons.",
         "progress": 0
     },
+    "task_evil_assign": {
+        "tasklist": 1,
+        "name": "Become a supervillain",
+        "description": "Defend metrocity.",
+        "progress": 0
+    },
     "task_edit_triage": {
         "triage": 1,
         "tasklist": 1,
@@ -142,6 +148,17 @@ class SimpleTaskTest(TestCase):
         url = reverse("task:edit_task", kwargs={"task_id":1})
         response = self.client.get(url)
         self.assertRedirects(response, '/')
+
+    def test_evil_assign_to_other_list(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+        url = reverse("task:add_task")
+        response = self.client.post(url, TEST_DATA['task_evil_assign'], follow=True)
+        self.assertContains(response, "Select a valid choice. That choice is not one of the available choices")
 
     def test_first_listing(self):
         self.client.login(

@@ -15,6 +15,8 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = TaskModels.Task
 
+    # Are these necessary? Django appears to check whether the form contains a
+    # selection from the dropdown that matches an element in the original qset?
     def _check_user(self, field_name):
         data = self.cleaned_data[field_name]
         if data:
