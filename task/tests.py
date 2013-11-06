@@ -9,6 +9,11 @@ TEST_DATA = {
         "email": "captaintest@example.org",
         "password": "testeration"
     },
+    "user2": {
+        "username": "darkhat",
+        "email": "shady@example.org",
+        "password": "secretspls"
+    },
     "tasklist": {
         "name": "General",
         "description": "A generic task list for your dull existence."
@@ -62,6 +67,10 @@ class SimpleTaskTest(TestCase):
                 TEST_DATA['user']['username'],
                 TEST_DATA['user']['email'],
                 TEST_DATA['user']['password'])
+        self.user = User.objects.create_user(
+                TEST_DATA['user2']['username'],
+                TEST_DATA['user2']['email'],
+                TEST_DATA['user2']['password'])
 
     def test_login_required(self):
         url = reverse("task:add_tasklist")
@@ -99,6 +108,40 @@ class SimpleTaskTest(TestCase):
         url = reverse("task:edit_triage_category", kwargs={"triage_category_id":1})
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next=/task/category/edit/1/')
+
+    def test_view_permissions(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+        url = reverse("home")
+        response = self.client.get(url)
+        self.assertContains(response, "Hello, "+TEST_DATA['user2']['username'])
+        self.assertContains(response, "0 task lists")
+
+    def test_edit_list_permission(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+        url = reverse("task:edit_tasklist", kwargs={"tasklist_id":1})
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
+    def test_edit_task_permission(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+        url = reverse("task:edit_task", kwargs={"task_id":1})
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
 
     def test_first_listing(self):
         self.client.login(
@@ -171,7 +214,6 @@ class SimpleTaskTest(TestCase):
     def test_complete_task(self):
         self.test_add_task()
         url = reverse("task:complete_task", kwargs={"task_id":1})
-        response = self.client.get(url)
 
         response = self.client.post(url, TEST_DATA['tasklist_edit'], follow=True)
         # Redirects to home
