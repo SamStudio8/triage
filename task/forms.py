@@ -2,11 +2,13 @@ from django import forms
 import task.models as TaskModels
 
 class TaskForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user_id=0, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         del self.fields['creation_date']
         del self.fields['modified_date']
         del self.fields['completed_date']
+        self.fields['parent'].queryset = TaskModels.Task.objects.filter(tasklist__user_id=user_id, completed=False)
+        self.fields['triage'].queryset = TaskModels.TaskTriageCategory.objects.filter(user_id=user_id)
 
     class Meta:
         model = TaskModels.Task

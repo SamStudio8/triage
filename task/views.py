@@ -39,7 +39,7 @@ def edit_task(request, task_id, tasklist_id=None):
             if task.tasklist.user.id != request.user.id:
                 return HttpResponseRedirect(reverse('home'))
 
-    form = TaskForms.TaskForm(request.POST or None,
+    form = TaskForms.TaskForm(request.user.id, request.POST or None,
             initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
