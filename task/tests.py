@@ -81,39 +81,39 @@ class SimpleTaskTest(TestCase):
     def test_login_required(self):
         url = reverse("task:add_tasklist")
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/list/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:add_task", kwargs={"tasklist_id":1})
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/add/1/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:edit_task", kwargs={"task_id":1})
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/edit/1/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:complete_task", kwargs={"task_id":1})
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/complete/1/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:add_tasklist")
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/list/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:edit_tasklist", kwargs={"tasklist_id":1})
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/list/1/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:list_triage_category")
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/category/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:add_triage_category")
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/category/add/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
         url = reverse("task:edit_triage_category", kwargs={"triage_category_id":1})
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next=/task/category/edit/1/')
+        self.assertRedirects(response, '/account/login/?next='+url)
 
     def test_view_permissions(self):
         self.test_add_task()

@@ -7,6 +7,6 @@ from task import views as TaskViews
 
 urlpatterns = patterns('',
     url(r'^$', TaskViews.list_tasks, name="home"),
-    url(r'^task/', include("task.urls", namespace="task", app_name="task")),
     url(r'^account/', include("account.urls", namespace="account", app_name="account")),
+    url(r'^', include("task.urls", namespace="task", app_name="task")),
 )
