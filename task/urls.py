@@ -4,9 +4,9 @@ import task.views as TaskViews
 urlpatterns = patterns('',
     url(r'^tasklist/new/$', TaskViews.add_tasklist, name="add_tasklist"),
     url(r'^tasklist/(?P<tasklist_id>\d+)/edit/$', TaskViews.edit_tasklist, name="edit_tasklist"),
+    url(r'^tasklist/(?P<tasklist_id>\d+)/task/new/$', TaskViews.add_task, name="add_task"),
 
     url(r'^task/new/$', TaskViews.add_task, name="add_task"),
-    url(r'^task/new/(?P<tasklist_id>\d+)/$', TaskViews.add_task, name="add_task"),
     url(r'^task/(?P<task_id>\d+)/edit/$', TaskViews.edit_task, name="edit_task"),
     url(r'^task/(?P<task_id>\d+)/complete/$', TaskViews.complete_task, name="complete_task"),
 
