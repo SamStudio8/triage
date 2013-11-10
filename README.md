@@ -23,3 +23,8 @@ Copy triage/settings_example.py to triage/settings.py and fill in with the corre
 To deploy the modest test suite on the `task` app;
     
     python manage.py test task
+
+## Licence
+Triage is licensed under the European Union Public Licence (EUPL v.1.1)  
+See COPYING for further information.
+
