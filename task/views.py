@@ -70,9 +70,16 @@ def complete_task(request, task_id):
     if task.tasklist.user.id != request.user.id:
         return HttpResponseRedirect(reverse('home'))
 
+    # Don't really like hitting the database for a copy of this but it will
+    # more than do for now
+    original = TaskModels.Task.objects.get(pk=task.pk)
+
     task.completed = True
     task.completed_date = datetime.datetime.utcnow().replace(tzinfo=utc)
     task.save()
+
+    # Save the history
+    EventUtils._eventful(request, original, task)
     return HttpResponseRedirect(reverse('home'))
 
 @login_required
