@@ -14,7 +14,7 @@ class EventRecord(models.Model):
     timestamp = models.DateTimeField()
 
     class Meta:
-        ordering = ('-timestamp',)
+        ordering = ('timestamp',)
 
     # Timestamp
     def save(self, *args, **kwargs):
