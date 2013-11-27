@@ -61,8 +61,16 @@ class EventFieldChange(models.Model):
                 model_field = event_model._meta.get_field_by_name(self.field.replace("_id",""))
 
                 related_model = model_field[0].rel.to
-                old_value = related_model.objects.get(pk=self.original)
-                new_value = related_model.objects.get(pk=self.new)
+
+                try:
+                    old_value = related_model.objects.get(pk=self.original)
+                except related_model.DoesNotExist:
+                    old_value = None
+
+                try:
+                    new_value = related_model.objects.get(pk=self.new)
+                except related_model.DoesNotExist:
+                    new_value = None
 
                 s = "%s: %s -> %s" % (self.field, old_value, new_value)
             else:

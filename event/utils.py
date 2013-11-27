@@ -11,7 +11,7 @@ def _eventful(request, old, new):
     # Naughty as this assumes the save was successful for now as I can't
     # think of a way to do it without messy signals or having to save a
     # deep copy of the object
-    if new.pk is not None:
+    if old and old.pk is not None:
         event = None
 
         for field, new_data in new.__dict__.iteritems():
@@ -19,13 +19,12 @@ def _eventful(request, old, new):
                 continue
 
             old_data = old.__dict__.get(field)
-            print field, new_data, old_data
             if old_data != new_data:
                 if event is None:
                     # New historical event record
                     event = EventModels.EventRecord(
-                            content_type=ContentType.objects.get_for_model(new),
-                            object_id=new.pk,
+                            content_type=ContentType.objects.get_for_model(old),
+                            object_id=old.pk,
                             user_id=request.user.id
                     )
                     event.save()
