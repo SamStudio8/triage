@@ -14,9 +14,7 @@ def _eventful(request, old, new):
     if new.pk is not None:
         event = None
 
-        #for field in form.cleaned_data:
         for field, new_data in new.__dict__.iteritems():
-            #new_data = form.cleaned_data[field]
             if field[0] == "_":
                 continue
 
@@ -33,8 +31,6 @@ def _eventful(request, old, new):
                     event.save()
 
                 # Create field change event
-                if old_data is None:
-                    old_data = "Null"
                 change = EventModels.EventFieldChange(
                         field=field,
                         original=old_data,
