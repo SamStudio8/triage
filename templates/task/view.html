@@ -34,11 +34,17 @@
     <div class="col-md-12">
         <h2>History</h2>
         {% for record in task.get_history %}
-            {% for entry in record.get_field_entries %}
-                {{ entry }}
-                <br />
-            {% endfor %}
-            <br />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{ record.user.username }} @ {{ record.timestamp }}
+            </div>
+            <div class="panel-body">
+                {% for entry in record.get_field_entries %}
+                    {{ entry }}
+                    <br />
+                {% endfor %}
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>
