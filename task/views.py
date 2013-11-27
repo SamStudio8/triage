@@ -7,6 +7,7 @@ from django.utils.timezone import utc
 
 import task.models as TaskModels
 import task.forms as TaskForms
+import event.utils as EventUtils
 
 @login_required
 def list_tasks(request):
@@ -19,6 +20,13 @@ def list_tasks(request):
 @login_required
 def add_task(request, tasklist_id=None):
     return edit_task(request, None, tasklist_id)
+
+@login_required
+def view_task(request, task_id=None):
+    task = get_object_or_404(TaskModels.Task, pk=task_id)
+    if task.tasklist.user.id != request.user.id:
+        return HttpResponseRedirect(reverse('home'))
+    return render(request, "task/view.html", {"task": task})
 
 @login_required
 def edit_task(request, task_id, tasklist_id=None):
@@ -43,8 +51,15 @@ def edit_task(request, task_id, tasklist_id=None):
             initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
+        # Don't really like hitting the database for a copy of this but it will
+        # more than do for now
+        original = TaskModels.Task.objects.get(pk=task.pk)
+
         task = form.save(commit=False)
         task.save()
+
+        # Save the history
+        EventUtils._eventful(request, original, task)
         return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changetask.html", {"form": form, "task": task})
 

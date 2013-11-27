@@ -1,10 +1,12 @@
 import datetime
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.timezone import utc
 
-class Task(models.Model):
+from event import models as EventModels
 
+class Task(models.Model):
     parent = models.ForeignKey('self',
                                 null=True,
                                 blank=True,
@@ -26,6 +28,16 @@ class Task(models.Model):
 
     completed = models.BooleanField()
     completed_date = models.DateTimeField(null=True, blank=True)
+
+    RECORD_OPTIONS = {
+        "invisible": [ "modified_date" ],
+        "no_expand": [ "description" ]
+    }
+    def get_history(self):
+        return EventModels.EventRecord.objects.filter(
+                object_id=self.pk,
+                content_type=ContentType.objects.get(model="task")
+        )
 
     class Meta:
         ordering = ["completed", "due_date", "-triage__priority"]
