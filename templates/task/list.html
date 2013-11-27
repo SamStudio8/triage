@@ -85,10 +85,10 @@
                 <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
             </td>
             {% if task.completed %}
-                <td><strike><b>{{ task.name }}</b></strike></br>
+                <td><a href="{% url 'task:view_task' task.id %}"><strike><b>{{ task.name }}</b></strike></a></br>
                 <strike>{{ task.description }}</strike></td>
             {% else %}
-                <td><b>{{ task.name }}</b></br>
+                <td><a href="{% url 'task:view_task' task.id %}"><b>{{ task.name }}</b></a></br>
                 {{ task.description }}</td>
             {% endif %}
             {% if task.due_date %}
