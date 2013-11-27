@@ -54,7 +54,10 @@ def edit_task(request, task_id, tasklist_id=None):
     if form.is_valid():
         # Don't really like hitting the database for a copy of this but it will
         # more than do for now
-        original = TaskModels.Task.objects.get(pk=task.pk)
+        if task:
+            original = TaskModels.Task.objects.get(pk=task.pk)
+        else:
+            original = None
 
         task = form.save(commit=False)
         task.save()
@@ -72,7 +75,10 @@ def complete_task(request, task_id):
 
     # Don't really like hitting the database for a copy of this but it will
     # more than do for now
-    original = TaskModels.Task.objects.get(pk=task.pk)
+    if task:
+        original = TaskModels.Task.objects.get(pk=task.pk)
+    else:
+        original = None
 
     task.completed = True
     task.completed_date = datetime.datetime.utcnow().replace(tzinfo=utc)
