@@ -1,6 +1,5 @@
 import datetime
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.timezone import utc
 
@@ -33,11 +32,6 @@ class Task(models.Model):
         "invisible": [ "modified_date" ],
         "no_expand": [ "description" ]
     }
-    def get_history(self):
-        return EventModels.EventRecord.objects.filter(
-                object_id=self.pk,
-                content_type=ContentType.objects.get(model="task")
-        )
 
     class Meta:
         ordering = ["completed", "due_date", "-triage__priority"]

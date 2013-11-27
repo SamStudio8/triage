@@ -26,7 +26,8 @@ def view_task(request, task_id=None):
     task = get_object_or_404(TaskModels.Task, pk=task_id)
     if task.tasklist.user.id != request.user.id:
         return HttpResponseRedirect(reverse('home'))
-    return render(request, "task/view.html", {"task": task})
+    history = EventUtils._get_history(task)
+    return render(request, "task/view.html", {"task": task, "history": history})
 
 @login_required
 def edit_task(request, task_id, tasklist_id=None):

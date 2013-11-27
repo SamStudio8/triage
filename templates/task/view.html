@@ -33,7 +33,7 @@
 <div class="row">
     <div class="col-md-12">
         <h2>History</h2>
-        {% for record in task.get_history %}
+        {% for record in history %}
         <div class="panel panel-default">
             <div class="panel-heading">
                 {{ record.user.username }} @ {{ record.timestamp }}
