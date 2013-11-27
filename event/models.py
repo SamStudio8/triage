@@ -22,23 +22,12 @@ class EventRecord(models.Model):
             self.timestamp = datetime.datetime.utcnow().replace(tzinfo=utc)
         super(EventRecord, self).save(*args, **kwargs)
 
-    #TODO This is bad and you should feel bad
-    def get_field_entries(self):
+    def get_entry_slugs(self):
         field_entries = []
         for entry in self.eventrecordentry_set.all():
-            if entry.content_type == ContentType.objects.get(app_label="event", model="eventfieldchange"):
-                record_entry = entry.get_record_entry()
-                if record_entry.field not in self.get_object().RECORD_OPTIONS["invisible"]:
-                    if record_entry.field.endswith("_id"):
-                        d_field = self.content_type.model_class()._meta.get_field_by_name(record_entry.field.replace("_id",""))
-                        rel_model = d_field[0].rel.to
-                        old_desc = rel_model.objects.get(pk=record_entry.original)
-                        new_desc = rel_model.objects.get(pk=record_entry.new)
-
-                        s = "%s: %s -> %s" % (record_entry.field, old_desc, new_desc)
-                    else:
-                        s = "%s: %s -> %s" % (record_entry.field, record_entry.original, record_entry.new)
-                    field_entries.append(s)
+            record_entry = entry.get_record_entry().slugify(self)
+            if record_entry:
+               field_entries.append(record_entry)
         return field_entries
 
     def get_object(self):
@@ -59,6 +48,24 @@ class EventMemo(models.Model):
 
 class EventFieldChange(models.Model):
     field = models.CharField(max_length=255)
-    original = models.CharField(max_length=255, blank=True)
-    new = models.CharField(max_length=255, blank=True)
 
+    #TODO Is allowing null for these is as bad as I think it is?
+    original = models.CharField(max_length=255, null=True, blank=True)
+    new = models.CharField(max_length=255, null=True, blank=True)
+
+    def slugify(self, event):
+        s = ""
+        if self.field not in event.get_object().RECORD_OPTIONS["invisible"]:
+            if self.field.endswith("_id"):
+                event_model = event.content_type.model_class()
+                model_field = event_model._meta.get_field_by_name(self.field.replace("_id",""))
+
+                related_model = model_field[0].rel.to
+                old_value = related_model.objects.get(pk=self.original)
+                new_value = related_model.objects.get(pk=self.new)
+
+                s = "%s: %s -> %s" % (self.field, old_value, new_value)
+            else:
+                s = "%s: %s -> %s" % (self.field, self.original, self.new)
+
+        return s

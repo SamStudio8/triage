@@ -46,7 +46,7 @@
                 {{ record.user.username }} @ {{ record.timestamp }}
             </div>
             <div class="panel-body">
-                {% for entry in record.get_field_entries %}
+                {% for entry in record.get_entry_slugs %}
                     {{ entry }}
                     <br />
                 {% endfor %}
