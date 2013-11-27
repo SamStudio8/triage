@@ -29,7 +29,7 @@ class EventRecord(models.Model):
             if entry.content_type == ContentType.objects.get(app_label="event", model="eventfieldchange"):
                 record_entry = entry.get_record_entry()
                 if record_entry.field not in self.get_object().RECORD_OPTIONS["invisible"]:
-                    if record_entry.field.endswith("id"):
+                    if record_entry.field.endswith("_id"):
                         d_field = self.content_type.model_class()._meta.get_field_by_name(record_entry.field.replace("_id",""))
                         rel_model = d_field[0].rel.to
                         old_desc = rel_model.objects.get(pk=record_entry.original)
