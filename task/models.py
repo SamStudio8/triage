@@ -19,6 +19,7 @@ class Task(models.Model):
     triage = models.ForeignKey('TaskTriageCategory',
                                null=True,
                                blank=True)
+#    status = models.ForeignKey('TaskStatus')
     progress = models.IntegerField(default=0)
 
     creation_date = models.DateTimeField()
@@ -75,6 +76,15 @@ class TaskTriageCategory(models.Model):
 
     def __unicode__(self):
         return self.name
+
+#class TaskStatus(models.Model):
+#    user = models.ForeignKey(User)
+#    name = models.CharField(max_length=30)
+#    description = models.CharField(max_length=255, blank=True)
+#    is_closed = models.BooleanField()
+
+#    def __unicode__(self):
+#        return self.name
 
 class TaskList(models.Model):
     user = models.ForeignKey(User,

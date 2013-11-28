@@ -1,4 +1,9 @@
 from django import forms
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Submit
+from crispy_forms.bootstrap import FormActions
+
 import task.models as TaskModels
 
 class TaskForm(forms.ModelForm):
@@ -11,6 +16,42 @@ class TaskForm(forms.ModelForm):
         self.fields['parent'].queryset = TaskModels.Task.objects.filter(tasklist__user_id=user_id, completed=False)
         self.fields['tasklist'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id)
         self.fields['triage'].queryset = TaskModels.TaskTriageCategory.objects.filter(user_id=user_id)
+
+        # django-crispy-forms
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-3'
+        self.helper.field_class = 'col-lg-9'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Basic',
+                'name',
+                'description',
+                'tasklist',
+                css_class="col-lg-6",
+                field_class="col-lg-10",
+            ),
+            Fieldset(
+                'Meta',
+                'triage',
+                'progress',
+                'due_date',
+                css_class="col-lg-6",
+            ),
+            Fieldset(
+                'Completed',
+                'completed',
+                css_class="col-lg-6",
+            ),
+            Fieldset(
+                'Related',
+                'parent',
+                css_class="col-lg-12",
+            ),
+            FormActions(
+                Submit('save', 'Save'),
+            )
+        )
 
     class Meta:
         model = TaskModels.Task
