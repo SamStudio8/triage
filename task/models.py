@@ -106,6 +106,9 @@ class TaskLink(models.Model):
     to_task = models.ForeignKey(Task, related_name="links_in")
     link_type = models.ForeignKey(TaskLinkType)
 
+    class Meta:
+        unique_together = ("from_task", "to_task")
+
     def save(self, *args, **kwargs):
         # Prevent a task from pointing to itself
         if self.from_task.pk == self.to_task.pk:

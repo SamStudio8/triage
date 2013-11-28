@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.103
+
+Enforce unique pair (`from_task`, `to_task`) in `TaskLink` model
+
+    python mange.py migrate task
+
 ####0.0.102
 
 `TaskLink` models
