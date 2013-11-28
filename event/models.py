@@ -46,6 +46,9 @@ class EventMemo(models.Model):
     reply_to = models.ForeignKey("EventMemo")
     memo = models.CharField(max_length=255)
 
+#class EventLinkChange(models.Model):
+#    pass
+
 class EventFieldChange(models.Model):
     field = models.CharField(max_length=255)
 

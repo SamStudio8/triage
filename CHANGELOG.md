@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.102
+
+`TaskLink` models
+
+    python mange.py migrate task
+
 ####0.0.98
 
 Removed `Task.parent`
