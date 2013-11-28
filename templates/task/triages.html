@@ -2,23 +2,29 @@
 
 {% block title %}Triage Categories{% endblock %}
 
-{% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <h1>Triage Categories</h1>
-        <p>Hello, {{ user.username }}, you have {{ triages.count }} triage categories:</p>
-    </div>
-    <div class="col-md-6">
-        <div class="btn-group pull-right">
-            <a class="btn btn-success" href="{% url 'task:add_triage_category' %}">Add Triage Category</a>
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Triage Categories</h1>
+            <p>Hello, {{ user.username }}, you have {{ triages.count }} triage categories:</p>
+        </div>
+        <div class="col-md-6">
+            <div class="btn-group pull-right">
+                <a class="btn btn-success" href="{% url 'task:add_triage_category' %}">Add Triage Category</a>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block content %}
 
 <table class="table">
-    <tr>
-        <th>Name</th>
-    </tr>
+    <thead>
+    </thead>
+    <tbody>
     {% for tcat in triages|dictsortreversed:"priority" %}
         <tr>
             <td style="background-color:#{{ tcat.bg_colour }}; color:#{{ tcat.fg_colour }}"><b>{{ tcat.name }}</b>
@@ -28,5 +34,7 @@
             </td>
         </tr>
     {% endfor %}
+    </tbody>
+    <tfoot></tfoot>
 </table>
 {% endblock %}
