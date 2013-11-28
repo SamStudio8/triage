@@ -68,6 +68,48 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <legend>Links
+            <a class="pull-right btn btn-sm btn-success" href="{% url 'task:link_task' task.id %}"><span class="glyphicon glyphicon-link"></span> Add Link</a></legend>
+    </div>
+<div class="row">
+    <div class="col-md-6">
+        {% if task.links_in.count > 0 %}
+        <div class="panel panel-info">
+            <table class="table">
+            {% for link in task.links_in.all %}
+                <tr>
+                    <td>{{ link.link_type.from_desc }}</td>
+                    <td>#{{ link.from_task.id }}</td>
+                    <td>{{ link.from_task.name }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
+        {% else %}
+            No incoming...
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        {% if task.links_out.count > 0 %}
+        <div class="panel panel-info">
+            <table class="table">
+            {% for link in task.links_out.all %}
+                <tr>
+                    <td>{{ link.link_type.to_desc }}</td>
+                    <td>#{{ link.to_task.id }}</td>
+                    <td>{{ link.to_task.name }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
+        {% else %}
+            No outgoing...
+        {% endif %}
+    </div>
+</div>
 <div class="row">
     <div class="col-md-12">
         <legend>History</legend>
