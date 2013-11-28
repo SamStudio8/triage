@@ -16,6 +16,7 @@ Copy triage/settings_example.py to triage/settings.py and fill in with the corre
     
     python manage.py syncdb
     python manage.py migrate task
+    python manage.py migrate event
     python manage.py collectstatic
 
 ## Testing
