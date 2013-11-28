@@ -37,9 +37,16 @@
             </div>
         </div>
     </nav>
-    <div class="container">
-        <div id="content">
-            {% block content %}{% endblock %}
+    <div id="content-head-outer" class="{% block content-head-class %}{% endblock %}">
+        <div id="content-head">
+            {% block content-head %}{% endblock %}
+        </div>
+    </div>
+    <div id="content-outer" class="{% block content-class %}{% endblock %}">
+        <div class="container">
+            <div id="content">
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </div>
 </body>

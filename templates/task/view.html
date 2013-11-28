@@ -2,31 +2,43 @@
 
 {% block title %}Task #{{ task.id }} | {{ task.name }}{% endblock %}
 
-{% block content %}
-<div class="row">
-    <div class="col-md-6">
-        <h4>Task #{{ task.id}}</h4>
-        <h1>{{ task.name }}</h1>
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<a style="color: white;" title="Return Home" href="{% url 'home' %}">
+    <div style="float: left;" class="col-md-1 text-center">
+        <br/>
+        <h3><span class="glyphicon glyphicon-chevron-left pull-right"></span></h3>
     </div>
-    <div class="col-md-6">
-        <div class="btn-group pull-right">
-            <a class="btn btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
-            {% if task.completed %}
-                <div class="btn-group pull-right">
-                    <a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
-                </div>
-            {% else %}
-                <div class="btn-group pull-right">
-                    <a class="btn btn-success" href="{% url 'task:complete_task' task.id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
-                </div>
-            {% endif %}
+</a>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Task #{{ task.id}}</h4>
+            <h1>{{ task.name }}</h1>
+            <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
+        </div>
+        <div class="col-md-6">
+            <div class="btn-group pull-right">
+                <a class="btn btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
+                {% if task.completed %}
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+                    </div>
+                {% else %}
+                    <div class="btn-group pull-right">
+                        <a class="btn btn-success" href="{% url 'task:complete_task' task.id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
-<hr>
+{% endblock %}
 
+{% block content-class %}container-task{% endblock %}
+{% block content %}
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="panel panel-info">
             <div class="panel-heading">
                 Description
@@ -36,23 +48,50 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Dates
+            </div>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td><b>Created</b></td>
+                    <td>{{ task.creation_date }}</td>
+                </tr>
+                <tr>
+                    <td><b>Updated</b></td>
+                    <td>{{ task.modified_date }}</td>
+                </tr>
+                <tr>
+                    <td><b>Completed</b></td>
+                    <td>{{ task.completed_date }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col-md-12">
-        <h2>History</h2>
-        {% for record in history %}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                {{ record.user.username }} @ {{ record.timestamp }}
+        <h4>History</h4>
+        {% if history %}
+            {% for record in history %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    {{ record.user.username }} @ {{ record.timestamp }}
+                </div>
+                <div class="panel-body">
+                    {% for entry in record.get_entry_slugs %}
+                        {{ entry }}
+                        <br />
+                    {% endfor %}
+                </div>
             </div>
-            <div class="panel-body">
-                {% for entry in record.get_entry_slugs %}
-                    {{ entry }}
-                    <br />
-                {% endfor %}
-            </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            Nothing of interest...
+        {% endif %}
     </div>
 </div>
 {% endblock %}
