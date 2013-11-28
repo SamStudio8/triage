@@ -10,8 +10,10 @@ urlpatterns = patterns('',
     url(r'^task/new/$', TaskViews.add_task, name="add_task"),
     url(r'^task/(?P<task_id>\d+)/edit/$', TaskViews.edit_task, name="edit_task"),
     url(r'^task/(?P<task_id>\d+)/complete/$', TaskViews.complete_task, name="complete_task"),
+    url(r'^task/(?P<task_id>\d+)/link/$', TaskViews.link_task, name="link_task"),
 
     url(r'^category/$', TaskViews.list_triage_category, name="list_triage_category"),
     url(r'^category/new/$', TaskViews.add_triage_category, name="add_triage_category"),
     url(r'^category/(?P<triage_category_id>\d+)/edit/$', TaskViews.edit_triage_category, name="edit_triage_category"),
+
 )

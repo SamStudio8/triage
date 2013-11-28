@@ -102,3 +102,10 @@ class TaskTriageCategoryForm(forms.ModelForm):
 
     class Meta:
         model = TaskModels.TaskTriageCategory
+
+class TaskLinkForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TaskLinkForm, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = TaskModels.TaskLink

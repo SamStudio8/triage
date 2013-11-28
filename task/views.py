@@ -89,6 +89,20 @@ def complete_task(request, task_id):
     return HttpResponseRedirect(reverse('home'))
 
 @login_required
+def link_task(request, task_id):
+    task = get_object_or_404(TaskModels.Task, pk=task_id)
+    if task.tasklist.user.id != request.user.id:
+        return HttpResponseRedirect(reverse('home'))
+
+    form = TaskForms.TaskLinkForm(request.POST or None,
+            initial={'from_task': task.pk})
+
+    if form.is_valid():
+        link = form.save()
+        return HttpResponseRedirect(reverse('task:view_task', args=(task.pk,)))
+    return render(request, "task/changelink.html", {"form": form})
+
+@login_required
 def add_tasklist(request):
     return edit_tasklist(request)
 

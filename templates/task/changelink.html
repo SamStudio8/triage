@@ -1,0 +1,26 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add or Edit Task Link{% endblock %}
+
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<a style="color: white;" title="Return Home" href="{% url 'home' %}">
+    <div style="float: left;" class="col-md-1 text-center">
+        <h3><span class="glyphicon glyphicon-chevron-left pull-right"></span></h3>
+    </div>
+</a>
+<div class="container">
+    <div class="row">
+        <h1>Add or Edit Task Link</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit"></input>
+</form>
+{% endblock %}
