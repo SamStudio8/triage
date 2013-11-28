@@ -98,6 +98,9 @@ class TaskLinkType(models.Model):
     from_desc = models.CharField(max_length=30)
     to_desc = models.CharField(max_length=30)
 
+    def __unicode__(self):
+        return self.name
+
 class TaskLink(models.Model):
     from_task = models.ForeignKey(Task, related_name="links_out")
     to_task = models.ForeignKey(Task, related_name="links_in")
@@ -107,6 +110,6 @@ class TaskLink(models.Model):
         # Prevent a task from pointing to itself
         if self.from_task.pk == self.to_task.pk:
             return
-        super(TaskRelation, self).save(*args, **kwargs)
+        super(TaskLink, self).save(*args, **kwargs)
 
 
