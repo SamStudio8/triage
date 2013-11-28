@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.94
+
+Update static files for new CSS
+
+    python manage.py collectstatic
+
 ####0.0.90
 
 Install django-crispy-forms and update static files for new CSS
