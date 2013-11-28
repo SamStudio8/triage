@@ -29,7 +29,6 @@ class TaskForm(forms.ModelForm):
                 'description',
                 'tasklist',
                 css_class="col-lg-6",
-                field_class="col-lg-10",
             ),
             Fieldset(
                 'Meta',
@@ -60,6 +59,22 @@ class TaskListForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskListForm, self).__init__(*args, **kwargs)
         del self.fields['user']
+
+        # django-crispy-forms
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Basic',
+                'name',
+                'description',
+            ),
+            FormActions(
+                Submit('save', 'Save'),
+            )
+        )
 
     class Meta:
         model = TaskModels.TaskList
