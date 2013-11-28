@@ -1,4 +1,5 @@
 *.swp
 *.pyc
 triage/settings.py
+static/*
 

@@ -1,7 +1,7 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit
+from crispy_forms.layout import Layout, Div, Fieldset, Submit
 from crispy_forms.bootstrap import FormActions
 
 import task.models as TaskModels
@@ -13,7 +13,6 @@ class TaskForm(forms.ModelForm):
         del self.fields['creation_date']
         del self.fields['modified_date']
         del self.fields['completed_date']
-        self.fields['parent'].queryset = TaskModels.Task.objects.filter(tasklist__user_id=user_id, completed=False)
         self.fields['tasklist'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id)
         self.fields['triage'].queryset = TaskModels.TaskTriageCategory.objects.filter(user_id=user_id)
 
@@ -40,11 +39,6 @@ class TaskForm(forms.ModelForm):
             Fieldset(
                 'Completed',
                 'completed',
-                css_class="col-lg-6",
-            ),
-            Fieldset(
-                'Related',
-                'parent',
                 css_class="col-lg-12",
             ),
             FormActions(

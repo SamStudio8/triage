@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.98
+
+Removed `Task.parent`
+
+    python mange.py migrate task
+
 ####0.0.94
 
 Update static files for new CSS

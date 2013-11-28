@@ -6,10 +6,6 @@ from django.utils.timezone import utc
 from event import models as EventModels
 
 class Task(models.Model):
-    parent = models.ForeignKey('self',
-                                null=True,
-                                blank=True,
-                                related_name='subtasks')
     tasklist = models.ForeignKey('TaskList',
                                 related_name='tasks')
 
@@ -95,4 +91,22 @@ class TaskList(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class TaskLinkType(models.Model):
+    user = models.ForeignKey(User)
+    name = models.CharField(max_length=30)
+    from_desc = models.CharField(max_length=30)
+    to_desc = models.CharField(max_length=30)
+
+class TaskLink(models.Model):
+    from_task = models.ForeignKey(Task, related_name="links_out")
+    to_task = models.ForeignKey(Task, related_name="links_in")
+    link_type = models.ForeignKey(TaskLinkType)
+
+    def save(self, *args, **kwargs):
+        # Prevent a task from pointing to itself
+        if self.from_task.pk == self.to_task.pk:
+            return
+        super(TaskRelation, self).save(*args, **kwargs)
+
 
