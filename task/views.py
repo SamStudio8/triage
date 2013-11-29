@@ -94,7 +94,7 @@ def link_task(request, task_id):
     if task.tasklist.user.id != request.user.id:
         return HttpResponseRedirect(reverse('home'))
 
-    form = TaskForms.TaskLinkForm(request.POST or None,
+    form = TaskForms.TaskLinkForm(request.user.id, request.POST or None,
             initial={'from_task': task.pk})
 
     if form.is_valid():

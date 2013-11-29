@@ -104,8 +104,11 @@ class TaskTriageCategoryForm(forms.ModelForm):
         model = TaskModels.TaskTriageCategory
 
 class TaskLinkForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user_id, *args, **kwargs):
+        self._user_id = user_id
         super(TaskLinkForm, self).__init__(*args, **kwargs)
+        self.fields['from_task'].queryset = TaskModels.Task.objects.filter(tasklist__user_id=user_id, completed=False)
+        self.fields['to_task'].queryset = TaskModels.Task.objects.filter(tasklist__user_id=user_id, completed=False)
 
     class Meta:
         model = TaskModels.TaskLink
