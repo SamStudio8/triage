@@ -109,3 +109,13 @@ class TaskLinkForm(forms.ModelForm):
 
     class Meta:
         model = TaskModels.TaskLink
+
+    def clean(self):
+        cleaned_data = super(TaskLinkForm, self).clean()
+        from_task = cleaned_data.get("from_task")
+        to_task = cleaned_data.get("to_task")
+
+        if from_task and to_task:
+            if from_task == to_task:
+                raise forms.ValidationError("Cannot link a Task to itself.")
+        return cleaned_data

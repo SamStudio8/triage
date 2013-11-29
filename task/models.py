@@ -109,10 +109,3 @@ class TaskLink(models.Model):
     class Meta:
         unique_together = ("from_task", "to_task")
 
-    def save(self, *args, **kwargs):
-        # Prevent a task from pointing to itself
-        if self.from_task.pk == self.to_task.pk:
-            return
-        super(TaskLink, self).save(*args, **kwargs)
-
-
