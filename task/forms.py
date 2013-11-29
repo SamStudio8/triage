@@ -115,7 +115,12 @@ class TaskLinkForm(forms.ModelForm):
         from_task = cleaned_data.get("from_task")
         to_task = cleaned_data.get("to_task")
 
-        if from_task and to_task:
-            if from_task == to_task:
-                raise forms.ValidationError("Cannot link a Task to itself.")
+        if from_task == to_task:
+            raise forms.ValidationError("Cannot link a Task to itself.")
+
+        try:
+            link = TaskModels.TaskLink.objects.get(from_task=to_task.pk, to_task=from_task.pk)
+            raise forms.ValidationError("A link between these tasks already exists, remove the existing link and try again.")
+        except TaskModels.TaskLink.DoesNotExist:
+            pass
         return cleaned_data
