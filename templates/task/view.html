@@ -74,7 +74,6 @@
         <legend>Links
             <a class="pull-right btn btn-sm btn-success" href="{% url 'task:link_task' task.id %}"><span class="glyphicon glyphicon-link"></span> Add Link</a></legend>
     </div>
-<div class="row">
     <div class="col-md-6">
         {% if task.links_in.count > 0 %}
         <div class="panel panel-info">
@@ -89,7 +88,7 @@
             </table>
         </div>
         {% else %}
-            No incoming...
+            <p>No incoming...</p>
         {% endif %}
     </div>
     <div class="col-md-6">
@@ -106,10 +105,11 @@
             </table>
         </div>
         {% else %}
-            No outgoing...
+            <p>No outgoing...</p>
         {% endif %}
     </div>
 </div>
+
 <div class="row">
     <div class="col-md-12">
         <legend>History</legend>
@@ -128,7 +128,7 @@
             </div>
             {% endfor %}
         {% else %}
-            Nothing of interest...
+            <p>Nothing of interest...</p>
         {% endif %}
     </div>
 </div>
