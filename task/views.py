@@ -7,6 +7,7 @@ from django.utils.timezone import utc
 
 import task.models as TaskModels
 import task.forms as TaskForms
+import task.events as TaskEvents
 import event.utils as EventUtils
 
 @login_required
@@ -63,7 +64,7 @@ def edit_task(request, task_id, tasklist_id=None):
         task.save()
 
         # Save the history
-        EventUtils._eventful(request, original, task)
+        TaskEvents.FieldChange(request, original, task)
         return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changetask.html", {"form": form, "task": task})
 
@@ -85,7 +86,7 @@ def complete_task(request, task_id):
     task.save()
 
     # Save the history
-    EventUtils._eventful(request, original, task)
+    TaskEvents.FieldChange(request, original, task)
     return HttpResponseRedirect(reverse('home'))
 
 @login_required

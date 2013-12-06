@@ -80,3 +80,4 @@ class EventFieldChange(models.Model):
                 s = "%s: %s -> %s" % (self.field, self.original, self.new)
 
         return s
+
