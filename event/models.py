@@ -42,13 +42,6 @@ class EventRecordEntry(models.Model):
     def get_record_entry(self):
         return self.content_type.get_object_for_this_type(pk=self.object_id)
 
-class EventMemo(models.Model):
-    reply_to = models.ForeignKey("EventMemo")
-    memo = models.CharField(max_length=255)
-
-#class EventLinkChange(models.Model):
-#    pass
-
 class EventFieldChange(models.Model):
     field = models.CharField(max_length=255)
 
@@ -80,4 +73,10 @@ class EventFieldChange(models.Model):
                 s = "%s: %s -> %s" % (self.field, self.original, self.new)
 
         return s
+
+class EventLinkChange(models.Model):
+    description = models.CharField(max_length=30)
+
+    def slugify(self, event):
+        return self.description
 

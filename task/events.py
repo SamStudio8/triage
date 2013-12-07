@@ -39,3 +39,52 @@ def FieldChange(request, old, new):
                 )
                 entry.save()
 
+def LinkChange(request, link):
+    # New historical event records
+    from_event = EventModels.EventRecord(
+            content_type=ContentType.objects.get_for_model(link.from_task),
+            object_id=link.from_task.pk,
+            user_id=request.user.id
+    )
+    from_event.save()
+
+    to_event = EventModels.EventRecord(
+            content_type=ContentType.objects.get_for_model(link.to_task),
+            object_id=link.to_task.pk,
+            user_id=request.user.id
+    )
+    to_event.save()
+
+    # Create link change events
+    from_desc = "%s %d: %s" % (link.link_type.from_desc,
+                               link.from_task.pk,
+                               link.from_task.name)
+    to_desc = "%s %d: %s" % (link.link_type.to_desc,
+                             link.to_task.pk,
+                             link.to_task.name)
+
+    from_change = EventModels.EventLinkChange(
+            description=to_desc
+    )
+    from_change.save()
+
+    to_change = EventModels.EventLinkChange(
+            description=from_desc
+    )
+    to_change.save()
+
+    # Attach field change to event record
+    from_entry = EventModels.EventRecordEntry(
+            event_id=from_event.pk,
+            content_type=ContentType.objects.get_for_model(from_change),
+            object_id=from_change.pk
+    )
+    from_entry.save()
+
+    to_entry = EventModels.EventRecordEntry(
+            event_id=to_event.pk,
+            content_type=ContentType.objects.get_for_model(to_change),
+            object_id=to_change.pk
+    )
+    to_entry.save()
+

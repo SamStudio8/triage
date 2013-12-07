@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.109
+
+EventLinkChange
+
+    python mange.py migrate event
+
 ####0.0.103
 
 Enforce unique pair (`from_task`, `to_task`) in `TaskLink` model

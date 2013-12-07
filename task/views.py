@@ -100,6 +100,7 @@ def link_task(request, task_id):
 
     if form.is_valid():
         link = form.save()
+        TaskEvents.LinkChange(request, link)
         return HttpResponseRedirect(reverse('task:view_task', args=(task.pk,)))
     return render(request, "task/changelink.html", {"form": form})
 
