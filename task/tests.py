@@ -18,6 +18,10 @@ TEST_DATA = {
         "name": "General",
         "description": "A generic task list for your dull existence."
     },
+    "tasklist_2": {
+        "name": "Specific",
+        "description": "A task list for your life's particulars."
+    },
     "task": {
         "tasklist": 1,
         "name": "Create a todo list manager",
@@ -65,7 +69,13 @@ TEST_DATA = {
         "priority": 10,
         "fg_colour": "000",
         "bg_colour": "FF0000",
-    }
+    },
+    "task_edit_for_history": {
+        "tasklist": 2,
+        "name": "Write witty diary entry",
+        "description": "Maintain a record of exciting happenings.",
+        "progress": 10
+    },
 }
 class SimpleTaskTest(TestCase):
     def setUp(self):
@@ -80,6 +90,10 @@ class SimpleTaskTest(TestCase):
 
     def test_login_required(self):
         url = reverse("task:add_tasklist")
+        response = self.client.get(url)
+        self.assertRedirects(response, '/account/login/?next='+url)
+
+        url = reverse("task:view_task", kwargs={"task_id":1})
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
@@ -201,6 +215,17 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['task']['name'])
         self.assertContains(response, TEST_DATA['task']['description'])
 
+    def test_view_task(self):
+        self.test_add_task()
+        url = reverse("task:view_task", kwargs={"task_id":1})
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/view.html')
+
+        self.assertContains(response, TEST_DATA['task']['name'])
+        self.assertContains(response, TEST_DATA['task']['description'])
+
     def test_edit_task(self):
         self.test_add_task()
         url = reverse("task:edit_task", kwargs={"task_id":1})
@@ -214,6 +239,25 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 tasks")
         self.assertContains(response, TEST_DATA['task_edit']['name'])
         self.assertContains(response, TEST_DATA['task_edit']['description'])
+
+    def test_task_history(self):
+        self.test_add_task()
+
+        url = reverse("task:add_tasklist")
+        response = self.client.post(url, TEST_DATA['tasklist_2'], follow=True)
+
+        url = reverse("task:edit_task", kwargs={"task_id":1})
+        response = self.client.post(url, TEST_DATA['task_edit_for_history'], follow=True)
+
+        url = reverse("task:view_task", kwargs={"task_id":1})
+        response = self.client.get(url)
+
+        self.assertContains(response, TEST_DATA['task']['name'])
+        self.assertContains(response, TEST_DATA['task']['description'])
+        self.assertContains(response, TEST_DATA['task_edit_for_history']['name'])
+        self.assertContains(response, TEST_DATA['task_edit_for_history']['description'])
+        self.assertContains(response, TEST_DATA['tasklist']['name'])
+        self.assertContains(response, TEST_DATA['tasklist_2']['name'])
 
     def test_edit_tasklist(self):
         self.test_add_tasklist()
