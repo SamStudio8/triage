@@ -213,7 +213,6 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, "1 tasks")
         self.assertContains(response, TEST_DATA['task']['name'])
-        self.assertContains(response, TEST_DATA['task']['description'])
 
     def test_view_task(self):
         self.test_add_task()
@@ -238,7 +237,6 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, "1 tasks")
         self.assertContains(response, TEST_DATA['task_edit']['name'])
-        self.assertContains(response, TEST_DATA['task_edit']['description'])
 
     def test_task_history(self):
         self.test_add_task()
