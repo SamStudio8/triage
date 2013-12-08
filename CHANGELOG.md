@@ -1,5 +1,9 @@
 #CHANGELOG
 
+####0.0.120
+
+Travis and Coveralls support
+
 ####0.0.109
 
 EventLinkChange

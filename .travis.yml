@@ -4,11 +4,11 @@ python:
   - "2.7"
 
 env:
-  - DJANGO_VERSION=1.5
+  - DJANGO_VERSION=1.5 DJANGO_SETTINGS_MODULE="triage.settings_travis"
 
 install:
   - pip install -q Django==$DJANGO_VERSION --use-mirrors
-  - pip install -q south coverage
+  - pip install -q south coverage coveralls django-crispy-forms
 
 script:
   - coverage run --source='.' manage.py test task
