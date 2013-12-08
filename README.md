@@ -1,6 +1,10 @@
 #triage
 A todo manager for the disaster that is your day.
 
+##Build Status
+[![Build Status](https://travis-ci.org/SamStudio8/triage.png)](https://travis-ci.org/SamStudio8/triage)
+[![Coverage Status](https://coveralls.io/repos/SamStudio8/triage/badge.png)](https://coveralls.io/r/SamStudio8/triage)
+
 ## Technology Readiness Level
 Consider this a pre-Alpha, work-in-progress; the Master branch should be in a stable condition.  
 Expect the URLs, API and database schema to change, frequently, South migrations will be provided where appropriate.  
