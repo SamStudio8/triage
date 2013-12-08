@@ -9,6 +9,8 @@ env:
 install:
   - pip install -q Django==$DJANGO_VERSION --use-mirrors
   - pip install -q south coverage
+
+script:
   - coverage run --source='.' manage.py test task
 
 after_success:
