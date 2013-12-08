@@ -1,0 +1,7 @@
+[report]
+omit =
+    *__init__*
+    */migrations/*
+    triage/settings*
+    triage/wsgi*
+    manage.py
