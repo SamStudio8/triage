@@ -9,7 +9,7 @@ Changes which require further action are listed in CHANGELOG.
 
 ## Dependencies
 
-    pip install Django south
+    pip install Django south django-crispy-forms 
 
 ## Configuration
 
