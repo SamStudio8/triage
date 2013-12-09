@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.127
+
+New login view design and sticky footer
+
+    python manage.py collectstatic
+
 ####0.0.120
 
 Travis and Coveralls support
