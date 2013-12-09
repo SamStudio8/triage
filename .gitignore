@@ -1,5 +1,6 @@
 *.swp
 *.pyc
 triage/settings.py
+triage/wsgi.py
 static/*
 
