@@ -1,9 +1,9 @@
-body {
-    padding-top: 40px;
+body,html {
+    height: 100%;
 }
 
-.login {
-    max-width: 300px;
+body {
+    padding-top: 40px;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -15,23 +15,45 @@ h1,h2,h3,h4,h5,h6{
     margin-top: -70px;
 }
 
+/* Fixed Content ID */
+#wrapper {
+    min-height: 100%;
+    height: auto !important;
+    margin: 0 auto -30px;
+    padding: 0 0 30px 0;
+}
 #content-head {
     padding-top: 25px;
     padding-bottom: 15px;
 }
 #content-outer {
-    padding-top: 20px;
+    padding: 20px 0;
 }
 
+/* Login */
+.login {
+    max-width: 300px;
+}
+.body-login {
+    padding-top: 5%;
+    background-color: #333;
+}
+.container-login {
+    background-color: #f5f5f5;
+}
+
+/* Title Banner Themes */
 .head-dark {
     color: #fff;
     background-color: #333;
 }
 
-.container-task {
+/* Task */
+.body-task {
     background-color: #f5f5f5;
 }
 
+/* Forms */
 input, textarea, select {
     margin-bottom: 5px;
 }
@@ -41,5 +63,18 @@ input, textarea, select {
     background-color: #f5f5f5;
     padding: 10px;
     margin-top: 10px;
+}
+
+/* Footer */
+footer {
+    padding: 5px 0;
+    height: 30px;
+    background-color: #333;
+}
+footer a:link, footer a:visited, footer a:link, footer a:visited {
+    color: #222;
+}
+.ironowl {
+    text-shadow: 0px 1px 1px #4d4d4d;
 }
 

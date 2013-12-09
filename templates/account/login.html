@@ -2,6 +2,9 @@
 
 {% block title %}Login{% endblock %}
 
+{% block navbar %}{% endblock %}
+{% block body-class %}body-login{% endblock %}
+{% block content-class %}container-login{% endblock %}
 {% block content %}
 <style>
     input {
@@ -9,9 +12,13 @@
     }
 </style>
 <div class="col-md-4 col-md-offset-4">
-    <h1>Triage</h1>
+    <h1>Triage Beta</h1>
     <h2>A todo manager for the disaster that is your day.</h2>
     <p>Existing users please log in.</p>
+    <div class="alert alert-danger">
+        <strong>Warning</strong></br>
+        Triage is under active development, expect occasional data loss and downtime.
+    </div>
     {% if form.errors %}
         {% for message in form.non_field_errors %}
             <div class="alert alert-warning">
@@ -29,6 +36,7 @@
         <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
 
         <button type="submit" class="btn btn-primary btn-block">Log in</button>
+        <button class="btn btn-block" disabled>Register</button>
     </form>
 </div>
 {% endblock %}
