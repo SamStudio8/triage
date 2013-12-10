@@ -3,4 +3,5 @@
 triage/settings.py
 triage/wsgi.py
 static/*
+.coverage
 

@@ -1,0 +1,14 @@
+{% extends "base/base.html" %}
+
+{% block title %}Reset Password{% endblock %}
+{% block content %}
+   <div class="row-fluid">
+    <h1>Reset Password</h1>
+    <hr />
+      <form action="{% url 'account:reset' %}" method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input class="btn btn-primary" type="submit" name="submit" />
+      </form>
+  </div>
+{% endblock %}

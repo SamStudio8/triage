@@ -1,0 +1,11 @@
+{% extends "base/base.html" %}
+
+{% block title %}Reset Password Complete{% endblock %}
+{% block content %}
+   <div class="row-fluid">
+    <h1>Reset Password Complete</h1>
+    <hr />
+    <p>Your password has been successfully set. You are welcome to log in now.</p>
+    <p><a href="{% url 'account:login' %}">Log in</a></p>
+  </div>
+{% endblock %}
