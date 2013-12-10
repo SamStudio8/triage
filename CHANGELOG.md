@@ -2,6 +2,10 @@
 
 ####0.0.128
 
+Templates for the `account` app are now found at `account/templates`  
+
+####0.0.128
+
 Update CSS
 
     python manage.py collectstatic
