@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.128
+
+Update CSS
+
+    python manage.py collectstatic
+
 ####0.0.127
 
 New login view design and sticky footer
