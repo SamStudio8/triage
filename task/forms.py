@@ -10,6 +10,7 @@ class TaskForm(forms.ModelForm):
     def __init__(self, user_id, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self._user_id = user_id
+        del self.fields['_id']
         del self.fields['creation_date']
         del self.fields['modified_date']
         del self.fields['completed_date']

@@ -6,6 +6,7 @@ from django.utils.timezone import utc
 from event import models as EventModels
 
 class Task(models.Model):
+    _id = models.IntegerField()
     tasklist = models.ForeignKey('TaskList',
                                 related_name='tasks')
 
@@ -54,10 +55,22 @@ class Task(models.Model):
     def user_id(self):
         return self.tasklist.user_id
 
-    # Update timestamps
+    @property
+    def local_id(self):
+        return self._id
+
+    # Update timestamps and assign _id
     def save(self, *args, **kwargs):
         if not self.id:
             self.creation_date = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+            tasks = Task.objects.filter(tasklist__user__id=self.tasklist.user.pk)
+            if len(tasks) == 0:
+                self._id = 1
+            else:
+                first = tasks.order_by("-id")[0]
+                self._id = first.pk + 1
+
         self.modified_date = datetime.datetime.utcnow().replace(tzinfo=utc)
         super(Task, self).save(*args, **kwargs)
 
