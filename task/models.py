@@ -6,6 +6,7 @@ from django.utils.timezone import utc
 from event import models as EventModels
 
 class Task(models.Model):
+    #_id = models.IntegerField()
     tasklist = models.ForeignKey('TaskList',
                                 related_name='tasks')
 
@@ -32,6 +33,7 @@ class Task(models.Model):
 
     class Meta:
         ordering = ["completed", "due_date", "-triage__priority"]
+        #unique_together = ("_id", "tasklist__user__id")
 
     def __unicode__(self):
         return "#%d %s" % (self.id, self.name)
