@@ -86,6 +86,9 @@ class TaskTriageCategory(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ["-priority"]
+
 #class TaskStatus(models.Model):
 #    user = models.ForeignKey(User)
 #    name = models.CharField(max_length=30)
