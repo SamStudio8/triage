@@ -68,7 +68,7 @@ class Task(models.Model):
             if len(tasks) == 0:
                 self._id = 1
             else:
-                first = tasks.order_by("-id")[0]
+                first = tasks.order_by("-_id")[0]
                 self._id = first.pk + 1
 
         self.modified_date = datetime.datetime.utcnow().replace(tzinfo=utc)
