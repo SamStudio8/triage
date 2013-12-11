@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.131D
+
+Add a user-centric id field to `Task`, migrate to add and autopopulae new field
+
+    python mange.py migrate task
+
 ####0.0.128
 
 Templates for the `account` app are now found at `account/templates`  
