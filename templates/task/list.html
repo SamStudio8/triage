@@ -35,7 +35,7 @@
 <div class="row">
     <div class="col-md-2">
         <div class="list-group">
-        {% for tasklist in tasklists|dictsort:"name" %}
+        {% for tasklist in tasklists %}
             <a href="#tl_{{ tasklist.name }}" class="list-group-item">{{ tasklist.name }}<span class="badge">{{ tasklist.uncompleted }}</span></a>
         {% endfor %}
         </div>

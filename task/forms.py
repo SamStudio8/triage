@@ -68,6 +68,7 @@ class TaskListForm(forms.ModelForm):
                 'Basic',
                 'name',
                 'description',
+                'order',
             ),
             FormActions(
                 Submit('save', 'Save'),
