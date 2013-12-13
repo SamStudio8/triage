@@ -16,7 +16,8 @@ TEST_DATA = {
     },
     "tasklist": {
         "name": "General",
-        "description": "A generic task list for your dull existence."
+        "description": "A generic task list for your dull existence.",
+        "priority": 0,
     },
     "tasklist_2": {
         "name": "Specific",
@@ -50,7 +51,7 @@ TEST_DATA = {
     "tasklist_edit": {
         "name": "Life Goals",
         "description": "A detailed task list for your adventures.",
-        "progress": 0
+        "priority": 0,
     },
     "triage_category_low": {
         "name": "Expectant",
