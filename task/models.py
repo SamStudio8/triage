@@ -11,7 +11,8 @@ class Task(models.Model):
                                 related_name='tasks')
 
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True,
+            help_text=("Description allows Markdown input"))
 
     triage = models.ForeignKey('TaskTriageCategory',
                                null=True,

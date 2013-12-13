@@ -1,3 +1,5 @@
+from markdown import markdown
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -77,6 +79,12 @@ TEST_DATA = {
         "name": "Write witty diary entry",
         "description": "Maintain a record of exciting happenings.",
         "progress": 10
+    },
+    "task_edit_for_markdown": {
+        "tasklist": 1,
+        "name": "Write a marked down diary entry",
+        "description": "This is [an example](http://triage.ironowl.io/ 'Title') inline link.",
+        "progress": 50
     },
 }
 class SimpleTaskTest(TestCase):
@@ -239,6 +247,17 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, "1 tasks")
         self.assertContains(response, TEST_DATA['task_edit']['name'])
+
+    def test_task_markdown(self):
+        self.test_add_task()
+
+        url = reverse("task:edit_task", kwargs={"task_id":1})
+        response = self.client.post(url, TEST_DATA['task_edit_for_markdown'], follow=True)
+
+        url = reverse("task:view_task", kwargs={"task_id":1})
+        response = self.client.get(url)
+
+        self.assertContains(response, markdown(TEST_DATA['task_edit_for_markdown']['description']))
 
     def test_task_history(self):
         self.test_add_task()
