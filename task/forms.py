@@ -2,7 +2,7 @@ from django import forms
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Fieldset, Submit
-from crispy_forms.bootstrap import PrependedText, FormActions
+from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
 import task.models as TaskModels
 
@@ -35,7 +35,7 @@ class TaskForm(forms.ModelForm):
                     Fieldset('Meta',
                         'triage',
                         'progress',
-                        'due_date',
+                        AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>'),
                     ),
                     css_class="col-lg-6"
                 ),
