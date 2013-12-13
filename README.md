@@ -13,7 +13,7 @@ Changes which require further action are listed in CHANGELOG.
 
 ## Dependencies
 
-    pip install Django south django-crispy-forms 
+    pip install Django south django-crispy-forms markdown
 
 ## Configuration
 
