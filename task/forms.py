@@ -23,24 +23,27 @@ class TaskForm(forms.ModelForm):
         self.helper.label_class = 'col-lg-3'
         self.helper.field_class = 'col-lg-9'
         self.helper.layout = Layout(
-            Fieldset(
-                'Basic',
-                'name',
-                'description',
-                'tasklist',
-                css_class="col-lg-6",
-            ),
-            Fieldset(
-                'Meta',
-                'triage',
-                'progress',
-                'due_date',
-                css_class="col-lg-6",
+            Div(
+                Div(
+                    Fieldset('Basic',
+                        'name',
+                        'description',
+                        'tasklist',
+                    ),
+                    css_class="col-lg-6"),
+                Div(
+                    Fieldset('Meta',
+                        'triage',
+                        'progress',
+                        'due_date',
+                    ),
+                    css_class="col-lg-6"
+                ),
+                css_class="row"
             ),
             Fieldset(
                 'Completed',
                 'completed',
-                css_class="col-lg-12",
             ),
             FormActions(
                 Submit('save', 'Save'),
