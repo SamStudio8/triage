@@ -1,8 +1,14 @@
 #CHANGELOG
 
+####0.0.142D
+
+Added `order` field to `TaskList`, allow longer `TaskList` names
+
+    python mange.py migrate task
+
 ####0.0.131D
 
-Add a user-centric id field to `Task`, migrate to add and autopopulae new field
+Add a user-centric `_id` field to `Task`, migrate to add and autopopulate new field
 
     python mange.py migrate task
 
