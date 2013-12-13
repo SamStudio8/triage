@@ -2,6 +2,12 @@
 
 ####0.0.142D
 
+Render `Task` descriptions in Markdown, requires `python-markdown`  
+
+    pip install markdown
+
+####0.0.142D
+
 Added `order` field to `TaskList`, allow longer `TaskList` names
 
     python mange.py migrate task
