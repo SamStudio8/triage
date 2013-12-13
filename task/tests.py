@@ -17,12 +17,12 @@ TEST_DATA = {
     "tasklist": {
         "name": "General",
         "description": "A generic task list for your dull existence.",
-        "order": 0,
+        "order": 0
     },
     "tasklist_2": {
         "name": "Specific",
-        "description": "A task list for your life's particulars."
-        "order": 0,
+        "description": "A task list for your life's particulars.",
+        "order": 0
     },
     "task": {
         "tasklist": 1,
@@ -52,7 +52,7 @@ TEST_DATA = {
     "tasklist_edit": {
         "name": "Life Goals",
         "description": "A detailed task list for your adventures.",
-        "order": 0,
+        "order": 0
     },
     "triage_category_low": {
         "name": "Expectant",
