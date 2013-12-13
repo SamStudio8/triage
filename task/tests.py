@@ -22,6 +22,7 @@ TEST_DATA = {
     "tasklist_2": {
         "name": "Specific",
         "description": "A task list for your life's particulars."
+        "order": 0,
     },
     "task": {
         "tasklist": 1,
