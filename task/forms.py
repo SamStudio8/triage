@@ -2,7 +2,7 @@ from django import forms
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Fieldset, Submit
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.bootstrap import PrependedText, FormActions
 
 import task.models as TaskModels
 
@@ -81,6 +81,8 @@ class TaskTriageCategoryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskTriageCategoryForm, self).__init__(*args, **kwargs)
         del self.fields['user']
+        self.fields['bg_colour'].label = "Background"
+        self.fields['fg_colour'].label = "Text"
 
         # django-crispy-forms
         self.helper = FormHelper()
@@ -88,16 +90,20 @@ class TaskTriageCategoryForm(forms.ModelForm):
         self.helper.label_class = 'col-lg-3'
         self.helper.field_class = 'col-lg-9'
         self.helper.layout = Layout(
-            Fieldset(
-                'Basic',
-                'name',
-                'priority',
-                css_class="col-lg-6",
-            ),
-            Fieldset(
-                'Colour Coding',
-                'bg_colour',
-                'fg_colour',
+            Div(
+                Fieldset(
+                    'Basic',
+                    'name',
+                    'priority',
+                    css_class="col-lg-6",
+                ),
+                Fieldset(
+                    'Label Colour Coding',
+                    PrependedText('bg_colour', '#', placeholder="Background Colour"),
+                    PrependedText('fg_colour', '#', placeholder="Text Colour"),
+                    css_class="col-lg-6",
+                ),
+                css_class="row"
             ),
             FormActions(
                 Submit('save', 'Save'),
