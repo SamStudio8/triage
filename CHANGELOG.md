@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.166D
+
+Replaced datetime picker
+
+    python manage.py collectstatic
+
 ####0.0.142D
 
 Render `Task` descriptions in Markdown, requires `python-markdown`  
