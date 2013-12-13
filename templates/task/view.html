@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load markup %}
 
 {% block title %}Task #{{ task.id }} | {{ task.name }}{% endblock %}
 
@@ -13,12 +14,12 @@
 </a>
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-9">
             <h4>Task #{{ task.id}}</h4>
             <h1>{{ task.name }}</h1>
             <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
             <div class="btn-group pull-right">
                 <a class="btn btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
                 {% if task.completed %}
@@ -42,7 +43,7 @@
         <legend>Description</legend>
         <div class="panel panel-info">
             <div class="panel-body">
-                {{ task.description|linebreaksbr }}
+                {{ task.description|markdown }}
             </div>
         </div>
     </div>
