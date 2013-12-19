@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.182D
+
+Dashboard CSS
+
+    python manage.py collectstatic
+
 ####0.0.166D
 
 Replaced datetime picker
