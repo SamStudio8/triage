@@ -24,6 +24,10 @@
                 <a class="navbar-brand" href="/">Triage</a>
                 </div>
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'home' %}"><span class="glyphicon glyphicon-list"></span> Task Lists</a></li>
+                        <li><a href="{% url 'task:dashboard' %}"><span class="glyphicon glyphicon-th"></span> Dashboard</a></li>
+                    </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
                             <li class="dropdown">
