@@ -165,9 +165,9 @@ def dashboard(request):
     deltadate = today + datetime.timedelta(days=7)
 
     task_week = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                               completed=False,
-                                               due_date__gte=today,
-                                               due_date__lte=deltadate
+                                                completed=False,
+                                                due_date__gte=today,
+                                                due_date__lte=deltadate
                                         ).order_by("-triage__priority")
 
     task_nodue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
@@ -175,5 +175,11 @@ def dashboard(request):
                                                 due_date=None
                                         ).order_by("-triage__priority")
 
+    task_overdue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
+                                                completed=False,
+                                                due_date__lte=today
+                                        ).order_by("-triage__priority")
+
     return render(request, "task/dashboard.html", {"task_week": task_week,
-                                                   "task_nodue": task_nodue})
+                                                   "task_nodue": task_nodue,
+                                                   "task_overdue": task_overdue})

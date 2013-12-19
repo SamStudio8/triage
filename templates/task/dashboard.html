@@ -33,14 +33,31 @@
         <table class="table table-hover table-condensed">
             <thead>
                 <tr>
-                    <th class="col-md-1"></th>
+                    <th class="col-md-1">#</th>
                     <th class="col-md-7">Task</th>
                     <th class="col-md-2">List</th>
-                    <th class="col-md-2"></th>
+                    <th class="col-md-2">Triage</th>
                 </tr>
             </thead>
             <tbody>
             {% for task in task_week %}
+                {% include "task/includes/task_row.html" %}
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        <h2>Overdue</h2>
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-7">Task</th>
+                    <th class="col-md-2">List</th>
+                    <th class="col-md-2">Triage</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in task_overdue %}
                 {% include "task/includes/task_row.html" %}
             {% endfor %}
             </tbody>
@@ -52,10 +69,10 @@
         <table class="table table-hover table-condensed">
             <thead>
                 <tr>
-                    <th class="col-md-1"></th>
-                    <th class="col-md-8">Task</th>
+                    <th class="col-md-1">#</th>
+                    <th class="col-md-7">Task</th>
                     <th class="col-md-2">List</th>
-                    <th></th>
+                    <th class="col-md-2">Triage</th>
                 </tr>
             </thead>
             <tbody>
