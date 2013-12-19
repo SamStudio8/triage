@@ -33,6 +33,7 @@
     });
 </script>
 <div class="row">
+    {% if tasklists.count > 0 %}
     <div class="col-md-2">
         <div class="list-group">
         {% for tasklist in tasklists %}
@@ -110,13 +111,20 @@
             {% endif %}
             </td>
         </tr>
+      {% endfor %}
       </tbody>
       <tfoot></tfoot>
-      {% endfor %}
+    </table>
     {% endif %}
-</table>
 <hr>
 {% endfor %}
     </div>
+    {% else %}
+        <div class="jumbotron">
+            <h1>Welcome to Triage!</h1>
+            <p>You'll need to create a task list to begin...</p>
+            <a class="btn btn-lg btn-success" href="{% url 'task:add_tasklist' %}"><span class="glyphicon glyphicon-plus"></span> Add Task List</a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
