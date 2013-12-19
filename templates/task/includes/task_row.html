@@ -12,14 +12,13 @@
                 <td>{{ task.tasklist.name }}</td>
                 <td class="text-center">
                     <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
-                </td>
-<!--
                 {% if task.due_date %}
-                    <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
-                {% else %}
-                    <td></td>
+                    <br />
+                    <span class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
                 {% endif %}
+                    </td>
 
+<!--
                 <td>
                 {% if task.completed %}
                     <div class="btn-group pull-right">
