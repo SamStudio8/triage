@@ -30,6 +30,7 @@
 <div class="row">
     <div class="col-md-6">
         <h2>This Week</h2>
+        {% if task_week.count > 0 %}
         <table class="table table-hover table-condensed">
             <thead>
                 <tr>
@@ -46,7 +47,12 @@
             </tbody>
             <tfoot></tfoot>
         </table>
+        {% else %}
+            No upcoming tasks this week!
+        {% endif %}
+        <hr>
         <h2>Overdue</h2>
+        {% if task_overdue.count > 0 %}
         <table class="table table-hover table-condensed">
             <thead>
                 <tr>
@@ -63,9 +69,13 @@
             </tbody>
             <tfoot></tfoot>
         </table>
+        {% else %}
+            No overdue tasks :)
+        {% endif %}
     </div>
     <div class="col-md-6">
         <h2>No Due Date</h2>
+        {% if task_nodue.count > 0 %}
         <table class="table table-hover table-condensed">
             <thead>
                 <tr>
@@ -82,6 +92,9 @@
             </tbody>
             <tfoot></tfoot>
         </table>
+        {% else %}
+            No tasks to display...
+        {% endif %}
     </div>
 </div>
 {% endblock %}
