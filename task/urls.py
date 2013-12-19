@@ -2,6 +2,8 @@ from django.conf.urls import patterns, url
 import task.views as TaskViews
 
 urlpatterns = patterns('',
+    url(r'^dashboard/$', TaskViews.dashboard, name="dashboard"),
+
     url(r'^tasklist/new/$', TaskViews.add_tasklist, name="add_tasklist"),
     url(r'^tasklist/(?P<tasklist_id>\d+)/edit/$', TaskViews.edit_tasklist, name="edit_tasklist"),
     url(r'^tasklist/(?P<tasklist_id>\d+)/task/new/$', TaskViews.add_task, name="add_task"),
