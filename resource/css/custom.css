@@ -58,6 +58,10 @@ h1,h2,h3,h4,h5,h6{
 .panel-description p {
     margin: 0px;
 }
+.text-small-task {
+    font-size: 0.75em;
+    color: #333;
+}
 
 /* Forms */
 input, textarea, select, .input-group {
