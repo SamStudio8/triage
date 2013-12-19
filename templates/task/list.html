@@ -33,7 +33,7 @@
     });
 </script>
 <div class="row">
-    {% if tasklists.count > 0 %}
+{% if tasklists.count > 0 %}
     <div class="col-md-2">
         <div class="list-group">
         {% for tasklist in tasklists %}
@@ -42,89 +42,95 @@
         </div>
     </div>
     <div class="col-md-10">
-{% for tasklist in tasklists %}
-    <div class="row">
-        <a class="anchor" id="tl_{{ tasklist.name }}"></a>
-        <div class="col-md-9">
-            <h2>{{ tasklist.name }}</h2>
-        </div>
-        <div class="col-md-3">
-            <div class="btn-group pull-right">
-                <a class="btn btn-sm btn-success" href="{% url 'task:add_task' tasklist.id %}"><span class="glyphicon glyphicon-plus"></span> Add Task</a>
-                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+    {% for tasklist in tasklists %}
+        <div class="row">
+            <div class="col-md-9">
+                <a id="tl_{{ tasklist.name }}"></a>
+                <h2 class="anchor">{{ tasklist.name }}</h2>
             </div>
-        </div>
-    </div>
-    <h3>{{ tasklist.description }}</h3>
-    <p>{{ tasklist.uncompleted }} tasks ({{ tasklist.completed }} completed)</p>
-    {% if tasklist.tasks.all %}
-    <table class="table table-hover table-condensed">
-      <thead>
-        <tr>
-            <th></th>
-            <th class="col-md-1"></th>
-            <th class="col-md-7">Task</th>
-            <th class="col-md-2">Due</th>
-            <th></th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for task in tasklist.tasks.all %}
-        {% if task.completed %}
-            <tr>
-        {% else %}
-            {% if not task.due_date %}
-                <tr class="warning">
-            {% elif task.is_due == -1 %}
-                <tr class="danger">
-            {% elif task.is_due == 1 %}
-                <tr class="warning">
-            {% else %}
-                <tr>
-            {% endif %}
-        {% endif %}
-            <td class="text-center">{{ task.id }} - L{{ task.local_id }}</td>
-            <td class="text-center">
-                <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
-            </td>
-            {% if task.completed %}
-                <td><a href="{% url 'task:view_task' task.id %}"><strike><b>{{ task.name }}</b></strike></a></td>
-            {% else %}
-                <td><a href="{% url 'task:view_task' task.id %}"><b>{{ task.name }}</b></a></td>
-            {% endif %}
-            {% if task.due_date %}
-                <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
-            {% else %}
-                <td></td>
-            {% endif %}
-            <td>
-            {% if task.completed %}
+            <div class="col-md-3">
                 <div class="btn-group pull-right">
+                    <a class="btn btn-sm btn-success" href="{% url 'task:add_task' tasklist.id %}"><span class="glyphicon glyphicon-plus"></span> Add Task</a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                 </div>
-            {% else %}
-                <div class="btn-group pull-right">
-                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
-                </div>
-            {% endif %}
-            </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-      <tfoot></tfoot>
-    </table>
-    {% endif %}
-<hr>
-{% endfor %}
-    </div>
-    {% else %}
-        <div class="jumbotron">
-            <h1>Welcome to Triage!</h1>
-            <p>You'll need to create a task list to begin...</p>
-            <a class="btn btn-lg btn-success" href="{% url 'task:add_tasklist' %}"><span class="glyphicon glyphicon-plus"></span> Add Task List</a>
+            </div>
         </div>
-    {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                <h3>{{ tasklist.description }}</h3>
+                <p>{{ tasklist.uncompleted }} tasks ({{ tasklist.completed }} completed)</p>
+                {% if tasklist.tasks.all %}
+                <table class="table table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th class="col-md-1"></th>
+                            <th class="col-md-1"></th>
+                            <th class="col-md-7">Task</th>
+                            <th class="col-md-2">Due</th>
+                            <th class="col-md-1"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for task in tasklist.tasks.all %}
+                        {% if task.completed %}
+                            <tr>
+                        {% else %}
+                            {% if not task.due_date %}
+                                <tr class="warning">
+                            {% elif task.is_due == -1 %}
+                                <tr class="danger">
+                            {% elif task.is_due == 1 %}
+                                <tr class="warning">
+                            {% else %}
+                                <tr>
+                            {% endif %}
+                        {% endif %}
+                        <td class="text-center">{{ task.id }} - L{{ task.local_id }}</td>
+                        <td class="text-center">
+                            <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
+                        </td>
+
+                        {% if task.completed %}
+                            <td><a href="{% url 'task:view_task' task.id %}"><strike><b>{{ task.name }}</b></strike></a></td>
+                        {% else %}
+                            <td><a href="{% url 'task:view_task' task.id %}"><b>{{ task.name }}</b></a></td>
+                        {% endif %}
+                        {% if task.due_date %}
+                            <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+
+                        <td>
+                        {% if task.completed %}
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+                            </div>
+                        {% else %}
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                            </div>
+                        {% endif %}
+                        </td>
+                        </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot></tfoot>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    <hr>
+    {% endfor %}
+    </div>
+{% else %}
+    <div class="jumbotron">
+        <h1>Welcome to Triage!</h1>
+        <p>You'll need to create a task list to begin...</p>
+        <a class="btn btn-lg btn-success" href="{% url 'task:add_tasklist' %}"><span class="glyphicon glyphicon-plus"></span> Add Task List</a>
+    </div>
+{% endif %}
 </div>
 {% endblock %}
