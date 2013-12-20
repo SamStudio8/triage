@@ -104,6 +104,7 @@ class TaskList(models.Model):
                             verbose_name="owner",
                             related_name="tasklists")
     name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
     order = models.IntegerField(default=0)
 
@@ -115,6 +116,7 @@ class TaskList(models.Model):
 
     class Meta:
         ordering = ["-order"]
+        unique_together = ("user", "slug")
 
 class TaskLinkType(models.Model):
     user = models.ForeignKey(User)
