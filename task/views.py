@@ -78,9 +78,9 @@ def edit_task(request, username, task_id, tasklist_id=None):
     return render(request, "task/changetask.html", {"form": form, "task": task})
 
 @login_required
-def complete_task(request, task_id):
-    task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if task.tasklist.user.id != request.user.id:
+def complete_task(request, username, task_id):
+    task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
+    if not task.has_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
     # Don't really like hitting the database for a copy of this but it will
@@ -101,7 +101,7 @@ def complete_task(request, task_id):
 @login_required
 def link_task(request, task_id):
     task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if task.tasklist.user.id != request.user.id:
+    if not task.has_permission(request.user.username):
         return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskLinkForm(request.user.id, request.POST or None,
