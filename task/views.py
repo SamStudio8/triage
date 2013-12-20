@@ -25,11 +25,11 @@ def new_task(request, username, listslug=None):
     if listslug:
         tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
         if tasklist.has_permission(request.user.pk):
-            return edit_task(request, None, tasklist.pk)
+            return edit_task(request, username, None, tasklist.pk)
         else:
             return HttpResponseRedirect(reverse('home'))
     else:
-        return edit_task(request, None, None)
+        return edit_task(request, username, None, None)
 
 @login_required
 def view_task(request, username, task_id):
@@ -40,7 +40,7 @@ def view_task(request, username, task_id):
     return render(request, "task/view.html", {"task": task, "history": history})
 
 @login_required
-def edit_task(request, task_id, tasklist_id=None):
+def edit_task(request, username, task_id, tasklist_id=None):
 
     if tasklist_id:
         tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
@@ -50,11 +50,11 @@ def edit_task(request, task_id, tasklist_id=None):
     task = None
     if task_id:
         try:
-            task = TaskModels.Task.objects.get(pk=task_id)
+            task = TaskModels.Task.objects.get(tasklist__user__username, username, _id=task_id)
         except TaskModels.Task.DoesNotExist:
             pass
         else:
-            if task.tasklist.user.id != request.user.id:
+            if task.has_permission(request.user.pk):
                 return HttpResponseRedirect(reverse('home'))
             tasklist_id = task.tasklist_id
 
@@ -137,16 +137,16 @@ def edit_tasklist(request, username=None, listslug=None):
     return render(request, "task/changelist.html", {"form": form, "tasklist": tasklist})
 
 @login_required
-def list_triage_category(request):
+def list_triage_category(request, username):
     triages = request.user.triages.all()
     return render(request, "task/triages.html", {"triages": triages})
 
 @login_required
-def add_triage_category(request):
+def add_triage_category(request, username):
     return edit_triage_category(request, None)
 
 @login_required
-def edit_triage_category(request, triage_category_id=None):
+def edit_triage_category(request, username, triage_category_id=None):
     triage = None
     if triage_category_id:
         try:
