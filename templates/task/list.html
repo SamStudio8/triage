@@ -92,9 +92,9 @@
                         </td>
 
                         {% if task.completed %}
-                            <td><a href="{% url 'task:view_task' task.id %}"><strike><b>{{ task.name }}</b></strike></a></td>
+                            <td><a href="{% url 'task:view_task' user.username task.local_id %}"><strike><b>{{ task.name }}</b></strike></a></td>
                         {% else %}
-                            <td><a href="{% url 'task:view_task' task.id %}"><b>{{ task.name }}</b></a></td>
+                            <td><a href="{% url 'task:view_task' user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
                         {% endif %}
                         {% if task.due_date %}
                             <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
