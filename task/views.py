@@ -31,12 +31,9 @@ def new_task(request, username, listslug=None):
         return edit_task(request, None, None)
 
 @login_required
-def view_task(request, username=None, task_id=None):
-    if username:
-        task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
-    else:
-        task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if task.tasklist.user.id != request.user.id:
+def view_task(request, username, task_id):
+    task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
+    if not task.has_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
     history = EventUtils._get_history(task)
     return render(request, "task/view.html", {"task": task, "history": history})
