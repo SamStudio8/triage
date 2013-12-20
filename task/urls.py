@@ -5,13 +5,13 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', TaskViews.dashboard, name="dashboard"),
 
     url(r'^(?P<username>\w+)/task/(?P<task_id>\d+)/', TaskViews.view_task, name="view_task"),
+    url(r'^(?P<username>\w+)/task/(?P<task_id>\d+)/edit/', TaskViews.view_task, name="edit_task"),
     url(r'^(?P<username>\w+)/(?P<listslug>[-\w]+)/task/new/', TaskViews.new_task, name="new_task"),
     url(r'^(?P<username>\w+)/task/new/', TaskViews.new_task, name="new_task"),
 
     url(r'^tasklist/new/$', TaskViews.add_tasklist, name="add_tasklist"),
     url(r'^(?P<username>\w+)/(?P<listslug>[-\w]+)/edit/', TaskViews.edit_tasklist, name="edit_tasklist"),
 
-    url(r'^task/(?P<task_id>\d+)/edit/$', TaskViews.edit_task, name="edit_task"),
     url(r'^task/(?P<task_id>\d+)/complete/$', TaskViews.complete_task, name="complete_task"),
     url(r'^task/(?P<task_id>\d+)/link/$', TaskViews.link_task, name="link_task"),
 
