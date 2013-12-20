@@ -44,17 +44,17 @@ def edit_task(request, username, task_id, tasklist_id=None):
 
     if tasklist_id:
         tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
-        if tasklist.user.id != request.user.id:
+        if not tasklist.has_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
     task = None
     if task_id:
         try:
-            task = TaskModels.Task.objects.get(tasklist__user__username, username, _id=task_id)
+            task = TaskModels.Task.objects.get(tasklist__user__username=username, _id=task_id)
         except TaskModels.Task.DoesNotExist:
             pass
         else:
-            if task.has_permission(request.user.pk):
+            if not task.has_permission(request.user.pk):
                 return HttpResponseRedirect(reverse('home'))
             tasklist_id = task.tasklist_id
 
