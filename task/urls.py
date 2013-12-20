@@ -4,6 +4,8 @@ import task.views as TaskViews
 urlpatterns = patterns('',
     url(r'^dashboard/$', TaskViews.dashboard, name="dashboard"),
 
+    url(r'^(?P<username>\w+)/task/(?P<task_id>\d+)/', TaskViews.view_task, name="view_task"),
+
     url(r'^tasklist/new/$', TaskViews.add_tasklist, name="add_tasklist"),
     url(r'^tasklist/(?P<tasklist_id>\d+)/edit/$', TaskViews.edit_tasklist, name="edit_tasklist"),
     url(r'^tasklist/(?P<tasklist_id>\d+)/task/new/$', TaskViews.add_task, name="add_task"),
