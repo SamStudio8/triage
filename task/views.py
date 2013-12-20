@@ -118,9 +118,11 @@ def add_tasklist(request):
 
 @login_required
 def edit_tasklist(request, username=None, listslug=None):
-    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
-    if not tasklist.has_permission(request.user.pk):
-        return HttpResponseRedirect(reverse('home'))
+    tasklist = None
+    if username and listslug:
+        tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+        if not tasklist.has_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskListForm(request.POST or None, instance=tasklist)
     if form.is_valid():
