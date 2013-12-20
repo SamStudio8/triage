@@ -39,7 +39,7 @@ class Task(models.Model):
         return "#%d %s" % (self.id, self.name)
 
     def has_permission(self, uid):
-        return uid == self.user.pk
+        return uid == self.tasklist.user.pk
 
     def is_due(self):
         if self.due_date == self.modified_date:
