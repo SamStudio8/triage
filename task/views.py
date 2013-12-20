@@ -20,17 +20,15 @@ def list_tasks(request):
     return render(request, "task/list.html", {"tasklists": tasklists})
 
 @login_required
-def new_task(request, username, listslug):
-    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
-    if tasklist.has_permission(request.user.pk):
-        return edit_task(request, None, tasklist.pk)
+def new_task(request, username, listslug=None):
+    if listslug:
+        tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+        if tasklist.has_permission(request.user.pk):
+            return edit_task(request, None, tasklist.pk)
+        else:
+            return HttpResponseRedirect(reverse('home'))
     else:
-        return HttpResponseRedirect(reverse('home'))
-
-
-@login_required
-def add_task(request, tasklist_id=None):
-    return edit_task(request, None, tasklist_id)
+        return edit_task(request, None, None)
 
 @login_required
 def view_task(request, username=None, task_id=None):
@@ -122,14 +120,10 @@ def add_tasklist(request):
     return edit_tasklist(request)
 
 @login_required
-def edit_tasklist(request, tasklist_id=None):
-    try:
-        tasklist = TaskModels.TaskList.objects.get(pk=tasklist_id)
-    except TaskModels.TaskList.DoesNotExist:
-        tasklist = None
-    else:
-        if tasklist.user.id != request.user.id:
-            return HttpResponseRedirect(reverse('home'))
+def edit_tasklist(request, username=None, listslug=None):
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+    if not tasklist.has_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskListForm(request.POST or None, instance=tasklist)
     if form.is_valid():

@@ -51,7 +51,7 @@
             <div class="col-md-3">
                 <div class="btn-group pull-right">
                     <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
-                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                 </div>
             </div>
@@ -92,9 +92,9 @@
                         </td>
 
                         {% if task.completed %}
-                            <td><a href="{% url 'task:view_task' user.username task.local_id %}"><strike><b>{{ task.name }}</b></strike></a></td>
+                            <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><strike><b>{{ task.name }}</b></strike></a></td>
                         {% else %}
-                            <td><a href="{% url 'task:view_task' user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
+                            <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
                         {% endif %}
                         {% if task.due_date %}
                             <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
