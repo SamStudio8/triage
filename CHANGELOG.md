@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.204D
+
+Added `slug` field to `TaskList`, auto-populated using `slugify`
+
+    python mange.py migrate task
+
 ####0.0.182D
 
 Dashboard CSS
