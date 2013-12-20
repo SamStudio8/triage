@@ -155,7 +155,7 @@ def edit_triage_category(request, username, triage_category_id=None):
             pass
         else:
             if triage.user.id != request.user.id:
-                return HttpResponseRedirect(reverse('task:list_triage_category'))
+                return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
 
     form = TaskForms.TaskTriageCategoryForm(request.POST or None, instance=triage)
     if form.is_valid():
@@ -164,7 +164,7 @@ def edit_triage_category(request, username, triage_category_id=None):
             # New instance, attach user
             triage.user = request.user
         triage.save()
-        return HttpResponseRedirect(reverse('task:list_triage_category'))
+        return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
     return render(request, "task/changetriage.html", {"form": form, "triage": triage})
 
 @login_required
