@@ -38,6 +38,9 @@ class Task(models.Model):
     def __unicode__(self):
         return "#%d %s" % (self.id, self.name)
 
+    def has_permission(self, uid):
+        return uid == self.tasklist.user.pk
+
     def is_due(self):
         if self.due_date == self.modified_date:
             return 0
@@ -104,14 +107,19 @@ class TaskList(models.Model):
                             verbose_name="owner",
                             related_name="tasklists")
     name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
     order = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
 
+    def has_permission(self, uid):
+        return uid == self.user.pk
+
     class Meta:
         ordering = ["-order"]
+        unique_together = ("user", "slug")
 
 class TaskLinkType(models.Model):
     user = models.ForeignKey(User)
