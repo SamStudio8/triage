@@ -110,6 +110,9 @@ class TaskList(models.Model):
     def __unicode__(self):
         return self.name
 
+    def has_permission(self, uid):
+        return uid == self.user.pk
+
     class Meta:
         ordering = ["-order"]
 

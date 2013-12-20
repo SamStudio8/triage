@@ -1,5 +1,6 @@
 import datetime
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -17,6 +18,15 @@ def list_tasks(request):
         tasklist.completed = tasklist.tasks.filter(completed=True).count()
         tasklist.uncompleted = tasklist.tasks.filter(completed=False).count()
     return render(request, "task/list.html", {"tasklists": tasklists})
+
+@login_required
+def new_task(request, username, listname):
+    tasklist = get_object_or_404(TaskModels.TaskList, name=listname, user__username=username)
+    if tasklist.has_permission(request.user.pk):
+        return edit_task(request, None, tasklist.pk)
+    else:
+        return HttpResponseRedirect(reverse('home'))
+
 
 @login_required
 def add_task(request, tasklist_id=None):
