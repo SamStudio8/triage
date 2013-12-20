@@ -57,6 +57,7 @@ class TaskListForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskListForm, self).__init__(*args, **kwargs)
         del self.fields['user']
+        del self.fields['slug']
 
         # django-crispy-forms
         self.helper = FormHelper()

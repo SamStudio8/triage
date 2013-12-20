@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 
 import task.models as TaskModels
@@ -130,6 +131,7 @@ def edit_tasklist(request, username=None, listslug=None):
         if not form.instance.pk:
             # New list, attach user
             tasklist.user = request.user
+            tasklist.slug = slugify(form.cleaned_data["name"])
         tasklist.save()
         return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changelist.html", {"form": form, "tasklist": tasklist})
