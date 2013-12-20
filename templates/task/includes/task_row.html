@@ -17,19 +17,4 @@
                     <span class="due_date text-small-task" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
                 {% endif %}
                     </td>
-
-<!--
-                <td>
-                {% if task.completed %}
-                    <div class="btn-group pull-right">
-                        <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
-                    </div>
-                {% else %}
-                    <div class="btn-group pull-right">
-                        <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                        <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
-                    </div>
-                {% endif %}
-                </td>
--->
             </tr>
