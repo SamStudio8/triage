@@ -55,9 +55,66 @@ h1,h2,h3,h4,h5,h6{
 .body-task {
     background-color: #f5f5f5;
 }
+.panel-description p {
+    margin: 0px;
+}
+.text-small-task {
+    font-size: 0.75em;
+    color: #666;
+}
+
+/* Calendar */
+#calendar-bar {
+    padding: 0px
+    list-style: none;
+}
+
+#calendar-bar li {
+    margin: 0 20px;
+    display: inline-block;
+}
+
+.calendar-lamp-wrapper {
+    vertical-align: bottom !important;
+}
+
+.calendar-lamps {
+    width: auto;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+.calendar-lamps li {
+    width: auto;
+    margin: 0px;
+    padding: 3px 0 0 0;
+}
+
+.calendar-lamp {
+    border-width: 0 0 5px 0;
+    border-style: solid;
+}
+
+.calendar-row {
+    border-width: 0 0 1px 0;
+    border-color: #999;
+    border-style: solid;
+    margin: 0;
+}
+.calendar-table {
+    margin: 0;
+}
+.today {
+    color: #FFF;
+    background-color: #000;
+}
+.label_light {
+    border-left: 5px;
+    border-left-style: solid;
+}
 
 /* Forms */
-input, textarea, select {
+input, textarea, select, .input-group {
     margin-bottom: 5px;
 }
 
@@ -66,6 +123,11 @@ input, textarea, select {
     background-color: #f5f5f5;
     padding: 10px;
     margin-top: 10px;
+}
+
+/* Table */
+.no-border td {
+    border-width: 0 !important;
 }
 
 /* Footer */

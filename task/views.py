@@ -1,8 +1,10 @@
 import datetime
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 
 import task.models as TaskModels
@@ -19,33 +21,40 @@ def list_tasks(request):
     return render(request, "task/list.html", {"tasklists": tasklists})
 
 @login_required
-def add_task(request, tasklist_id=None):
-    return edit_task(request, None, tasklist_id)
+def new_task(request, username, listslug=None):
+    if listslug:
+        tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+        if tasklist.has_permission(request.user.pk):
+            return edit_task(request, username, None, tasklist.pk)
+        else:
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        return edit_task(request, username, None, None)
 
 @login_required
-def view_task(request, task_id=None):
-    task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if task.tasklist.user.id != request.user.id:
+def view_task(request, username, task_id):
+    task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
+    if not task.has_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
     history = EventUtils._get_history(task)
     return render(request, "task/view.html", {"task": task, "history": history})
 
 @login_required
-def edit_task(request, task_id, tasklist_id=None):
+def edit_task(request, username, task_id, tasklist_id=None):
 
     if tasklist_id:
         tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
-        if tasklist.user.id != request.user.id:
+        if not tasklist.has_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
     task = None
     if task_id:
         try:
-            task = TaskModels.Task.objects.get(pk=task_id)
+            task = TaskModels.Task.objects.get(tasklist__user__username=username, _id=task_id)
         except TaskModels.Task.DoesNotExist:
             pass
         else:
-            if task.tasklist.user.id != request.user.id:
+            if not task.has_permission(request.user.pk):
                 return HttpResponseRedirect(reverse('home'))
             tasklist_id = task.tasklist_id
 
@@ -69,9 +78,9 @@ def edit_task(request, task_id, tasklist_id=None):
     return render(request, "task/changetask.html", {"form": form, "task": task})
 
 @login_required
-def complete_task(request, task_id):
-    task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if task.tasklist.user.id != request.user.id:
+def complete_task(request, username, task_id):
+    task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
+    if not task.has_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
     # Don't really like hitting the database for a copy of this but it will
@@ -92,7 +101,7 @@ def complete_task(request, task_id):
 @login_required
 def link_task(request, task_id):
     task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if task.tasklist.user.id != request.user.id:
+    if not task.has_permission(request.user.username):
         return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskLinkForm(request.user.id, request.POST or None,
@@ -109,13 +118,11 @@ def add_tasklist(request):
     return edit_tasklist(request)
 
 @login_required
-def edit_tasklist(request, tasklist_id=None):
-    try:
-        tasklist = TaskModels.TaskList.objects.get(pk=tasklist_id)
-    except TaskModels.TaskList.DoesNotExist:
-        tasklist = None
-    else:
-        if tasklist.user.id != request.user.id:
+def edit_tasklist(request, username=None, listslug=None):
+    tasklist = None
+    if username and listslug:
+        tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+        if not tasklist.has_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskListForm(request.POST or None, instance=tasklist)
@@ -124,21 +131,22 @@ def edit_tasklist(request, tasklist_id=None):
         if not form.instance.pk:
             # New list, attach user
             tasklist.user = request.user
+            tasklist.slug = slugify(form.cleaned_data["name"])
         tasklist.save()
         return HttpResponseRedirect(reverse('home'))
     return render(request, "task/changelist.html", {"form": form, "tasklist": tasklist})
 
 @login_required
-def list_triage_category(request):
+def list_triage_category(request, username):
     triages = request.user.triages.all()
     return render(request, "task/triages.html", {"triages": triages})
 
 @login_required
-def add_triage_category(request):
+def add_triage_category(request, username):
     return edit_triage_category(request, None)
 
 @login_required
-def edit_triage_category(request, triage_category_id=None):
+def edit_triage_category(request, username, triage_category_id=None):
     triage = None
     if triage_category_id:
         try:
@@ -147,7 +155,7 @@ def edit_triage_category(request, triage_category_id=None):
             pass
         else:
             if triage.user.id != request.user.id:
-                return HttpResponseRedirect(reverse('task:list_triage_category'))
+                return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
 
     form = TaskForms.TaskTriageCategoryForm(request.POST or None, instance=triage)
     if form.is_valid():
@@ -156,6 +164,51 @@ def edit_triage_category(request, triage_category_id=None):
             # New instance, attach user
             triage.user = request.user
         triage.save()
-        return HttpResponseRedirect(reverse('task:list_triage_category'))
+        return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
     return render(request, "task/changetriage.html", {"form": form, "triage": triage})
+
+@login_required
+def dashboard(request):
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    deltadate = today + datetime.timedelta(days=7)
+
+    task_week = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
+                                                completed=False,
+                                                due_date__range=[today, deltadate],
+                                        ).order_by("-triage__priority")
+
+    task_nodue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
+                                                completed=False,
+                                                due_date=None
+                                        ).order_by("-triage__priority")
+
+    task_overdue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
+                                                completed=False,
+                                                due_date__lte=today
+                                        ).order_by("-triage__priority")
+
+    return render(request, "task/dashboard.html", {"task_week": task_week,
+                                                   "task_nodue": task_nodue,
+                                                   "task_overdue": task_overdue})
+
+@login_required
+def calendar(request):
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    deltadate = today + datetime.timedelta(days=30)
+
+    task_30days = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
+                                                completed=False,
+                                                due_date__range=[today, deltadate],
+                                        ).order_by("triage__priority")
+    calendar = {}
+    for i, date in enumerate([today + datetime.timedelta(days=x) for x in range(30)]):
+        calendar[i] = {}
+        calendar[i]["month"] = date.strftime("%b")
+        calendar[i]["day"] = date.day
+        calendar[i]["datestamp"] = "%d %d" % (date.month, date.day)
+        calendar[i]["tasks"] = []
+        for task in filter(lambda t: t.due_date.day == date.day, task_30days):
+            calendar[i]["tasks"].append(task)
+
+    return render(request, "task/calendar.html", {"calendar": calendar })
 

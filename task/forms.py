@@ -2,7 +2,7 @@ from django import forms
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Fieldset, Submit
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
 import task.models as TaskModels
 
@@ -10,6 +10,7 @@ class TaskForm(forms.ModelForm):
     def __init__(self, user_id, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self._user_id = user_id
+        del self.fields['_id']
         del self.fields['creation_date']
         del self.fields['modified_date']
         del self.fields['completed_date']
@@ -22,24 +23,27 @@ class TaskForm(forms.ModelForm):
         self.helper.label_class = 'col-lg-3'
         self.helper.field_class = 'col-lg-9'
         self.helper.layout = Layout(
-            Fieldset(
-                'Basic',
-                'name',
-                'description',
-                'tasklist',
-                css_class="col-lg-6",
-            ),
-            Fieldset(
-                'Meta',
-                'triage',
-                'progress',
-                'due_date',
-                css_class="col-lg-6",
+            Div(
+                Div(
+                    Fieldset('Basic',
+                        'name',
+                        'description',
+                        'tasklist',
+                    ),
+                    css_class="col-lg-6"),
+                Div(
+                    Fieldset('Meta',
+                        'triage',
+                        'progress',
+                        AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>', data_format="YYYY-MM-DD H:mm"),
+                    ),
+                    css_class="col-lg-6"
+                ),
+                css_class="row"
             ),
             Fieldset(
                 'Completed',
                 'completed',
-                css_class="col-lg-12",
             ),
             FormActions(
                 Submit('save', 'Save'),
@@ -53,6 +57,7 @@ class TaskListForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskListForm, self).__init__(*args, **kwargs)
         del self.fields['user']
+        del self.fields['slug']
 
         # django-crispy-forms
         self.helper = FormHelper()
@@ -64,6 +69,7 @@ class TaskListForm(forms.ModelForm):
                 'Basic',
                 'name',
                 'description',
+                'order',
             ),
             FormActions(
                 Submit('save', 'Save'),
@@ -77,6 +83,8 @@ class TaskTriageCategoryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskTriageCategoryForm, self).__init__(*args, **kwargs)
         del self.fields['user']
+        self.fields['bg_colour'].label = "Background"
+        self.fields['fg_colour'].label = "Text"
 
         # django-crispy-forms
         self.helper = FormHelper()
@@ -84,16 +92,20 @@ class TaskTriageCategoryForm(forms.ModelForm):
         self.helper.label_class = 'col-lg-3'
         self.helper.field_class = 'col-lg-9'
         self.helper.layout = Layout(
-            Fieldset(
-                'Basic',
-                'name',
-                'priority',
-                css_class="col-lg-6",
-            ),
-            Fieldset(
-                'Colour Coding',
-                'bg_colour',
-                'fg_colour',
+            Div(
+                Fieldset(
+                    'Basic',
+                    'name',
+                    'priority',
+                    css_class="col-lg-6",
+                ),
+                Fieldset(
+                    'Label Colour Coding',
+                    PrependedText('bg_colour', '#', placeholder="Background Colour"),
+                    PrependedText('fg_colour', '#', placeholder="Text Colour"),
+                    css_class="col-lg-6",
+                ),
+                css_class="row"
             ),
             FormActions(
                 Submit('save', 'Save'),

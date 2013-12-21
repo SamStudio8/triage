@@ -1,0 +1,93 @@
+{% extends "base/base.html" %}
+
+{% block title %}Calendar{% endblock %}
+
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js" type="text/javascript"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Calendar</h1>
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+    function humanize(timestamp){
+        return moment(timestamp).fromNow();
+    };
+    $(document).ready(function(){
+        $(".due_date").html(function() {
+            return humanize($(this).html());
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>30 Day Outlook</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tbody>
+                <tr class="no-border">
+                {% for day in calendar.values %}
+                    <td class="calendar-lamp-wrapper">
+                        <ul class="calendar-lamps">
+                        {% for task in day.tasks %}
+                            <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                {% endfor %}
+                </tr>
+                <tr>
+                {% for day in calendar.values %}
+                    <td class="text-center {% if forloop.first %}today{%endif%}">
+                        <span class="text-small-task">{{ day.month }}</span></br>
+                        <b>{{ day.day }}</b>
+                    </td>
+                {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% for day in calendar.values %}
+<div class="calendar-row row">
+    <div class="col-md-1 text-center {% if forloop.first %}today{%endif%}">
+        <span class="text-small-task">{{ day.month }}</span></br>
+        <b>{{ day.day }}</b>
+    </div>
+    <div class="col-md-11">
+        <table class="calendar-table table table-condensed">
+            <tbody>
+            {% for task in day.tasks %}
+                <tr>
+                    <td class="col-md-7 label_light" style="border-left-color:#{{ task.triage.bg_colour }}">
+                        <a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a>
+                    </td>
+                    <td class="col-md-3 text-center">{{ task.tasklist.name }}</td>
+                    <td class="col-md-2 text-center">
+                        <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
+                    {% if task.due_date %}
+                        <br />
+                        <span class="due_date text-small-task" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
+                    {% endif %}
+                        </td>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

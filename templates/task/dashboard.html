@@ -1,0 +1,100 @@
+{% extends "base/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js" type="text/javascript"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Dashboard</h1>
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+    function humanize(timestamp){
+        return moment(timestamp).fromNow();
+    };
+    $(document).ready(function(){
+        $(".due_date").html(function() {
+            return humanize($(this).html());
+        });
+    });
+</script>
+<div class="row">
+    <div class="col-md-6">
+        <h2>This Week</h2>
+        {% if task_week.count > 0 %}
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th class="text-center col-md-1">#</th>
+                    <th class="col-md-7">Task</th>
+                    <th class="col-md-2">List</th>
+                    <th class="text-center col-md-2">Triage</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in task_week %}
+                {% include "task/includes/task_row.html" %}
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        {% else %}
+            No upcoming tasks this week!
+        {% endif %}
+        <hr>
+        <h2>Overdue</h2>
+        {% if task_overdue.count > 0 %}
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th class="text-center col-md-1">#</th>
+                    <th class="col-md-7">Task</th>
+                    <th class="col-md-2">List</th>
+                    <th class="text-center col-md-2">Triage</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in task_overdue %}
+                {% include "task/includes/task_row.html" %}
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        {% else %}
+            No overdue tasks :)
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h2>No Due Date</h2>
+        {% if task_nodue.count > 0 %}
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th class="text-center col-md-1">#</th>
+                    <th class="col-md-7">Task</th>
+                    <th class="col-md-2">List</th>
+                    <th class="text-center col-md-2">Triage</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in task_nodue %}
+                {% include "task/includes/task_row.html" %}
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        {% else %}
+            No tasks to display...
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

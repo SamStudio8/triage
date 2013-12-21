@@ -1,33 +1,28 @@
 {% extends "base/base.html" %}
+{% load markup %}
 
 {% block title %}Task #{{ task.id }} | {{ task.name }}{% endblock %}
 
 {% block body-class %}body-task{% endblock %}
 {% block content-head-class %}head-dark{% endblock %}
 {% block content-head %}
-<a style="color: white;" title="Return Home" href="{% url 'home' %}">
-    <div style="float: left;" class="col-md-1 text-center">
-        <br/>
-        <h3><span class="glyphicon glyphicon-chevron-left pull-right"></span></h3>
-    </div>
-</a>
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <h4>Task #{{ task.id}}</h4>
+        <div class="col-md-9">
+            <h4>Task #{{ task.local_id }}</h4>
             <h1>{{ task.name }}</h1>
             <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">
             <div class="btn-group pull-right">
-                <a class="btn btn-warning" href="{% url 'task:edit_task' task.id %}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
+                <a class="btn btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
                 {% if task.completed %}
                     <div class="btn-group pull-right">
                         <a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                     </div>
                 {% else %}
                     <div class="btn-group pull-right">
-                        <a class="btn btn-success" href="{% url 'task:complete_task' task.id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                        <a class="btn btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                     </div>
                 {% endif %}
             </div>
@@ -41,8 +36,8 @@
     <div class="col-md-6">
         <legend>Description</legend>
         <div class="panel panel-info">
-            <div class="panel-body">
-                {{ task.description|linebreaksbr }}
+            <div class="panel-body panel-description">
+                {{ task.description|markup_markdown }}
             </div>
         </div>
     </div>

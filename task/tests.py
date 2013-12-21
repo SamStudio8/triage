@@ -1,6 +1,9 @@
+from markdown import markdown
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 from django.test.client import Client
 
 TEST_DATA = {
@@ -16,11 +19,13 @@ TEST_DATA = {
     },
     "tasklist": {
         "name": "General",
-        "description": "A generic task list for your dull existence."
+        "description": "A generic task list for your dull existence.",
+        "order": 0
     },
     "tasklist_2": {
         "name": "Specific",
-        "description": "A task list for your life's particulars."
+        "description": "A task list for your life's particulars.",
+        "order": 0
     },
     "task": {
         "tasklist": 1,
@@ -50,7 +55,7 @@ TEST_DATA = {
     "tasklist_edit": {
         "name": "Life Goals",
         "description": "A detailed task list for your adventures.",
-        "progress": 0
+        "order": 0
     },
     "triage_category_low": {
         "name": "Expectant",
@@ -76,6 +81,12 @@ TEST_DATA = {
         "description": "Maintain a record of exciting happenings.",
         "progress": 10
     },
+    "task_edit_for_markdown": {
+        "tasklist": 1,
+        "name": "Write a marked down diary entry",
+        "description": "This is [an example](http://triage.ironowl.io/ 'Title') inline link.",
+        "progress": 50
+    },
 }
 class SimpleTaskTest(TestCase):
     def setUp(self):
@@ -93,19 +104,31 @@ class SimpleTaskTest(TestCase):
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:view_task", kwargs={"task_id":1})
+        url = reverse("task:view_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:add_task", kwargs={"tasklist_id":1})
+        url = reverse("task:new_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:edit_task", kwargs={"task_id":1})
+        url = reverse("task:edit_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:complete_task", kwargs={"task_id":1})
+        url = reverse("task:complete_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
@@ -113,19 +136,29 @@ class SimpleTaskTest(TestCase):
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:edit_tasklist", kwargs={"tasklist_id":1})
+        url = reverse("task:edit_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:list_triage_category")
+        url = reverse("task:list_triage_category", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:add_triage_category")
+        url = reverse("task:add_triage_category", kwargs={
+            "username": TEST_DATA['user']['username']
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:edit_triage_category", kwargs={"triage_category_id":1})
+        url = reverse("task:edit_triage_category", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "triage_category_id": 1
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
@@ -148,7 +181,10 @@ class SimpleTaskTest(TestCase):
                 username=TEST_DATA['user2']['username'],
                 password=TEST_DATA['user2']['password']
         )
-        url = reverse("task:edit_tasklist", kwargs={"tasklist_id":1})
+        url = reverse("task:edit_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/')
 
@@ -159,7 +195,10 @@ class SimpleTaskTest(TestCase):
                 username=TEST_DATA['user2']['username'],
                 password=TEST_DATA['user2']['password']
         )
-        url = reverse("task:edit_task", kwargs={"task_id":1})
+        url = reverse("task:edit_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/')
 
@@ -170,7 +209,9 @@ class SimpleTaskTest(TestCase):
                 username=TEST_DATA['user2']['username'],
                 password=TEST_DATA['user2']['password']
         )
-        url = reverse("task:add_task")
+        url = reverse("task:new_task", kwargs={
+            "username": TEST_DATA['user2']['username'],
+        })
         response = self.client.post(url, TEST_DATA['task_evil_assign'], follow=True)
         self.assertContains(response, "Select a valid choice. That choice is not one of the available choices")
 
@@ -203,7 +244,10 @@ class SimpleTaskTest(TestCase):
 
     def test_add_task(self):
         self.test_add_tasklist()
-        url = reverse("task:add_task", kwargs={"tasklist_id":1})
+        url = reverse("task:new_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -216,9 +260,11 @@ class SimpleTaskTest(TestCase):
 
     def test_view_task(self):
         self.test_add_task()
-        url = reverse("task:view_task", kwargs={"task_id":1})
+        url = reverse("task:view_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'task/view.html')
 
@@ -227,7 +273,10 @@ class SimpleTaskTest(TestCase):
 
     def test_edit_task(self):
         self.test_add_task()
-        url = reverse("task:edit_task", kwargs={"task_id":1})
+        url = reverse("task:edit_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -238,16 +287,39 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 tasks")
         self.assertContains(response, TEST_DATA['task_edit']['name'])
 
+    def test_task_markdown(self):
+        self.test_add_task()
+
+        url = reverse("task:edit_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
+        response = self.client.post(url, TEST_DATA['task_edit_for_markdown'], follow=True)
+
+        url = reverse("task:view_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
+        response = self.client.get(url)
+
+        self.assertContains(response, markdown(TEST_DATA['task_edit_for_markdown']['description']))
+
     def test_task_history(self):
         self.test_add_task()
 
         url = reverse("task:add_tasklist")
         response = self.client.post(url, TEST_DATA['tasklist_2'], follow=True)
 
-        url = reverse("task:edit_task", kwargs={"task_id":1})
+        url = reverse("task:edit_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
         response = self.client.post(url, TEST_DATA['task_edit_for_history'], follow=True)
 
-        url = reverse("task:view_task", kwargs={"task_id":1})
+        url = reverse("task:view_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
         response = self.client.get(url)
 
         self.assertContains(response, TEST_DATA['task']['name'])
@@ -259,7 +331,10 @@ class SimpleTaskTest(TestCase):
 
     def test_edit_tasklist(self):
         self.test_add_tasklist()
-        url = reverse("task:edit_tasklist", kwargs={"tasklist_id":1})
+        url = reverse("task:edit_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -272,7 +347,10 @@ class SimpleTaskTest(TestCase):
 
     def test_complete_task(self):
         self.test_add_task()
-        url = reverse("task:complete_task", kwargs={"task_id":1})
+        url = reverse("task:complete_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1
+        })
 
         response = self.client.post(url, TEST_DATA['tasklist_edit'], follow=True)
         # Redirects to home
@@ -288,7 +366,9 @@ class SimpleTaskTest(TestCase):
                 username=TEST_DATA['user']['username'],
                 password=TEST_DATA['user']['password']
         )
-        url = reverse("task:add_triage_category")
+        url = reverse("task:add_triage_category", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -301,7 +381,10 @@ class SimpleTaskTest(TestCase):
 
     def test_edit_triage_category(self):
         self.test_add_triage_category()
-        url = reverse("task:edit_triage_category", kwargs={"triage_category_id":1})
+        url = reverse("task:edit_triage_category", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "triage_category_id": 1
+        })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -322,7 +405,10 @@ class SimpleTaskTest(TestCase):
     def test_triage_task(self):
         self.test_add_triage_category()
         self.test_add_task()
-        url = reverse("task:edit_task", kwargs={"task_id":1})
+        url = reverse("task:edit_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
         response = self.client.post(url, TEST_DATA['task_edit_triage'], follow=True)
 
         self.assertContains(response, TEST_DATA['triage_category_low']['name'])

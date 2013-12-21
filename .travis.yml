@@ -8,7 +8,7 @@ env:
 
 install:
   - pip install -q Django==$DJANGO_VERSION --use-mirrors
-  - pip install -q south coverage coveralls django-crispy-forms
+  - pip install -q south coverage coveralls django-crispy-forms markdown
 
 script:
   - coverage run --source='.' manage.py test task

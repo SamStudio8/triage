@@ -6,11 +6,13 @@ from django.utils.timezone import utc
 from event import models as EventModels
 
 class Task(models.Model):
+    _id = models.IntegerField()
     tasklist = models.ForeignKey('TaskList',
                                 related_name='tasks')
 
     name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True,
+            help_text=("Description allows Markdown input"))
 
     triage = models.ForeignKey('TaskTriageCategory',
                                null=True,
@@ -36,6 +38,9 @@ class Task(models.Model):
     def __unicode__(self):
         return "#%d %s" % (self.id, self.name)
 
+    def has_permission(self, uid):
+        return uid == self.tasklist.user.pk
+
     def is_due(self):
         if self.due_date == self.modified_date:
             return 0
@@ -54,10 +59,22 @@ class Task(models.Model):
     def user_id(self):
         return self.tasklist.user_id
 
-    # Update timestamps
+    @property
+    def local_id(self):
+        return self._id
+
+    # Update timestamps and assign _id
     def save(self, *args, **kwargs):
         if not self.id:
             self.creation_date = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+            tasks = Task.objects.filter(tasklist__user__id=self.tasklist.user.pk)
+            if len(tasks) == 0:
+                self._id = 1
+            else:
+                first = tasks.order_by("-id")[0]
+                self._id = first._id + 1
+
         self.modified_date = datetime.datetime.utcnow().replace(tzinfo=utc)
         super(Task, self).save(*args, **kwargs)
 
@@ -73,6 +90,9 @@ class TaskTriageCategory(models.Model):
     def __unicode__(self):
         return self.name
 
+    class Meta:
+        ordering = ["-priority"]
+
 #class TaskStatus(models.Model):
 #    user = models.ForeignKey(User)
 #    name = models.CharField(max_length=30)
@@ -86,11 +106,20 @@ class TaskList(models.Model):
     user = models.ForeignKey(User,
                             verbose_name="owner",
                             related_name="tasklists")
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
+    order = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
+
+    def has_permission(self, uid):
+        return uid == self.user.pk
+
+    class Meta:
+        ordering = ["-order"]
+        unique_together = ("user", "slug")
 
 class TaskLinkType(models.Model):
     user = models.ForeignKey(User)

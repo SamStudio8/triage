@@ -1,5 +1,47 @@
 #CHANGELOG
 
+####0.0.213D
+
+Calendar CSS
+
+    python manage.py collectstatic
+
+####0.0.204D
+
+Added `slug` field to `TaskList`, auto-populated using `slugify`
+
+    python mange.py migrate task
+
+####0.0.182D
+
+Dashboard CSS
+
+    python manage.py collectstatic
+
+####0.0.166D
+
+Replaced datetime picker
+
+    python manage.py collectstatic
+
+####0.0.142D
+
+Render `Task` descriptions in Markdown, requires `python-markdown`  
+
+    pip install markdown
+
+####0.0.142D
+
+Added `order` field to `TaskList`, allow longer `TaskList` names
+
+    python mange.py migrate task
+
+####0.0.131D
+
+Add a user-centric `_id` field to `Task`, migrate to add and autopopulate new field
+
+    python mange.py migrate task
+
 ####0.0.128
 
 Templates for the `account` app are now found at `account/templates`  
