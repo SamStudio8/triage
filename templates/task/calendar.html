@@ -40,7 +40,7 @@
             <tbody>
                 <tr class="no-border">
                 {% for day in calendar.values %}
-                    <td>
+                    <td class="calendar-lamp-wrapper">
                         <ul class="calendar-lamps">
                         {% for task in day.tasks %}
                             <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
