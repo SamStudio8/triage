@@ -33,7 +33,35 @@
         <h2>30 Day Outlook</h2>
     </div>
 </div>
-<hr>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tbody>
+                <tr class="no-border">
+                {% for day in calendar.values %}
+                    <td>
+                        <ul class="calendar-lamps">
+                        {% for task in day.tasks %}
+                            <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                {% endfor %}
+                </tr>
+                <tr>
+                {% for day in calendar.values %}
+                    <td class="text-center {% if forloop.first %}today{%endif%}">
+                        <span class="text-small-task">{{ day.month }}</span></br>
+                        <b>{{ day.day }}</b>
+                    </td>
+                {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% for day in calendar.values %}
 <div class="calendar-row row">
     <div class="col-md-1 text-center {% if forloop.first %}today{%endif%}">

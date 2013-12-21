@@ -64,6 +64,33 @@ h1,h2,h3,h4,h5,h6{
 }
 
 /* Calendar */
+#calendar-bar {
+    padding: 0px
+    list-style: none;
+}
+
+#calendar-bar li {
+    margin: 0 20px;
+    display: inline-block;
+}
+
+.calendar-lamps {
+    width: auto;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+.calendar-lamps li {
+    width: auto;
+    margin: 0px;
+    padding: 3px 0 0 0;
+}
+
+.calendar-lamp {
+    border-width: 0 0 5px 0;
+    border-style: solid;
+}
+
 .calendar-row {
     border-width: 0 0 1px 0;
     border-color: #999;
@@ -91,6 +118,11 @@ input, textarea, select, .input-group {
     background-color: #f5f5f5;
     padding: 10px;
     margin-top: 10px;
+}
+
+/* Table */
+.no-border td {
+    border-width: 0 !important;
 }
 
 /* Footer */
