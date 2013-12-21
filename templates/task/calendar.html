@@ -73,11 +73,11 @@
             <tbody>
             {% for task in day.tasks %}
                 <tr>
-                    <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">
+                    <td class="col-md-7 label_light" style="border-left-color:#{{ task.triage.bg_colour }}">
                         <a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a>
                     </td>
-                    <td>{{ task.tasklist.name }}</td>
-                    <td class="text-center">
+                    <td class="col-md-3 text-center">{{ task.tasklist.name }}</td>
+                    <td class="col-md-2 text-center">
                         <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
                     {% if task.due_date %}
                         <br />
