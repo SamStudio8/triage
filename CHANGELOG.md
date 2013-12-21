@@ -1,45 +1,16 @@
 #CHANGELOG
 
-####0.0.213D
+####0.1.0
 
-Calendar CSS
-
-    python manage.py collectstatic
-
-####0.0.204D
-
-Added `slug` field to `TaskList`, auto-populated using `slugify`
-
-    python mange.py migrate task
-
-####0.0.182D
-
-Dashboard CSS
-
-    python manage.py collectstatic
-
-####0.0.166D
-
-Replaced datetime picker
-
-    python manage.py collectstatic
-
-####0.0.142D
-
+Add a user-centric `_id` field to `Task`, migrate to add and autopopulate new field  
+Added `order` field to `TaskList`, allow longer `TaskList` names  
 Render `Task` descriptions in Markdown, requires `python-markdown`  
+Replaced datetime picker  
+Added `slug` field to `TaskList`, auto-populated using `slugify`  
+Dashboard and Calendar
 
     pip install markdown
-
-####0.0.142D
-
-Added `order` field to `TaskList`, allow longer `TaskList` names
-
-    python mange.py migrate task
-
-####0.0.131D
-
-Add a user-centric `_id` field to `Task`, migrate to add and autopopulate new field
-
+    python manage.py collectstatic
     python mange.py migrate task
 
 ####0.0.128
