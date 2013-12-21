@@ -191,8 +191,6 @@ def dashboard(request):
                                                    "task_nodue": task_nodue,
                                                    "task_overdue": task_overdue})
 
-import collections
-
 @login_required
 def calendar(request):
     today = datetime.datetime.utcnow().replace(tzinfo=utc)
@@ -201,7 +199,7 @@ def calendar(request):
     task_30days = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
                                                 completed=False,
                                                 due_date__range=[today, deltadate],
-                                        ).order_by("-triage__priority")
+                                        ).order_by("triage__priority")
     calendar = {}
     for i, date in enumerate([today + datetime.timedelta(days=x) for x in range(30)]):
         calendar[i] = {}
