@@ -60,7 +60,25 @@ h1,h2,h3,h4,h5,h6{
 }
 .text-small-task {
     font-size: 0.75em;
-    color: #333;
+    color: #666;
+}
+
+/* Calendar */
+.calendar-row {
+    border-width: 0 0 1px 0;
+    border-color: #999;
+    border-style: solid;
+}
+.calendar-table {
+    margin: 0;
+}
+.today {
+    color: #FFF;
+    background-color: #000;
+}
+.label_light {
+    border-left: 5px;
+    border-left-style: solid;
 }
 
 /* Forms */

@@ -174,8 +174,7 @@ def dashboard(request):
 
     task_week = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
                                                 completed=False,
-                                                due_date__gte=today,
-                                                due_date__lte=deltadate
+                                                due_date__range=[today, deltadate],
                                         ).order_by("-triage__priority")
 
     task_nodue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
@@ -191,3 +190,27 @@ def dashboard(request):
     return render(request, "task/dashboard.html", {"task_week": task_week,
                                                    "task_nodue": task_nodue,
                                                    "task_overdue": task_overdue})
+
+import collections
+
+@login_required
+def calendar(request):
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    deltadate = today + datetime.timedelta(days=30)
+
+    task_30days = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
+                                                completed=False,
+                                                due_date__range=[today, deltadate],
+                                        ).order_by("-triage__priority")
+    calendar = {}
+    for i, date in enumerate([today + datetime.timedelta(days=x) for x in range(30)]):
+        calendar[i] = {}
+        calendar[i]["month"] = date.strftime("%b")
+        calendar[i]["day"] = date.day
+        calendar[i]["datestamp"] = "%d %d" % (date.month, date.day)
+        calendar[i]["tasks"] = []
+        for task in filter(lambda t: t.due_date.day == date.day, task_30days):
+            calendar[i]["tasks"].append(task)
+
+    return render(request, "task/calendar.html", {"calendar": calendar })
+

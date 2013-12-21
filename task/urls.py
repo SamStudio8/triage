@@ -3,6 +3,7 @@ import task.views as TaskViews
 
 urlpatterns = patterns('',
     url(r'^dashboard/$', TaskViews.dashboard, name="dashboard"),
+    url(r'^calendar/$', TaskViews.calendar, name="calendar"),
 
     url(r'^(?P<username>\w+)/task/(?P<task_id>\d+)/$', TaskViews.view_task, name="view_task"),
     url(r'^(?P<username>\w+)/task/(?P<task_id>\d+)/edit/$', TaskViews.edit_task, name="edit_task"),
