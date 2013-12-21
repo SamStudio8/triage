@@ -3,6 +3,7 @@ import task.views as TaskViews
 
 urlpatterns = patterns('',
     url(r'^dashboard/$', TaskViews.dashboard, name="dashboard"),
+    url(r'^calendar/$', TaskViews.calendar, name="calendar"),
 
     url(r'^tasklist/new/$', TaskViews.add_tasklist, name="add_tasklist"),
     url(r'^tasklist/(?P<tasklist_id>\d+)/edit/$', TaskViews.edit_tasklist, name="edit_tasklist"),
