@@ -99,6 +99,7 @@ h1,h2,h3,h4,h5,h6{
     border-width: 0 0 1px 0;
     border-color: #999;
     border-style: solid;
+    margin: 0;
 }
 .calendar-table {
     margin: 0;
