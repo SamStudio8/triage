@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.0.213D
+
+Calendar CSS
+
+    python manage.py collectstatic
+
 ####0.0.204D
 
 Added `slug` field to `TaskList`, auto-populated using `slugify`
