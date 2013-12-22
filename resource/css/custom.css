@@ -64,16 +64,6 @@ h1,h2,h3,h4,h5,h6{
 }
 
 /* Calendar */
-#calendar-bar {
-    padding: 0px
-    list-style: none;
-}
-
-#calendar-bar li {
-    margin: 0 20px;
-    display: inline-block;
-}
-
 .calendar-lamp-wrapper {
     vertical-align: bottom !important;
 }
