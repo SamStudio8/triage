@@ -6,6 +6,8 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+USING_SSL = False
+
 LOGIN_URL = "/account/login/"
 LOGOUT_URL = "/account/logout/"
 
@@ -29,6 +31,7 @@ DATABASES = {
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [
+
 
 ]
 
@@ -170,3 +173,6 @@ LOGGING = {
         },
     }
 }
+
+SESSION_COOKIE_SECURE = USING_SSL
+CSRF_COOKIE_SECURE = USING_SSL
