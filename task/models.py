@@ -109,7 +109,9 @@ class TaskList(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
-    order = models.IntegerField(default=0)
+    order = models.IntegerField(default=0,
+            help_text=("Use to change the order in which your lists appear. "
+                "Higher numbers will take priority."))
 
     def __unicode__(self):
         return self.name
