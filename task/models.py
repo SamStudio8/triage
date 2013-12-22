@@ -36,7 +36,7 @@ class Task(models.Model):
         ordering = ["completed", "due_date", "-triage__priority"]
 
     def __unicode__(self):
-        return "#%d %s" % (self.id, self.name)
+        return "#%d %s" % (self.local_id, self.name)
 
     def has_permission(self, uid):
         return uid == self.tasklist.user.pk
