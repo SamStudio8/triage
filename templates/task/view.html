@@ -1,7 +1,7 @@
 {% extends "base/base.html" %}
 {% load markup %}
 
-{% block title %}Task #{{ task.id }} | {{ task.name }}{% endblock %}
+{% block title %}Task #{{ task.local_id }} | {{ task.name }}{% endblock %}
 
 {% block body-class %}body-task{% endblock %}
 {% block content-head-class %}head-dark{% endblock %}
