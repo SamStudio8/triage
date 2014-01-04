@@ -16,6 +16,10 @@ urlpatterns = patterns('',
     url(r'^task/(?P<task_id>\d+)/link/$', TaskViews.link_task, name="link_task"),
 
     url(r'^(?P<username>\w+)/triage/$', TaskViews.list_triage_category, name="list_triage_category"),
+    url(r'^(?P<username>\w+)/milestones/$', TaskViews.list_milestones, name="list_milestones"),
+    url(r'^(?P<username>\w+)/milestones/new/$', TaskViews.new_milestone, name="new_milestone"),
+    url(r'^(?P<username>\w+)/milestones/(?P<milestone_id>\d+)/edit/$', TaskViews.edit_milestone, name="edit_milestone"),
+
     url(r'^(?P<username>\w+)/triage/new/$', TaskViews.add_triage_category, name="add_triage_category"),
     url(r'^(?P<username>\w+)/triage/(?P<triage_category_id>\d+)/edit/$', TaskViews.edit_triage_category, name="edit_triage_category"),
 

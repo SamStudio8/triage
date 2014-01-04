@@ -151,6 +151,37 @@ def list_triage_category(request, username):
     return render(request, "task/triages.html", {"triages": triages})
 
 @login_required
+def list_milestones(request, username):
+    milestones = request.user.milestones.all()
+    return render(request, "task/milestones.html", {"milestones": milestones})
+
+@login_required
+def new_milestone(request, username):
+    return edit_milestone(request, None)
+
+@login_required
+def edit_milestone(request, username, milestone_id=None):
+    milestone = None
+    if milestone_id:
+        try:
+            milestone = TaskModels.TaskMilestone.objects.get(pk=milestone_id)
+        except TaskModels.TaskMilestone.DoesNotExist:
+            pass
+        else:
+            if milestone.user.id != request.user.id:
+                return HttpResponseRedirect(reverse('task:list_milestones', kwargs={"username": request.user.username}))
+
+    form = TaskForms.TaskMilestoneForm(request.POST or None, instance=milestone)
+    if form.is_valid():
+        milestone = form.save(commit=False)
+        if not form.instance.pk:
+            # New instance, attach user
+            milestone.user = request.user
+        milestone.save()
+        return HttpResponseRedirect(reverse('task:list_milestones', kwargs={"username": request.user.username}))
+    return render(request, "task/changemilestone.html", {"form": form, "milestone": milestone})
+
+@login_required
 def add_triage_category(request, username):
     return edit_triage_category(request, None)
 
