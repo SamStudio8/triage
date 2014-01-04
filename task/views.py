@@ -123,8 +123,8 @@ def link_task(request, task_id):
     return render(request, "task/changelink.html", {"form": form})
 
 @login_required
-def add_tasklist(request):
-    return edit_tasklist(request)
+def add_tasklist(request, username):
+    return edit_tasklist(request, username)
 
 @login_required
 def edit_tasklist(request, username=None, listslug=None):
