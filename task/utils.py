@@ -1,3 +1,6 @@
+import datetime
+from django.utils.timezone import utc
+
 import task.models as TaskModels
 
 def create_default_triage_categories(uid):
@@ -45,3 +48,23 @@ def create_default_triage_categories(uid):
         tcat = TaskModels.TaskTriageCategory.objects.create(**DEFAULT_TRIAGE[TRIAGE])
         tcat.save()
 
+def calendarize(uid, num_days, tasklist_id=True):
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    deltadate = today + datetime.timedelta(days=num_days)
+
+    tasks = TaskModels.Task.objects.filter(tasklist__user__id=uid,
+                                           tasklist=tasklist_id,
+                                           completed=False,
+                                           due_date__range=[today, deltadate],
+                                    ).order_by("triage__priority")
+
+    calendar = {}
+    for i, date in enumerate([today + datetime.timedelta(days=x) for x in range(num_days)]):
+        calendar[i] = {}
+        calendar[i]["month"] = date.strftime("%b")
+        calendar[i]["day"] = date.day
+        calendar[i]["datestamp"] = "%d %d" % (date.month, date.day)
+        calendar[i]["tasks"] = []
+        for task in filter(lambda t: t.due_date.day == date.day, tasks):
+            calendar[i]["tasks"].append(task)
+    return calendar

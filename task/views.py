@@ -9,6 +9,7 @@ from django.utils.timezone import utc
 
 import task.models as TaskModels
 import task.forms as TaskForms
+import task.utils as TaskUtils
 import task.events as TaskEvents
 import event.utils as EventUtils
 
@@ -30,6 +31,14 @@ def new_task(request, username, listslug=None):
             return HttpResponseRedirect(reverse('home'))
     else:
         return edit_task(request, username, None, None)
+
+@login_required
+def view_tasklist(request, username, tasklist_id):
+    tasklist = get_object_or_404(TaskModels.TaskList, user__username=username, id=tasklist_id)
+    if not tasklist.has_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+    calendar = TaskUtils.calendarize(request.user.pk, 30, tasklist.pk)
+    return render(request, "task/tasklist.html", {"tasklist": tasklist, "calendar": calendar})
 
 @login_required
 def view_task(request, username, task_id):
@@ -193,22 +202,6 @@ def dashboard(request):
 
 @login_required
 def calendar(request):
-    today = datetime.datetime.utcnow().replace(tzinfo=utc)
-    deltadate = today + datetime.timedelta(days=30)
-
-    task_30days = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                                completed=False,
-                                                due_date__range=[today, deltadate],
-                                        ).order_by("triage__priority")
-    calendar = {}
-    for i, date in enumerate([today + datetime.timedelta(days=x) for x in range(30)]):
-        calendar[i] = {}
-        calendar[i]["month"] = date.strftime("%b")
-        calendar[i]["day"] = date.day
-        calendar[i]["datestamp"] = "%d %d" % (date.month, date.day)
-        calendar[i]["tasks"] = []
-        for task in filter(lambda t: t.due_date.day == date.day, task_30days):
-            calendar[i]["tasks"].append(task)
-
+    calendar = TaskUtils.calendarize(request.user.pk, 30)
     return render(request, "task/calendar.html", {"calendar": calendar })
 
