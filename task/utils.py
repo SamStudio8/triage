@@ -48,15 +48,16 @@ def create_default_triage_categories(uid):
         tcat = TaskModels.TaskTriageCategory.objects.create(**DEFAULT_TRIAGE[TRIAGE])
         tcat.save()
 
-def calendarize(uid, num_days, tasklist_id=True):
+def calendarize(uid, num_days, tasklist_id=0):
     today = datetime.datetime.utcnow().replace(tzinfo=utc)
     deltadate = today + datetime.timedelta(days=num_days)
 
     tasks = TaskModels.Task.objects.filter(tasklist__user__id=uid,
-                                           tasklist=tasklist_id,
                                            completed=False,
                                            due_date__range=[today, deltadate],
                                     ).order_by("triage__priority")
+    if tasklist_id:
+        tasks = tasks.filter(tasklist=tasklist_id)
 
     calendar = {}
     for i, date in enumerate([today + datetime.timedelta(days=x) for x in range(num_days)]):
