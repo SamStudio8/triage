@@ -28,7 +28,7 @@
         return moment(timestamp).fromNow();
     };
     $(document).ready(function(){
-        $(".due_date").html(function() {
+        $(".due_date_sp").html(function() {
             return humanize($(this).html());
         });
     });
@@ -98,11 +98,13 @@
                         {% else %}
                             <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
                         {% endif %}
+
+                        <td>
                         {% if task.due_date %}
-                            <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
-                        {% else %}
-                            <td></td>
+                            <span class="due_date_sp" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
                         {% endif %}
+                        <span class="label label-default" title="{{ task.milestone.due_date }}" style="background-color:#{{ task.milestone.bg_colour }}; color:#{{ task.milestone.fg_colour }}">{{ task.milestone.name }}</span>
+                        </td>
 
                         <td>
                         {% if task.completed %}
