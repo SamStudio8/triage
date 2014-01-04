@@ -47,15 +47,15 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <td><b>Created</b></td>
+                    <td class="col-md-4"><b>Created</b></td>
                     <td>{{ task.creation_date }}</td>
                 </tr>
                 <tr>
-                    <td><b>Updated</b></td>
+                    <td class="col-md-4"><b>Updated</b></td>
                     <td>{{ task.modified_date }}</td>
                 </tr>
                 <tr>
-                    <td><b>Completed</b></td>
+                    <td class="col-md-4"><b>Completed</b></td>
                     <td>{{ task.completed_date }}</td>
                 </tr>
                 </tbody>
@@ -65,11 +65,11 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <td><b>Due</b></td>
+                    <td class="col-md-4"><b>Due</b></td>
                     <td>{{ task.due_date }}</td>
                 </tr>
                 <tr>
-                    <td><b>Milestone</b></td>
+                    <td class="col-md-4"><b>Milestone</b></td>
                     <td><span class="label label-default" title="{{ task.milestone.due_date }}" style="background-color:#{{ task.milestone.bg_colour }}; color:#{{ task.milestone.fg_colour }}">{{ task.milestone.name }}</span> {{ task.milestone.due_date }}</td>
                 </tr>
                 </tbody>
