@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^(?P<username>\w+)/task/(?P<task_id>\d+)/edit/$', TaskViews.edit_task, name="edit_task"),
     url(r'^(?P<username>\w+)/task/(?P<task_id>\d+)/complete/$', TaskViews.complete_task, name="complete_task"),
     url(r'^(?P<username>\w+)/task/new/$', TaskViews.new_task, name="new_task"),
-    url(r'^(?P<username>\w+)/tasklist/(?P<tasklist_id>\d+)/$', TaskViews.view_tasklist, name="view_tasklist"),
+    url(r'^(?P<username>\w+)/(?P<listslug>[-\w]+)/$', TaskViews.view_tasklist, name="view_tasklist"),
 
     url(r'^tasklist/new/$', TaskViews.add_tasklist, name="add_tasklist"),
 
