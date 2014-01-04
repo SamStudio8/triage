@@ -1,5 +1,15 @@
 #CHANGELOG
 
+####0.1.137D
+
+Improve interfaces on smaller devices  
+Added glorious favicon, courtesy of @danharibo  
+`TaskList` detail view  
+`TaskMilestone` model
+
+    python manage.py collectstatic
+    python mange.py migrate task
+
 ####0.1.0
 
 Add a user-centric `_id` field to `Task`, migrate to add and autopopulate new field  
