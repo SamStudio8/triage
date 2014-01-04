@@ -1,6 +1,10 @@
 #CHANGELOG
 
-####0.1.137D
+####0.1.238D
+
+Prevent users from assigning a task a milestone that they do not own!
+
+####0.1.237D
 
 Improve interfaces on smaller devices  
 Added glorious favicon, courtesy of @danharibo  
