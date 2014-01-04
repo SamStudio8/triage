@@ -16,6 +16,7 @@ class TaskForm(forms.ModelForm):
         del self.fields['completed_date']
         self.fields['tasklist'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id)
         self.fields['triage'].queryset = TaskModels.TaskTriageCategory.objects.filter(user_id=user_id)
+        self.fields['milestone'].queryset = TaskModels.TaskMilestone.objects.filter(user_id=user_id)
 
         # django-crispy-forms
         self.helper = FormHelper()
