@@ -17,6 +17,9 @@ class Task(models.Model):
     triage = models.ForeignKey('TaskTriageCategory',
                                null=True,
                                blank=True)
+    milestone = models.ForeignKey('TaskMilestone',
+                               null=True,
+                               blank=True)
 #    status = models.ForeignKey('TaskStatus')
     progress = models.IntegerField(default=0)
 
@@ -92,6 +95,26 @@ class TaskTriageCategory(models.Model):
 
     class Meta:
         ordering = ["-priority"]
+
+class TaskMilestone(models.Model):
+    """
+    TODO
+      Milestones are currently a property of a user but might change this to 
+      be on a per-tasklist basis in future
+    """
+    user = models.ForeignKey(User,
+                            verbose_name="owner",
+                            related_name="milestones")
+    name = models.CharField(max_length=30)
+    due_date = models.DateTimeField(null=True, blank=True)
+    fg_colour = models.CharField(max_length=6)
+    bg_colour = models.CharField(max_length=6)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["-due_date"]
 
 #class TaskStatus(models.Model):
 #    user = models.ForeignKey(User)

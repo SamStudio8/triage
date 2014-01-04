@@ -35,6 +35,7 @@ class TaskForm(forms.ModelForm):
                     Fieldset('Meta',
                         'triage',
                         'progress',
+                        'milestone',
                         AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>', data_format="YYYY-MM-DD H:mm"),
                     ),
                     css_class="col-lg-6"
