@@ -1,6 +1,6 @@
 {% extends "base/base.html" %}
 
-{% block title %}Tasks{% endblock %}
+{% block title %}{{ tasklist.name }}{% endblock %}
 
 {% block content-head-class %}head-dark{% endblock %}
 {% block content-head %}
@@ -8,15 +8,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h1>Tasks</h1>
-            <p>Hello, {{ user.username }}, you have {{ tasklists.count }} task lists:</p>
+            <h1>{{ tasklist.name }}</h1>
+            <p>{{ tasklist.description }}</p>
         </div>
         <div class="col-md-6">
-            <div class="btn-group pull-right">
-                <a class="btn btn-success" href="{% url 'task:add_tasklist' %}"><span class="glyphicon glyphicon-plus"></span> Add Task List</a>
-                <a class="btn btn-info" href="{% url 'task:list_triage_category' user.username %}"><span class="glyphicon glyphicon-cog"></span> Triage Categories</a>
-                <a class="btn btn-info" href="{% url 'task:list_milestones' user.username %}"><span class="glyphicon glyphicon-cog"></span> Milestones</a>
-            </div>
         </div>
     </div>
 </div>
@@ -28,40 +23,46 @@
         return moment(timestamp).fromNow();
     };
     $(document).ready(function(){
-        $(".due_date_sp").html(function() {
+        $(".due_date").html(function() {
             return humanize($(this).html());
         });
     });
 </script>
+
 <div class="row">
-{% if tasklists.count > 0 %}
+    <div class="col-md-12">
+        <table id="calendar-bar" class="table">
+            <tbody>
+                <tr class="no-border">
+                {% for day in calendar.values %}
+                    <td class="calendar-lamp-wrapper">
+                        <ul class="calendar-lamps">
+                        {% for task in day.tasks %}
+                            <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                {% endfor %}
+                </tr>
+                <tr>
+                {% for day in calendar.values %}
+                    <td class="text-center {% if forloop.first %}today{%endif%}">
+                        <span class="text-small-task">{{ day.month }}</span></br>
+                        <b>{{ day.day }}</b>
+                    </td>
+                {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-md-2">
         <div class="list-group">
-        {% for tasklist in tasklists|dictsort:"name" %}
-            <a href="#tl_{{ tasklist.name }}" class="list-group-item">{{ tasklist.name }}<span class="badge">{{ tasklist.uncompleted }}</span></a>
-        {% endfor %}
         </div>
     </div>
     <div class="col-md-10">
-    {% for tasklist in tasklists %}
-        <div class="row">
-            <div class="col-md-9">
-                <a id="tl_{{ tasklist.name }}"></a>
-                <h2 class="anchor"><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.id %}">{{ tasklist.name }}</a></h2>
-            </div>
-            <div class="col-md-3">
-                <div class="btn-group pull-right">
-                    <a class="btn btn-sm btn-info" href="{% url 'task:view_tasklist' tasklist.user.username tasklist.id %}"><span class="glyphicon glyphicon-eye-open"></span></a>
-                    <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
-                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h3>{{ tasklist.description }}</h3>
-                <p>{{ tasklist.uncompleted }} tasks ({{ tasklist.completed }} completed)</p>
                 {% if tasklist.tasks.all %}
                 <table class="table table-hover table-condensed">
                     <thead>
@@ -98,13 +99,11 @@
                         {% else %}
                             <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
                         {% endif %}
-
-                        <td>
                         {% if task.due_date %}
-                            <span class="due_date_sp" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
+                            <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
+                        {% else %}
+                            <td></td>
                         {% endif %}
-                        <span class="label label-default" title="{{ task.milestone.due_date }}" style="background-color:#{{ task.milestone.bg_colour }}; color:#{{ task.milestone.fg_colour }}">{{ task.milestone.name }}</span>
-                        </td>
 
                         <td>
                         {% if task.completed %}
@@ -124,17 +123,6 @@
                 <tfoot></tfoot>
                 </table>
                 {% endif %}
-            </div>
-        </div>
-    <hr>
-    {% endfor %}
     </div>
-{% else %}
-    <div class="jumbotron">
-        <h1>Welcome to Triage!</h1>
-        <p>You'll need to create a task list to begin...</p>
-        <a class="btn btn-lg btn-success" href="{% url 'task:add_tasklist' %}"><span class="glyphicon glyphicon-plus"></span> Add Task List</a>
-    </div>
-{% endif %}
 </div>
 {% endblock %}

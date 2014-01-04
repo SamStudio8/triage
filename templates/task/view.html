@@ -61,6 +61,20 @@
                 </tbody>
             </table>
         </div>
+        <div class="panel panel-info">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td><b>Due</b></td>
+                    <td>{{ task.due_date }}</td>
+                </tr>
+                <tr>
+                    <td><b>Milestone</b></td>
+                    <td><span class="label label-default" title="{{ task.milestone.due_date }}" style="background-color:#{{ task.milestone.bg_colour }}; color:#{{ task.milestone.fg_colour }}">{{ task.milestone.name }}</span> {{ task.milestone.due_date }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
