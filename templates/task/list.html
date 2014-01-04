@@ -47,11 +47,11 @@
         <div class="row">
             <div class="col-md-9">
                 <a id="tl_{{ tasklist.name }}"></a>
-                <h2 class="anchor"><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.id %}">{{ tasklist.name }}</a></h2>
+                <h2 class="anchor"><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></h2>
             </div>
             <div class="col-md-3">
                 <div class="btn-group pull-right">
-                    <a class="btn btn-sm btn-info" href="{% url 'task:view_tasklist' tasklist.user.username tasklist.id %}"><span class="glyphicon glyphicon-eye-open"></span></a>
+                    <a class="btn btn-sm btn-info" href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-eye-open"></span></a>
                     <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
                     <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>

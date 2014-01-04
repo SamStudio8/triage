@@ -33,8 +33,8 @@ def new_task(request, username, listslug=None):
         return edit_task(request, username, None, None)
 
 @login_required
-def view_tasklist(request, username, tasklist_id):
-    tasklist = get_object_or_404(TaskModels.TaskList, user__username=username, id=tasklist_id)
+def view_tasklist(request, username, listslug):
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
     if not tasklist.has_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
     calendar = TaskUtils.calendarize(request.user.pk, 30, tasklist.pk)
