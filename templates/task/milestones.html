@@ -1,0 +1,40 @@
+{% extends "base/base.html" %}
+
+{% block title %}Milestones{% endblock %}
+
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Milestones</h1>
+            <p>Hello, {{ user.username }}, you have {{ milestones.count }} milestones:</p>
+        </div>
+        <div class="col-md-6">
+            <div class="btn-group pull-right">
+                <a class="btn btn-success" href="{% url 'task:new_milestone' user.username %}">Add Milestone</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<table class="table">
+    <thead>
+    </thead>
+    <tbody>
+    {% for m in milestones %}
+        <tr>
+            <td style="background-color:#{{ m.bg_colour }}; color:#{{ m.fg_colour }}"><b>{{ m.name }}</b>
+                <div class="btn-group pull-right">
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_milestone' user.username m.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot></tfoot>
+</table>
+{% endblock %}
