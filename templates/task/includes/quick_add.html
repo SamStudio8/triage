@@ -6,7 +6,7 @@
 
             <select class="select form-control" name="tasklist" required>
                 <option value="">Task List</option>
-                {% for tasklist in user.tasklists.all %}
+                {% for tasklist in user.tasklists.all|dictsort:"name" %}
                 <option value={{ tasklist.id }}>{{ tasklist.name }}</option>
                 {% endfor %}
             </select>
