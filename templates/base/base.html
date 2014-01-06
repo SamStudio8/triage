@@ -33,6 +33,12 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
                             <li class="dropdown">
+                                <a class="dropdown-toggle" href="#" data-toggle="dropdown">Quick Add <strong class="caret"></strong></a>
+                                <div class="dropdown-menu dropdown-menu-form">
+                                    {% include 'task/includes/quick_add.html' %}
+                                </div>
+                            </li>
+                            <li class="dropdown">
                             <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{ user.username }} <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'account:logout' %}">Logout</a></li>

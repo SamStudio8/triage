@@ -108,6 +108,10 @@ h1,h2,h3,h4,h5,h6{
     background-color: #333;
     color: #fff;
 }
+.dropdown-menu-form {
+    width: 400px;
+    padding: 15px;
+}
 
 /* Forms */
 input, textarea, select, .input-group {

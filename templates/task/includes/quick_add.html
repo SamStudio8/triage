@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <form action="{% url 'task:new_task' user.username %}" method="post" role="form">
+            {% csrf_token %}
+            <input type="text" name="name" class="form-control" placeholder="Task Name" autofocus="" required />
+
+            <select class="select form-control" name="tasklist" required>
+                <option value="">Task List</option>
+                {% for tasklist in user.tasklists.all %}
+                <option value={{ tasklist.id }}>{{ tasklist.name }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="hidden" name="progress" value="0" />
+            <button type="submit" class="btn btn-success btn-block">Add Task</button>
+        </form>
+    </div>
+</div>
