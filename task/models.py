@@ -21,7 +21,7 @@ class Task(models.Model):
                                null=True,
                                blank=True)
 #    status = models.ForeignKey('TaskStatus')
-    progress = models.IntegerField(default=0)
+    progress = models.IntegerField(default=0, blank=True)
 
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()

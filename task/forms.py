@@ -55,6 +55,13 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = TaskModels.Task
 
+    def clean(self):
+        cleaned_data = super(TaskForm, self).clean()
+
+        if cleaned_data.get('progress') == None:
+            cleaned_data["progress"] = 0
+        return cleaned_data
+
 class TaskListForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskListForm, self).__init__(*args, **kwargs)
