@@ -33,7 +33,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
                             <li class="dropdown">
-                                <a class="dropdown-toggle" href="#" data-toggle="dropdown">Quick Add <strong class="caret"></strong></a>
+                                <a class="dropdown-toggle" href="#" data-toggle="dropdown"><div class="btn btn-xs btn-success"><span class="glyphicon glyphicon-plus-sign"></span> Task <strong class="caret"></strong></div></a>
                                 <div class="dropdown-menu dropdown-menu-form">
                                     {% include 'task/includes/quick_add.html' %}
                                 </div>
