@@ -1,5 +1,16 @@
 #CHANGELOG
 
+####0.1.265D
+
+Quick Task add form available in navigation bar  
+Allow empty input for `Task.progress` (defaults to 0)
+
+    python manage.py collectstatic
+
+####0.1.257D
+
+URL scheme updated
+
 ####0.1.238D
 
 Prevent users from assigning a task a milestone that they do not own!
