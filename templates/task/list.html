@@ -45,14 +45,25 @@
     <div class="col-md-10">
     {% for tasklist in tasklists %}
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <a id="tl_{{ tasklist.name }}"></a>
                 <h2 class="anchor"><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></h2>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="btn-group pull-right">
                     <a class="btn btn-sm btn-info" href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-eye-open"></span></a>
                     <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+                    <a class="btn btn-sm btn-success" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li class="dropdown">
+                            <div class="dropdown-menu-form">
+                                {% include 'task/includes/quick_add.html' %}
+                            </div>
+                        </li>
+                    </ul>
                     <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                 </div>

@@ -4,13 +4,16 @@
             {% csrf_token %}
             <input type="text" name="name" class="form-control" placeholder="Task Name" autofocus="" required />
 
-            <select class="select form-control" name="tasklist" required>
-                <option value="">Task List</option>
-                {% for tasklist in user.tasklists.all|dictsort:"name" %}
-                <option value={{ tasklist.id }}>{{ tasklist.name }}</option>
-                {% endfor %}
-            </select>
-
+                {% if tasklist %}
+                    <input type="hidden" name="tasklist" value="{{ tasklist.id }}" />
+                {% else %}
+                    <select class="select form-control" name="tasklist" required>
+                        <option value="">Task List</option>
+                        {% for tasklist in user.tasklists.all|dictsort:"name" %}
+                            <option value={{ tasklist.id }}>{{ tasklist.name }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
             <button type="submit" class="btn btn-success btn-block">Add Task</button>
         </form>
     </div>
