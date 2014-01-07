@@ -31,26 +31,22 @@ TEST_DATA = {
         "tasklist": 1,
         "name": "Create a todo list manager",
         "description": "Procrastinate by writing a todo list manager.",
-        "progress": 0
     },
     "task_edit": {
         "tasklist": 1,
         "name": "Become a watermelon farmer",
         "description": "Give up on everything and farm for watermelons.",
-        "progress": 0
     },
     "task_evil_assign": {
         "tasklist": 1,
         "name": "Become a supervillain",
         "description": "Defend metrocity.",
-        "progress": 0
     },
     "task_edit_triage": {
         "triage": 1,
         "tasklist": 1,
         "name": "Become a watermelon farmer",
         "description": "Give up on everything and farm for watermelons.",
-        "progress": 0
     },
     "tasklist_edit": {
         "name": "Life Goals",
