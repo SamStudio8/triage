@@ -69,7 +69,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
             tasklist_id = task.tasklist_id
 
     # Fill in POST with data from the model that is not in the request
-    post = None
+    post = request.POST or None
     if task and request.method == "POST":
         post = request.POST.copy()
         for field in task._meta.fields:
@@ -80,7 +80,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
             if attr not in post:
                 post[attr] = value
 
-    form = TaskForms.TaskForm(request.user.id, post or None,
+    form = TaskForms.TaskForm(request.user.id, post,
             initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
