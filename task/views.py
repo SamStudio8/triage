@@ -2,6 +2,7 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db.models.fields.related import ForeignKey
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.template.defaultfilters import slugify
@@ -67,7 +68,19 @@ def edit_task(request, username, task_id, tasklist_id=None):
                 return HttpResponseRedirect(reverse('home'))
             tasklist_id = task.tasklist_id
 
-    form = TaskForms.TaskForm(request.user.id, request.POST or None,
+    # Fill in POST with data from the model that is not in the request
+    post = None
+    if task and request.method == "POST":
+        post = request.POST.copy()
+        for field in task._meta.fields:
+            attr = field.name
+            value = getattr(task, attr)
+            if value is not None and isinstance(field, ForeignKey):
+                value = value._get_pk_val()
+            if attr not in post:
+                post[attr] = value
+
+    form = TaskForms.TaskForm(request.user.id, post or None,
             initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
