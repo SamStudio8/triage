@@ -1,5 +1,10 @@
 #CHANGELOG
 
+####0.1.271D
+
+Overdue tasks can be rescheduled directly from the dashboard  
+If not creating, `edit_task` will autopopulate POST with missing values from model to allow partial form completion to not throw required field errors
+
 ####0.1.265D
 
 Quick Task add form available in navigation bar  
