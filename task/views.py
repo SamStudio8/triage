@@ -17,9 +17,6 @@ import event.utils as EventUtils
 @login_required
 def list_tasks(request):
     tasklists = request.user.tasklists.all()
-    for tasklist in tasklists:
-        tasklist.completed = tasklist.tasks.filter(completed=True).count()
-        tasklist.uncompleted = tasklist.tasks.filter(completed=False).count()
     return render(request, "task/list.html", {"tasklists": tasklists})
 
 @login_required

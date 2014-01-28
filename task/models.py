@@ -142,6 +142,14 @@ class TaskList(models.Model):
     def has_permission(self, uid):
         return uid == self.user.pk
 
+    @property
+    def num_incomplete(self):
+        return self.tasks.filter(completed=False).count()
+
+    @property
+    def num_complete(self):
+        return self.tasks.filter(completed=True).count()
+
     class Meta:
         ordering = ["-order"]
         unique_together = ("user", "slug")
