@@ -30,7 +30,6 @@ def new_task(request, username, listslug=None):
     else:
         return edit_task(request, username, None, None)
 
-@login_required
 def view_tasklist(request, username, listslug):
     tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
     if not tasklist.has_permission(request.user.pk):
@@ -38,7 +37,6 @@ def view_tasklist(request, username, listslug):
     calendar = TaskUtils.calendarize(request.user.pk, 30, tasklist.pk)
     return render(request, "task/tasklist.html", {"tasklist": tasklist, "calendar": calendar})
 
-@login_required
 def view_task(request, username, task_id):
     task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
     if not task.has_permission(request.user.pk):

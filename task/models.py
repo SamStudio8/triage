@@ -42,7 +42,10 @@ class Task(models.Model):
         return "#%d %s" % (self.local_id, self.name)
 
     def has_permission(self, uid):
-        return uid == self.tasklist.user.pk
+        if self.tasklist.public:
+            return True
+        else:
+            return uid == self.tasklist.user.pk
 
     def is_due(self):
         if self.due_date == self.modified_date:
@@ -135,12 +138,17 @@ class TaskList(models.Model):
     order = models.IntegerField(default=0,
             help_text=("Use to change the order in which your lists appear. "
                 "Higher numbers will take priority."))
+    public = models.BooleanField(default=False,
+            help_text=("Share this tasklist publically - ALL TASKS WILL BE VISIBLE TO ANYONE"))
 
     def __unicode__(self):
         return self.name
 
     def has_permission(self, uid):
-        return uid == self.user.pk
+        if self.public:
+            return True
+        else:
+            return uid == self.user.pk
 
     @property
     def num_incomplete(self):
