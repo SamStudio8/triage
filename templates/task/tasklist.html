@@ -8,15 +8,17 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h1>{{ tasklist.name }}</h1>
+            <h1>{% if not edit_permission %}{{ tasklist.user.username }}/{% endif %}{{ tasklist.name }}</h1>
             <p>{{ tasklist.description }}</p>
         </div>
         <div class="col-md-6">
+            {% if edit_permission %}
             <div class="btn-group pull-right">
                 <a class="btn btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
                 <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -63,12 +65,8 @@
 </div>
 
 <div class="row">
-    <div class="col-md-2">
-        <div class="list-group">
-        </div>
-    </div>
-    <div class="col-md-10">
-                {% if tasklist.tasks.all %}
+    <div class="col-md-12">
+               {% if tasklist.tasks.all %}
                 <table class="table table-hover table-condensed">
                     <thead>
                         <tr>
@@ -111,15 +109,17 @@
                         {% endif %}
 
                         <td>
-                        {% if task.completed %}
-                            <div class="btn-group pull-right">
-                                <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
-                            </div>
-                        {% else %}
-                            <div class="btn-group pull-right">
-                                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
-                            </div>
+                        {% if edit_permission %}
+                            {% if task.completed %}
+                                <div class="btn-group pull-right">
+                                    <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+                                </div>
+                            {% else %}
+                                <div class="btn-group pull-right">
+                                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                                </div>
+                            {% endif %}
                         {% endif %}
                         </td>
                         </tr>

@@ -23,35 +23,39 @@ def list_tasks(request):
 def new_task(request, username, listslug=None):
     if listslug:
         tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
-        if tasklist.has_permission(request.user.pk):
+        if tasklist.has_view_permission(request.user.pk):
             return edit_task(request, username, None, tasklist.pk)
         else:
             return HttpResponseRedirect(reverse('home'))
     else:
         return edit_task(request, username, None, None)
 
-@login_required
 def view_tasklist(request, username, listslug):
     tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
-    if not tasklist.has_permission(request.user.pk):
+    if not tasklist.has_view_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
     calendar = TaskUtils.calendarize(request.user.pk, 30, tasklist.pk)
-    return render(request, "task/tasklist.html", {"tasklist": tasklist, "calendar": calendar})
+    edit_permission = tasklist.has_edit_permission(request.user.pk)
+    return render(request, "task/tasklist.html", {"tasklist": tasklist,
+                                                  "calendar": calendar,
+                                                  "edit_permission": edit_permission})
 
-@login_required
 def view_task(request, username, task_id):
     task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
-    if not task.has_permission(request.user.pk):
+    if not task.has_view_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
     history = EventUtils._get_history(task)
-    return render(request, "task/view.html", {"task": task, "history": history})
+    edit_permission = task.has_edit_permission(request.user.pk)
+    return render(request, "task/view.html", {"task": task,
+                                              "history": history,
+                                              "edit_permission": edit_permission})
 
 @login_required
 def edit_task(request, username, task_id, tasklist_id=None):
 
     if tasklist_id:
         tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
-        if not tasklist.has_permission(request.user.pk):
+        if not tasklist.has_view_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
     task = None
@@ -61,7 +65,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
         except TaskModels.Task.DoesNotExist:
             pass
         else:
-            if not task.has_permission(request.user.pk):
+            if not task.has_view_permission(request.user.pk):
                 return HttpResponseRedirect(reverse('home'))
             tasklist_id = task.tasklist_id
 
@@ -99,7 +103,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
 @login_required
 def complete_task(request, username, task_id):
     task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
-    if not task.has_permission(request.user.pk):
+    if not task.has_view_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
     # Don't really like hitting the database for a copy of this but it will
@@ -120,7 +124,7 @@ def complete_task(request, username, task_id):
 @login_required
 def link_task(request, task_id):
     task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if not task.has_permission(request.user.username):
+    if not task.has_view_permission(request.user.username):
         return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskLinkForm(request.user.id, request.POST or None,
@@ -141,7 +145,7 @@ def edit_tasklist(request, username=None, listslug=None):
     tasklist = None
     if username and listslug:
         tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
-        if not tasklist.has_permission(request.user.pk):
+        if not tasklist.has_view_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskListForm(request.POST or None, instance=tasklist)

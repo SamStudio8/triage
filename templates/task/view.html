@@ -9,11 +9,14 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-9">
-            <h4>Task #{{ task.local_id }}</h4>
+            <h4>
+                Task {% if not edit_permission %}{{ task.tasklist.user.username }}/{% endif %}#{{ task.local_id }}
+            </h4>
             <h1>{{ task.name }}</h1>
             <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
         </div>
         <div class="col-sm-3">
+            {% if edit_permission %}
             <div class="btn-group pull-right">
                 <a class="btn btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
                 {% if task.completed %}
@@ -26,6 +29,7 @@
                     </div>
                 {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -81,7 +85,9 @@
 <div class="row">
     <div class="col-md-12">
         <legend>Links
+            {% if edit_permission %}
             <a class="pull-right btn btn-sm btn-success" href="{% url 'task:link_task' task.id %}"><span class="glyphicon glyphicon-link"></span> Add Link</a></legend>
+            {% endif %}
     </div>
     <div class="col-sm-6">
         {% if task.links_in.count > 0 %}

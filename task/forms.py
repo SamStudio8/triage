@@ -80,6 +80,10 @@ class TaskListForm(forms.ModelForm):
                 'description',
                 'order',
             ),
+            Fieldset(
+                'Privacy',
+                'public',
+            ),
             FormActions(
                 Submit('save', 'Save'),
             )

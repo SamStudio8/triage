@@ -1,5 +1,16 @@
 #CHANGELOG
 
+####0.1.274D
+
+Provide an option to share a tasklist and all tasks on that list publically  
+Removed requirement to be logged in to access view_task and view_tasklist  
+
+    python mange.py migrate task
+
+####0.1.273D
+
+Hide completed tasks from the main list by default  
+
 ####0.1.271D
 
 Overdue tasks can be rescheduled directly from the dashboard  
