@@ -41,11 +41,14 @@ class Task(models.Model):
     def __unicode__(self):
         return "#%d %s" % (self.local_id, self.name)
 
-    def has_permission(self, uid):
+    def has_view_permission(self, uid):
         if self.tasklist.public:
             return True
         else:
             return uid == self.tasklist.user.pk
+
+    def has_edit_permission(self, uid):
+          return uid == self.tasklist.user.pk
 
     def is_due(self):
         if self.due_date == self.modified_date:
@@ -144,11 +147,14 @@ class TaskList(models.Model):
     def __unicode__(self):
         return self.name
 
-    def has_permission(self, uid):
+    def has_view_permission(self, uid):
         if self.public:
             return True
         else:
             return uid == self.user.pk
+
+    def has_edit_permission(self, uid):
+          return uid == self.user.pk
 
     @property
     def num_incomplete(self):
