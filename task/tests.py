@@ -96,6 +96,7 @@ class SimpleTaskTest(TestCase):
                 TEST_DATA['user2']['password'])
 
     def test_login_required(self):
+        self.test_add_task()
         url = reverse("task:view_task", kwargs={
             "username": TEST_DATA['user']['username'],
             "task_id": 1
