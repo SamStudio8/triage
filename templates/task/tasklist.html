@@ -1,6 +1,6 @@
 {% extends "base/base.html" %}
 
-{% block title %}{{ tasklist.name }}{% endblock %}
+{% block title %}{% if not edit_permission %}{{ tasklist.user.username }}/{% endif %}{{ tasklist.name }}{% endblock %}
 
 {% block content-head-class %}head-dark{% endblock %}
 {% block content-head %}

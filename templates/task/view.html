@@ -1,7 +1,7 @@
 {% extends "base/base.html" %}
 {% load markup %}
 
-{% block title %}Task #{{ task.local_id }} | {{ task.name }}{% endblock %}
+{% block title %}Task {% if not edit_permission %}{{ task.tasklist.user.username}}/{% endif %}#{{ task.local_id }} | {{ task.name }}{% endblock %}
 
 {% block body-class %}body-task{% endblock %}
 {% block content-head-class %}head-dark{% endblock %}
