@@ -101,7 +101,7 @@ class SimpleTaskTest(TestCase):
             "task_id": 1
         })
         response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next='+url)
+        self.assertRedirects(response, '/account/login/?next=/')
 
         url = reverse("task:new_task", kwargs={
             "username": TEST_DATA['user']['username'],
