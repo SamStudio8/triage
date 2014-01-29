@@ -8,7 +8,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-            <h1>{{ tasklist.name }}</h1>
+            <h1>{% if not edit_permission %}{{ tasklist.user.username }}/{% endif %}{{ tasklist.name }}</h1>
             <p>{{ tasklist.description }}</p>
         </div>
         <div class="col-md-6">

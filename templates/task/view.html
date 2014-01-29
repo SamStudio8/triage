@@ -9,7 +9,9 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-9">
-            <h4>Task #{{ task.local_id }}</h4>
+            <h4>
+                Task {% if not edit_permission %}{{ task.tasklist.user.username }}/{% endif %}#{{ task.local_id }}
+            </h4>
             <h1>{{ task.name }}</h1>
             <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
         </div>
