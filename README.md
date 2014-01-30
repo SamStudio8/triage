@@ -17,7 +17,8 @@ Changes which require further action are listed in CHANGELOG.
 
 ## Configuration
 
-Copy triage/settings_example.py to triage/settings.py and fill in with the correct details such as database driver and static URLs.
+Copy triage/settings_example.py to triage/settings.py and fill in with the correct details such as database driver and static URLs.  
+Copy triage/wsgi_example.py to triage/wsgi.py and add the path (this path may be unneccessary depending on your deployment).
     
     python manage.py syncdb
     python manage.py migrate task
