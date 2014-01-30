@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.1.1-299D
+
+@danharibo strikes again with halfway upsidedown frown functionality  
+
+    python manage.py collectstatic
+
 ####0.1.1
 
 `TaskMilestone` model  
