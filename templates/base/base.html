@@ -26,9 +26,11 @@
                 </div>
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="{% url 'home' %}"><span class="glyphicon glyphicon-list"></span> Task Lists</a></li>
-                        <li><a href="{% url 'task:dashboard' %}"><span class="glyphicon glyphicon-th"></span> Dashboard</a></li>
-                        <li><a href="{% url 'task:calendar' %}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'home' %}"><span class="glyphicon glyphicon-list"></span> Task Lists</a></li>
+                            <li><a href="{% url 'task:dashboard' %}"><span class="glyphicon glyphicon-th"></span> Dashboard</a></li>
+                            <li><a href="{% url 'task:calendar' %}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
+                        {% endif %}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
