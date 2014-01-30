@@ -127,6 +127,8 @@
                 </tbody>
                 <tfoot></tfoot>
                 </table>
+                {% else %}
+                <p class="tasklist-empty-notice">No tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
                 {% endif %}
     </div>
 </div>

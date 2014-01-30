@@ -153,3 +153,10 @@ footer a:link, footer a:visited, footer a:link, footer a:visited {
 	-webkit-transform: rotate(90deg);
 }
 
+/* Task List */
+.tasklist-empty-notice {
+	text-align: center;
+	font-size: 12pt;
+	padding: 0;
+	margin: 0;
+}
