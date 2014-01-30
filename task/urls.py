@@ -25,4 +25,6 @@ urlpatterns = patterns('',
     url(r'^(?P<username>\w+)/list/(?P<listslug>[-\w]+)/new-task/$', TaskViews.new_task, name="new_task"),
     url(r'^(?P<username>\w+)/list/(?P<listslug>[-\w]+)/edit/$', TaskViews.edit_tasklist, name="edit_tasklist"),
     url(r'^(?P<username>\w+)/list/(?P<listslug>[-\w]+)/$', TaskViews.view_tasklist, name="view_tasklist"),
+
+    url(r'^(?P<username>\w+)/$', TaskViews.profile, name="profile"),
 )

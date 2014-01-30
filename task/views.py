@@ -250,3 +250,8 @@ def calendar(request):
     calendar = TaskUtils.calendarize(request.user.pk, 30)
     return render(request, "task/calendar.html", {"calendar": calendar })
 
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    tasklists = TaskUtils.fetch_public_tasklists(user.pk)
+    return render(request, "task/profile.html", {"profile": user,
+                                                 "tasklists": tasklists})

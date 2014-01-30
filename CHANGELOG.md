@@ -1,5 +1,9 @@
 #CHANGELOG
 
+####0.1.288D
+
+Introduced user profiles to display public tasklists
+
 ####0.1.274D
 
 Provide an option to share a tasklist and all tasks on that list publically  

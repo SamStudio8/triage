@@ -69,3 +69,7 @@ def calendarize(uid, num_days, tasklist_id=0):
         for task in sorted(filter(lambda t: t.due_date.day == date.day, tasks), key=lambda t: t.due_date):
             calendar[i]["tasks"].append(task)
     return calendar
+
+def fetch_public_tasklists(uid):
+    return TaskModels.TaskList.objects.filter(user__pk=uid, public=True)
+
