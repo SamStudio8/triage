@@ -78,7 +78,7 @@
                     {% endif %}
                     {{ tasklist.num_incomplete }} tasks ({{ tasklist.num_complete }} completed)
                 </p>
-                {% if tasklist.tasks.all %}
+                {% if tasklist.open_tasks %}
                 <table class="table table-hover table-condensed">
                     <thead>
                         <tr>
@@ -90,7 +90,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for task in tasklist.tasks.all %}
+                    {% for task in tasklist.open_tasks %}
                       {% if not task.completed %}
                             {% if not task.due_date %}
                                 <tr class="warning">
@@ -137,6 +137,9 @@
                 </tbody>
                 <tfoot></tfoot>
                 </table>
+                {% else %}
+                <hr>
+                <p class="tasklist-empty-notice">No unclosed tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
                 {% endif %}
             </div>
         </div>
