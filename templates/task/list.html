@@ -136,7 +136,7 @@
                 </table>
                 {% else %}
                 <hr>
-                <p class="tasklist-empty-notice">No unclosed tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
+                <p class="tasklist-empty-notice">No open tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
                 {% endif %}
             </div>
         </div>
