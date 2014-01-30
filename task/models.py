@@ -156,6 +156,9 @@ class TaskList(models.Model):
     def has_edit_permission(self, uid):
           return uid == self.user.pk
 
+    def open_tasks(self):
+        return self.tasks.filter(completed=False)
+
     @property
     def num_incomplete(self):
         return self.tasks.filter(completed=False).count()
