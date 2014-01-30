@@ -1,5 +1,13 @@
 #CHANGELOG
 
+####0.1.1-306D
+
+Drop /list/ from URL scheme in favour of username/tasklist  
+Move /triage/, /milestone/ to /settings/triage/, /settings/milestone/  
+Show message for lists with no open tasks  
+
+    python manage.py collectstatic
+
 ####0.1.1-299D
 
 @danharibo strikes again with halfway upsidedown frown functionality  

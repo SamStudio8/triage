@@ -38,7 +38,7 @@
     <div class="col-md-2">
         <div class="list-group">
         {% for tasklist in tasklists|dictsort:"name" %}
-            <a href="#tl_{{ tasklist.name }}" class="list-group-item">{{ tasklist.name }}<span class="badge">{{ tasklist.num_incomplete }}</span></a>
+            <a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}" class="list-group-item">{{ tasklist.name }}<span class="badge">{{ tasklist.num_incomplete }}</span></a>
         {% endfor %}
         </div>
     </div>
@@ -46,8 +46,7 @@
     {% for tasklist in tasklists %}
         <div class="row">
             <div class="col-md-8">
-                <a id="tl_{{ tasklist.name }}"></a>
-                <h2 class="anchor"><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></h2>
+                <h2><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></h2>
             </div>
             <div class="col-md-4">
                 <div class="btn-group pull-right">
