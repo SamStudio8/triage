@@ -1,49 +1,25 @@
 #CHANGELOG
 
-####0.1.288D
+####0.1.1
 
-Introduced user profiles to display public tasklists
-
-####0.1.274D
-
-Provide an option to share a tasklist and all tasks on that list publically  
-Removed requirement to be logged in to access view_task and view_tasklist  
-
-    python mange.py migrate task
-
-####0.1.273D
-
-Hide completed tasks from the main list by default  
-
-####0.1.271D
-
-Overdue tasks can be rescheduled directly from the dashboard  
-If not creating, `edit_task` will autopopulate POST with missing values from model to allow partial form completion to not throw required field errors
-
-####0.1.265D
-
-Quick Task add form available in navigation bar  
-Allow empty input for `Task.progress` (defaults to 0)
-
-    python manage.py collectstatic
-
-####0.1.257D
-
-URL scheme updated
-
-####0.1.238D
-
-Prevent users from assigning a task a milestone that they do not own!
-
-####0.1.237D
-
-Improve interfaces on smaller devices  
-Added glorious favicon, courtesy of @danharibo  
+`TaskMilestone` model  
 `TaskList` detail view  
-`TaskMilestone` model
+Added glorious favicon, courtesy of @danharibo  
+Improve interfaces on smaller devices  
+Prevent users from assigning a task a milestone that they do not own!  
+URL scheme updated  
+Allow empty input for `Task.progress` (defaults to 0)  
+Quick Task add form available in navigation bar  
+If not creating, `edit_task` will autopopulate POST with missing values from model to allow partial form completion to not throw required field errors  
+Overdue tasks can be rescheduled directly from the dashboard  
+Hide completed tasks from the main list by default  
+Removed requirement to be logged in to access view_task and view_tasklist  
+Provide an option to share a tasklist and all tasks on that list publically  
+Introduced user profiles to display public tasklists  
 
-    python manage.py collectstatic
+
     python mange.py migrate task
+    python manage.py collectstatic
 
 ####0.1.0
 
