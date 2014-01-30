@@ -31,26 +31,22 @@ TEST_DATA = {
         "tasklist": 1,
         "name": "Create a todo list manager",
         "description": "Procrastinate by writing a todo list manager.",
-        "progress": 0
     },
     "task_edit": {
         "tasklist": 1,
         "name": "Become a watermelon farmer",
         "description": "Give up on everything and farm for watermelons.",
-        "progress": 0
     },
     "task_evil_assign": {
         "tasklist": 1,
         "name": "Become a supervillain",
         "description": "Defend metrocity.",
-        "progress": 0
     },
     "task_edit_triage": {
         "triage": 1,
         "tasklist": 1,
         "name": "Become a watermelon farmer",
         "description": "Give up on everything and farm for watermelons.",
-        "progress": 0
     },
     "tasklist_edit": {
         "name": "Life Goals",
@@ -100,17 +96,6 @@ class SimpleTaskTest(TestCase):
                 TEST_DATA['user2']['password'])
 
     def test_login_required(self):
-        url = reverse("task:add_tasklist")
-        response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next='+url)
-
-        url = reverse("task:view_task", kwargs={
-            "username": TEST_DATA['user']['username'],
-            "task_id": 1
-        })
-        response = self.client.get(url)
-        self.assertRedirects(response, '/account/login/?next='+url)
-
         url = reverse("task:new_task", kwargs={
             "username": TEST_DATA['user']['username'],
             "listslug": slugify(TEST_DATA['tasklist']['name']),
@@ -132,7 +117,9 @@ class SimpleTaskTest(TestCase):
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
-        url = reverse("task:add_tasklist")
+        url = reverse("task:add_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
 
@@ -232,7 +219,9 @@ class SimpleTaskTest(TestCase):
                 username=TEST_DATA['user']['username'],
                 password=TEST_DATA['user']['password']
         )
-        url = reverse("task:add_tasklist")
+        url = reverse("task:add_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
@@ -307,7 +296,9 @@ class SimpleTaskTest(TestCase):
     def test_task_history(self):
         self.test_add_task()
 
-        url = reverse("task:add_tasklist")
+        url = reverse("task:add_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
         response = self.client.post(url, TEST_DATA['tasklist_2'], follow=True)
 
         url = reverse("task:edit_task", kwargs={

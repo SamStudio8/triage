@@ -1,0 +1,9 @@
+<div class="row">
+    <div class="col-md-12">
+        <form action="{% url 'task:edit_task' user.username task.local_id %}" method="post" role="form">
+            {% csrf_token %}
+            <input type="text" id="due_date" name="due_date" class="datetimeinput form-control" data-format="YYYY-MM-DD H:mm" value="{% now "Y-m-d H:i" %}" required />
+            <button type="submit" class="btn btn-warning btn-block">Reschedule</button>
+        </form>
+    </div>
+</div>

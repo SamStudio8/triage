@@ -17,8 +17,11 @@ class Task(models.Model):
     triage = models.ForeignKey('TaskTriageCategory',
                                null=True,
                                blank=True)
+    milestone = models.ForeignKey('TaskMilestone',
+                               null=True,
+                               blank=True)
 #    status = models.ForeignKey('TaskStatus')
-    progress = models.IntegerField(default=0)
+    progress = models.IntegerField(default=0, blank=True)
 
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
@@ -36,10 +39,16 @@ class Task(models.Model):
         ordering = ["completed", "due_date", "-triage__priority"]
 
     def __unicode__(self):
-        return "#%d %s" % (self.id, self.name)
+        return "#%d %s" % (self.local_id, self.name)
 
-    def has_permission(self, uid):
-        return uid == self.tasklist.user.pk
+    def has_view_permission(self, uid):
+        if self.tasklist.public:
+            return True
+        else:
+            return uid == self.tasklist.user.pk
+
+    def has_edit_permission(self, uid):
+          return uid == self.tasklist.user.pk
 
     def is_due(self):
         if self.due_date == self.modified_date:
@@ -93,6 +102,26 @@ class TaskTriageCategory(models.Model):
     class Meta:
         ordering = ["-priority"]
 
+class TaskMilestone(models.Model):
+    """
+    TODO
+      Milestones are currently a property of a user but might change this to 
+      be on a per-tasklist basis in future
+    """
+    user = models.ForeignKey(User,
+                            verbose_name="owner",
+                            related_name="milestones")
+    name = models.CharField(max_length=30)
+    due_date = models.DateTimeField(null=True, blank=True)
+    fg_colour = models.CharField(max_length=6)
+    bg_colour = models.CharField(max_length=6)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["-due_date"]
+
 #class TaskStatus(models.Model):
 #    user = models.ForeignKey(User)
 #    name = models.CharField(max_length=30)
@@ -109,13 +138,31 @@ class TaskList(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)
     description = models.CharField(max_length=255, blank=True)
-    order = models.IntegerField(default=0)
+    order = models.IntegerField(default=0,
+            help_text=("Use to change the order in which your lists appear. "
+                "Higher numbers will take priority."))
+    public = models.BooleanField(default=False,
+            help_text=("Share this tasklist publically - ALL TASKS WILL BE VISIBLE TO ANYONE"))
 
     def __unicode__(self):
         return self.name
 
-    def has_permission(self, uid):
-        return uid == self.user.pk
+    def has_view_permission(self, uid):
+        if self.public:
+            return True
+        else:
+            return uid == self.user.pk
+
+    def has_edit_permission(self, uid):
+          return uid == self.user.pk
+
+    @property
+    def num_incomplete(self):
+        return self.tasks.filter(completed=False).count()
+
+    @property
+    def num_complete(self):
+        return self.tasks.filter(completed=True).count()
 
     class Meta:
         ordering = ["-order"]
