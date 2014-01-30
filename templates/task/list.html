@@ -91,16 +91,15 @@
                     </thead>
                     <tbody>
                     {% for task in tasklist.open_tasks %}
-                      {% if not task.completed %}
-                            {% if not task.due_date %}
-                                <tr class="warning">
-                            {% elif task.is_due == -1 %}
-                                <tr class="danger">
-                            {% elif task.is_due == 1 %}
-                                <tr class="warning">
-                            {% else %}
-                                <tr>
-                            {% endif %}
+                        {% if not task.due_date %}
+                            <tr class="warning">
+                        {% elif task.is_due == -1 %}
+                            <tr class="danger">
+                        {% elif task.is_due == 1 %}
+                            <tr class="warning">
+                        {% else %}
+                            <tr>
+                        {% endif %}
                         <td class="text-center">{{ task.local_id }}</td>
                         <td class="text-center">
                             <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
@@ -132,7 +131,6 @@
                         {% endif %}
                         </td>
                         </tr>
-                        {% endif %}
                 {% endfor %}
                 </tbody>
                 <tfoot></tfoot>
