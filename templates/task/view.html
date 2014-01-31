@@ -41,7 +41,11 @@
         <legend>Description</legend>
         <div class="panel panel-info">
             <div class="panel-body panel-description">
+            {% if task.description %}
                 {{ task.description|markup_markdown }}
+            {% else %}
+                <span class="missing-property">No description</span>
+            {% endif %}
             </div>
         </div>
     </div>
@@ -70,11 +74,19 @@
                 <tbody>
                 <tr>
                     <td class="col-md-4"><b>Due</b></td>
+                    {% if task.due_date %}
                     <td>{{ task.due_date }}</td>
+                    {% else %}
+                    <td><span class="missing-property">No due date</span></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td class="col-md-4"><b>Milestone</b></td>
+                    {% if task.milestone %}
                     <td><span class="label label-default" title="{{ task.milestone.due_date }}" style="background-color:#{{ task.milestone.bg_colour }}; color:#{{ task.milestone.fg_colour }}">{{ task.milestone.name }}</span> {{ task.milestone.due_date }}</td>
+                    {% else %}
+                    <td><span class="missing-property">No milestone</span></td>
+                    {% endif %}
                 </tr>
                 </tbody>
             </table>
