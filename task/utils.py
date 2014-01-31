@@ -66,7 +66,7 @@ def calendarize(uid, num_days, tasklist_id=0):
         calendar[i]["day"] = date.day
         calendar[i]["datestamp"] = "%d %d" % (date.month, date.day)
         calendar[i]["tasks"] = []
-        for task in sorted(filter(lambda t: t.due_date.day == date.day, tasks), key=lambda t: t.due_date):
+        for task in sorted(filter(lambda t: t.due_date.date() == date.date(), tasks), key=lambda t: t.due_date):
             calendar[i]["tasks"].append(task)
     return calendar
 
