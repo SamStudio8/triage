@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.1.1-310D
+
+Catch empty attributes on `view_task`  
+
+    python manage.py collectstatic
+
 ####0.1.1-306D
 
 Drop /list/ from URL scheme in favour of username/tasklist  
