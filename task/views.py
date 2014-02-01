@@ -159,12 +159,19 @@ def edit_tasklist(request, username=None, listslug=None):
     form = TaskForms.TaskListForm(request.POST or None, instance=tasklist)
     if form.is_valid():
         tasklist = form.save(commit=False)
+
+        # Update the redirect (if needed) if the slug will be changed!
+        redirect_to = request.POST.get('next', "/")
+        if tasklist.slug != slugify(form.cleaned_data["name"]):
+            if tasklist.slug in redirect_to:
+                redirect_to = redirect_to.replace(tasklist.slug, slugify(form.cleaned_data["name"]))
+
         if not form.instance.pk:
             # New list, attach user
             tasklist.user = request.user
             tasklist.slug = slugify(form.cleaned_data["name"])
         tasklist.save()
-        redirect_to = request.POST.get('next', "/")
+
         return HttpResponseRedirect(redirect_to)
 
     redirect_to = request.GET.get('next', "/")
