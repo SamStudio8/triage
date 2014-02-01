@@ -97,8 +97,14 @@ def edit_task(request, username, task_id, tasklist_id=None):
 
         # Save the history
         TaskEvents.FieldChange(request, original, task)
-        return HttpResponseRedirect(reverse('home'))
-    return render(request, "task/changetask.html", {"form": form, "task": task})
+
+        redirect_to = request.POST.get('next', "/")
+        return HttpResponseRedirect(redirect_to)
+
+    redirect_to = request.GET.get('next', "/")
+    return render(request, "task/changetask.html", {"form": form,
+                                                    "task": task,
+                                                    "next": redirect_to})
 
 @login_required
 def complete_task(request, username, task_id):
@@ -156,8 +162,13 @@ def edit_tasklist(request, username=None, listslug=None):
             tasklist.user = request.user
             tasklist.slug = slugify(form.cleaned_data["name"])
         tasklist.save()
-        return HttpResponseRedirect(reverse('home'))
-    return render(request, "task/changelist.html", {"form": form, "tasklist": tasklist})
+        redirect_to = request.POST.get('next', "/")
+        return HttpResponseRedirect(redirect_to)
+
+    redirect_to = request.GET.get('next', "/")
+    return render(request, "task/changelist.html", {"form": form,
+                                                    "tasklist": tasklist,
+                                                    "next": redirect_to})
 
 @login_required
 def list_triage_category(request, username):
