@@ -56,11 +56,11 @@
                 <tbody>
                 <tr>
                     <td class="col-md-4"><b>Created</b></td>
-                    <td>{{ task.creation_date }}</td>
+                    <td>{{ task.creation_date }} by <a href="{% url 'task:profile' task.created_by.username %}">{{ task.created_by.username }}</a></td>
                 </tr>
                 <tr>
                     <td class="col-md-4"><b>Updated</b></td>
-                    <td>{{ task.modified_date }}</td>
+                    <td>{{ task.modified_date }} by <a href="{% url 'task:profile' task.modified_by.username %}">{{ task.modified_by.username }}</a></td>
                 </tr>
                 <tr>
                     <td class="col-md-4"><b>Completed</b></td>

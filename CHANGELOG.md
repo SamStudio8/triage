@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.1.1-328D
+
+Added fields to `Task`: `Task.created_by`, `Task.modified_by`
+
+    python mange.py migrate task
+
 ####0.1.1-316D
 
 Following a POST users will typically be redirected to the previous page  
