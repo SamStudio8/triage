@@ -4,7 +4,8 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 
-from event import models as EventModels
+import event.models as EventModels
+import event.utils as EventUtils
 
 class Task(models.Model):
     _id = models.IntegerField()
@@ -27,10 +28,7 @@ class Task(models.Model):
     progress = models.IntegerField(default=0, blank=True)
 
     creation_date = models.DateTimeField()
-    created_by = models.ForeignKey(User, null=True, blank=True, related_name="created_tasks")
-
     modified_date = models.DateTimeField()
-    modified_by = models.ForeignKey(User, null=True, blank=True, related_name="modified_tasks")
 
     completed = models.BooleanField()
     completed_date = models.DateTimeField(null=True, blank=True)
@@ -69,6 +67,20 @@ class Task(models.Model):
         else:
             # OK
             return 0
+
+    @property
+    def created_by(self):
+        try:
+            return EventUtils._get_history(self)[0].user
+        except IndexError:
+            return None
+
+    @property
+    def modified_by(self):
+        try:
+            return EventUtils._get_history(self).reverse()[0].user
+        except IndexError:
+            return None
 
     @property
     def user_id(self):
