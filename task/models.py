@@ -31,6 +31,7 @@ class Task(models.Model):
     completed_date = models.DateTimeField(null=True, blank=True)
 
     RECORD_OPTIONS = {
+        "insignificant": [ "modified_date" ],
         "invisible": [ "modified_date" ],
         "no_expand": [ "description" ]
     }

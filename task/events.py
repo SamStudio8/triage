@@ -8,26 +8,39 @@ def FieldChange(request, old, new):
     if old and old.pk is not None:
         event = None
 
+        changed_fields = {}
         for field, new_data in new.__dict__.iteritems():
             if field[0] == "_":
                 continue
 
             old_data = old.__dict__.get(field)
             if old_data != new_data:
-                if event is None:
-                    # New historical event record
-                    event = EventModels.EventRecord(
-                            content_type=ContentType.objects.get_for_model(old),
-                            object_id=old.pk,
-                            user_id=request.user.id
-                    )
-                    event.save()
+                changed_fields[field] = {
+                        "old_data": old_data,
+                        "new_data": new_data
+                }
 
+        model = ContentType.objects.get_for_model(old).model_class()
+        insignificant_fields = model.RECORD_OPTIONS.get("insignificant", [])
+        from django.core.mail import send_mail
+
+        send_mail('Subject here', str(insignificant_fields)+' '+str(changed_fields), 'from@example.com',
+                    ['sam.n@studio8media.co.uk'], fail_silently=False)
+        if len([f for f in changed_fields if f not in insignificant_fields]) > 0:
+            # New historical event record
+            event = EventModels.EventRecord(
+                    content_type=ContentType.objects.get_for_model(old),
+                    object_id=old.pk,
+                    user_id=request.user.id
+            )
+            event.save()
+
+            for field in changed_fields:
                 # Create field change event
                 change = EventModels.EventFieldChange(
                         field=field,
-                        original=old_data,
-                        new=new_data
+                        original=changed_fields[field]["old_data"],
+                        new=changed_fields[field]["new_data"]
                 )
                 change.save()
 
