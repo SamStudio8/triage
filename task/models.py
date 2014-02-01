@@ -4,7 +4,8 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 
-from event import models as EventModels
+import event.models as EventModels
+import event.utils as EventUtils
 
 class Task(models.Model):
     _id = models.IntegerField()
@@ -69,6 +70,20 @@ class Task(models.Model):
         else:
             # OK
             return 0
+
+    @property
+    def creator(self):
+        try:
+            return EventUtils._get_history(self)[0].user.username
+        except IndexError:
+            return None
+
+    @property
+    def modifier(self):
+        try:
+            return EventUtils._get_history(self).reverse()[0].user.username
+        except IndexError:
+            return None
 
     @property
     def user_id(self):
