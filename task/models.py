@@ -28,10 +28,7 @@ class Task(models.Model):
     progress = models.IntegerField(default=0, blank=True)
 
     creation_date = models.DateTimeField()
-    created_by = models.ForeignKey(User, null=True, blank=True, related_name="created_tasks")
-
     modified_date = models.DateTimeField()
-    modified_by = models.ForeignKey(User, null=True, blank=True, related_name="modified_tasks")
 
     completed = models.BooleanField()
     completed_date = models.DateTimeField(null=True, blank=True)
