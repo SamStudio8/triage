@@ -69,14 +69,14 @@ class Task(models.Model):
             return 0
 
     @property
-    def creator(self):
+    def created_by(self):
         try:
             return EventUtils._get_history(self)[0].user.username
         except IndexError:
             return None
 
     @property
-    def modifier(self):
+    def modified_by(self):
         try:
             return EventUtils._get_history(self).reverse()[0].user.username
         except IndexError:
