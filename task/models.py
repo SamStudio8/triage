@@ -1,6 +1,7 @@
 import datetime
 from django.contrib.auth.models import User
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 
 from event import models as EventModels
@@ -171,6 +172,11 @@ class TaskList(models.Model):
     class Meta:
         ordering = ["-order"]
         unique_together = ("user", "slug")
+
+    # Update slug
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(TaskList, self).save(*args, **kwargs)
 
 class TaskLinkType(models.Model):
     user = models.ForeignKey(User)
