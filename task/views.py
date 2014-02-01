@@ -156,7 +156,7 @@ def edit_tasklist(request, username=None, listslug=None):
         if not tasklist.has_view_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
-    form = TaskForms.TaskListForm(request.POST or None, instance=tasklist)
+    form = TaskForms.TaskListForm(request.user.id, request.POST or None, instance=tasklist)
     if form.is_valid():
         tasklist = form.save(commit=False)
 
