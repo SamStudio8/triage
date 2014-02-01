@@ -1,5 +1,12 @@
 #CHANGELOG
 
+####0.1.1-340D
+
+Use `EventRecord` to determine creator and last modifier  
+Removed recently added fields: `Task.created_by`, `Task.modified_by`
+
+    python mange.py migrate task
+
 ####0.1.1-328D
 
 Added fields to `Task`: `Task.created_by`, `Task.modified_by`
