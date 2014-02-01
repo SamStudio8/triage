@@ -1,7 +1,12 @@
-Hi there!
-Someone requested a password reset for email {{ email }}.
+Hi {{ user.first_name }}!
+Someone has requested a password reset on triage.ironowl.io for email {{ user.email }}.
 To change your password please follow the link below:
 
-http://triage.ironowl.io/{% url 'account:password_reset_confirm' uid token %}
+https://triage.ironowl.io/{% url 'account:password_reset_confirm' uid token %}
 
-If you did not request this e-mail please ignore it.
+In case you've forgotten, your username is {{ user.username }}.
+
+If you did not request this e-mail you are safe to just ignore it.
+
+Thanks,
+Triage Team
