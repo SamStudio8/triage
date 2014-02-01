@@ -93,10 +93,6 @@ def edit_task(request, username, task_id, tasklist_id=None):
             original = None
 
         task = form.save(commit=False)
-        if not form.instance.pk:
-            # New task, attach creator
-            task.created_by = request.user
-        task.modified_by = request.user
         task.save()
 
         # Save the history
