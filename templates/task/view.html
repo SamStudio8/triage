@@ -25,7 +25,7 @@
                     </div>
                 {% else %}
                     <div class="btn-group pull-right">
-                        <a class="btn btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                        <a class="btn btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={% url 'task:view_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                     </div>
                 {% endif %}
             </div>

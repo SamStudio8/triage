@@ -125,7 +125,7 @@
                         {% else %}
                             <div class="btn-group pull-right">
                                 <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={% url 'home' %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={% url 'home' %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                             </div>
                         {% endif %}
                         </td>
@@ -136,7 +136,7 @@
                 </table>
                 {% else %}
                 <hr>
-                <p class="tasklist-empty-notice">No open tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
+                <p class="tasklist-empty-notice">No open tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}?next={% url 'home' %}">New Task</a></p>
                 {% endif %}
             </div>
         </div>

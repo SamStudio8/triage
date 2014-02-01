@@ -125,7 +125,9 @@ def complete_task(request, username, task_id):
 
     # Save the history
     TaskEvents.FieldChange(request, original, task)
-    return HttpResponseRedirect(reverse('home'))
+
+    redirect_to = request.GET.get('next', "/")
+    return HttpResponseRedirect(redirect_to)
 
 @login_required
 def link_task(request, task_id):
