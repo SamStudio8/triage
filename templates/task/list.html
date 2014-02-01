@@ -51,7 +51,7 @@
             <div class="col-md-4">
                 <div class="btn-group pull-right">
                     <a class="btn btn-sm btn-info" href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-eye-open"></span></a>
-                    <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+                    <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
                     <a class="btn btn-sm btn-success" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
@@ -63,7 +63,7 @@
                             </div>
                         </li>
                     </ul>
-                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                 </div>
             </div>
@@ -124,8 +124,8 @@
                             </div>
                         {% else %}
                             <div class="btn-group pull-right">
-                                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                             </div>
                         {% endif %}
                         </td>
@@ -136,7 +136,7 @@
                 </table>
                 {% else %}
                 <hr>
-                <p class="tasklist-empty-notice">No open tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
+                <p class="tasklist-empty-notice">No open tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}?next={{ current_url }}">New Task</a></p>
                 {% endif %}
             </div>
         </div>

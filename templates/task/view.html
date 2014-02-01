@@ -18,14 +18,14 @@
         <div class="col-sm-3">
             {% if edit_permission %}
             <div class="btn-group pull-right">
-                <a class="btn btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
+                <a class="btn btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current.url }}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
                 {% if task.completed %}
                     <div class="btn-group pull-right">
                         <a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                     </div>
                 {% else %}
                     <div class="btn-group pull-right">
-                        <a class="btn btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                        <a class="btn btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                     </div>
                 {% endif %}
             </div>
