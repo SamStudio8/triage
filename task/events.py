@@ -22,10 +22,6 @@ def FieldChange(request, old, new):
 
         model = ContentType.objects.get_for_model(old).model_class()
         insignificant_fields = model.RECORD_OPTIONS.get("insignificant", [])
-        from django.core.mail import send_mail
-
-        send_mail('Subject here', str(insignificant_fields)+' '+str(changed_fields), 'from@example.com',
-                    ['sam.n@studio8media.co.uk'], fail_silently=False)
         if len([f for f in changed_fields if f not in insignificant_fields]) > 0:
             # New historical event record
             event = EventModels.EventRecord(
