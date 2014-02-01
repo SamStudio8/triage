@@ -162,7 +162,7 @@ def edit_tasklist(request, username=None, listslug=None):
 
         # Update the redirect (if needed) if the slug will be changed!
         redirect_to = request.POST.get('next', "/")
-        if tasklist.slug != slugify(form.cleaned_data["name"]):
+        if tasklist.id and tasklist.slug != slugify(form.cleaned_data["name"]):
             if tasklist.slug in redirect_to:
                 redirect_to = redirect_to.replace(tasklist.slug, slugify(form.cleaned_data["name"]))
 
