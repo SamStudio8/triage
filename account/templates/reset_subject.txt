@@ -1,1 +1,1 @@
-Password Reset
+Triage Password Reset for {{ user.first_name }}

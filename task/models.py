@@ -1,9 +1,11 @@
 import datetime
 from django.contrib.auth.models import User
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 
-from event import models as EventModels
+import event.models as EventModels
+import event.utils as EventUtils
 
 class Task(models.Model):
     _id = models.IntegerField()
@@ -21,16 +23,18 @@ class Task(models.Model):
                                null=True,
                                blank=True)
 #    status = models.ForeignKey('TaskStatus')
+
+    due_date = models.DateTimeField(null=True, blank=True)
     progress = models.IntegerField(default=0, blank=True)
 
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
-    due_date = models.DateTimeField(null=True, blank=True)
 
     completed = models.BooleanField()
     completed_date = models.DateTimeField(null=True, blank=True)
 
     RECORD_OPTIONS = {
+        "insignificant": [ "modified_date" ],
         "invisible": [ "modified_date" ],
         "no_expand": [ "description" ]
     }
@@ -63,6 +67,20 @@ class Task(models.Model):
         else:
             # OK
             return 0
+
+    @property
+    def created_by(self):
+        try:
+            return EventUtils._get_history(self)[0].user
+        except IndexError:
+            return None
+
+    @property
+    def modified_by(self):
+        try:
+            return EventUtils._get_history(self).reverse()[0].user
+        except IndexError:
+            return None
 
     @property
     def user_id(self):
@@ -156,6 +174,9 @@ class TaskList(models.Model):
     def has_edit_permission(self, uid):
           return uid == self.user.pk
 
+    def open_tasks(self):
+        return self.tasks.filter(completed=False)
+
     @property
     def num_incomplete(self):
         return self.tasks.filter(completed=False).count()
@@ -167,6 +188,11 @@ class TaskList(models.Model):
     class Meta:
         ordering = ["-order"]
         unique_together = ("user", "slug")
+
+    # Update slug
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(TaskList, self).save(*args, **kwargs)
 
 class TaskLinkType(models.Model):
     user = models.ForeignKey(User)

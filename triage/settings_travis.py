@@ -99,6 +99,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    "task.context_processors.current_url",
+)
+
 ROOT_URLCONF = 'triage.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.

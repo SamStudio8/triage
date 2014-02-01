@@ -23,7 +23,7 @@ def list_tasks(request):
 def new_task(request, username, listslug=None):
     if listslug:
         tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
-        if tasklist.has_view_permission(request.user.pk):
+        if tasklist.has_edit_permission(request.user.pk):
             return edit_task(request, username, None, tasklist.pk)
         else:
             return HttpResponseRedirect(reverse('home'))
@@ -55,7 +55,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
 
     if tasklist_id:
         tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
-        if not tasklist.has_view_permission(request.user.pk):
+        if not tasklist.has_edit_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
     task = None
@@ -65,7 +65,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
         except TaskModels.Task.DoesNotExist:
             pass
         else:
-            if not task.has_view_permission(request.user.pk):
+            if not task.has_edit_permission(request.user.pk):
                 return HttpResponseRedirect(reverse('home'))
             tasklist_id = task.tasklist_id
 
@@ -95,15 +95,23 @@ def edit_task(request, username, task_id, tasklist_id=None):
         task = form.save(commit=False)
         task.save()
 
-        # Save the history
+        # Save the history, make a CreationEvent if Task is new
+        if not original:
+            TaskEvents.CreationEvent(request, task)
         TaskEvents.FieldChange(request, original, task)
-        return HttpResponseRedirect(reverse('home'))
-    return render(request, "task/changetask.html", {"form": form, "task": task})
+
+        redirect_to = request.POST.get('next', "/")
+        return HttpResponseRedirect(redirect_to)
+
+    redirect_to = request.GET.get('next', "/")
+    return render(request, "task/changetask.html", {"form": form,
+                                                    "task": task,
+                                                    "next": redirect_to})
 
 @login_required
 def complete_task(request, username, task_id):
     task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
-    if not task.has_view_permission(request.user.pk):
+    if not task.has_edit_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
     # Don't really like hitting the database for a copy of this but it will
@@ -119,12 +127,14 @@ def complete_task(request, username, task_id):
 
     # Save the history
     TaskEvents.FieldChange(request, original, task)
-    return HttpResponseRedirect(reverse('home'))
+
+    redirect_to = request.GET.get('next', "/")
+    return HttpResponseRedirect(redirect_to)
 
 @login_required
 def link_task(request, task_id):
     task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if not task.has_view_permission(request.user.username):
+    if not task.has_edit_permission(request.user.username):
         return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskLinkForm(request.user.id, request.POST or None,
@@ -145,19 +155,31 @@ def edit_tasklist(request, username=None, listslug=None):
     tasklist = None
     if username and listslug:
         tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
-        if not tasklist.has_view_permission(request.user.pk):
+        if not tasklist.has_edit_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
-    form = TaskForms.TaskListForm(request.POST or None, instance=tasklist)
+    form = TaskForms.TaskListForm(request.user.id, request.POST or None, instance=tasklist)
     if form.is_valid():
         tasklist = form.save(commit=False)
+
+        # Update the redirect (if needed) if the slug will be changed!
+        redirect_to = request.POST.get('next', "/")
+        if tasklist.id and tasklist.slug != slugify(form.cleaned_data["name"]):
+            if tasklist.slug in redirect_to:
+                redirect_to = redirect_to.replace(tasklist.slug, slugify(form.cleaned_data["name"]))
+
         if not form.instance.pk:
             # New list, attach user
             tasklist.user = request.user
             tasklist.slug = slugify(form.cleaned_data["name"])
         tasklist.save()
-        return HttpResponseRedirect(reverse('home'))
-    return render(request, "task/changelist.html", {"form": form, "tasklist": tasklist})
+
+        return HttpResponseRedirect(redirect_to)
+
+    redirect_to = request.GET.get('next', "/")
+    return render(request, "task/changelist.html", {"form": form,
+                                                    "tasklist": tasklist,
+                                                    "next": redirect_to})
 
 @login_required
 def list_triage_category(request, username):

@@ -38,7 +38,7 @@
     <div class="col-md-2">
         <div class="list-group">
         {% for tasklist in tasklists|dictsort:"name" %}
-            <a href="#tl_{{ tasklist.name }}" class="list-group-item">{{ tasklist.name }}<span class="badge">{{ tasklist.num_incomplete }}</span></a>
+            <a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}" class="list-group-item">{{ tasklist.name }}<span class="badge">{{ tasklist.num_incomplete }}</span></a>
         {% endfor %}
         </div>
     </div>
@@ -46,13 +46,12 @@
     {% for tasklist in tasklists %}
         <div class="row">
             <div class="col-md-8">
-                <a id="tl_{{ tasklist.name }}"></a>
-                <h2 class="anchor"><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></h2>
+                <h2><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></h2>
             </div>
             <div class="col-md-4">
                 <div class="btn-group pull-right">
                     <a class="btn btn-sm btn-info" href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-eye-open"></span></a>
-                    <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+                    <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
                     <a class="btn btn-sm btn-success" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
@@ -64,7 +63,7 @@
                             </div>
                         </li>
                     </ul>
-                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
                     <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
                 </div>
             </div>
@@ -78,7 +77,7 @@
                     {% endif %}
                     {{ tasklist.num_incomplete }} tasks ({{ tasklist.num_complete }} completed)
                 </p>
-                {% if tasklist.tasks.all %}
+                {% if tasklist.open_tasks %}
                 <table class="table table-hover table-condensed">
                     <thead>
                         <tr>
@@ -90,17 +89,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for task in tasklist.tasks.all %}
-                      {% if not task.completed %}
-                            {% if not task.due_date %}
-                                <tr class="warning">
-                            {% elif task.is_due == -1 %}
-                                <tr class="danger">
-                            {% elif task.is_due == 1 %}
-                                <tr class="warning">
-                            {% else %}
-                                <tr>
-                            {% endif %}
+                    {% for task in tasklist.open_tasks %}
+                        {% if not task.due_date %}
+                            <tr class="warning">
+                        {% elif task.is_due == -1 %}
+                            <tr class="danger">
+                        {% elif task.is_due == 1 %}
+                            <tr class="warning">
+                        {% else %}
+                            <tr>
+                        {% endif %}
                         <td class="text-center">{{ task.local_id }}</td>
                         <td class="text-center">
                             <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
@@ -126,17 +124,19 @@
                             </div>
                         {% else %}
                             <div class="btn-group pull-right">
-                                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                                <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                             </div>
                         {% endif %}
                         </td>
                         </tr>
-                        {% endif %}
                 {% endfor %}
                 </tbody>
                 <tfoot></tfoot>
                 </table>
+                {% else %}
+                <hr>
+                <p class="tasklist-empty-notice">No open tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}?next={{ current_url }}">New Task</a></p>
                 {% endif %}
             </div>
         </div>

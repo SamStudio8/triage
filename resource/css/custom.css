@@ -10,11 +10,6 @@ h1,h2,h3,h4,h5,h6{
     margin: 0px;
 }
 
-.anchor {
-    padding-top: 70px;
-    margin-top: -70px;
-}
-
 /* Fixed Content ID */
 #wrapper {
     min-height: 100%;
@@ -61,6 +56,10 @@ h1,h2,h3,h4,h5,h6{
 .text-small-task {
     font-size: 0.75em;
     color: #666;
+}
+.missing-property {
+	font-style: italic;
+	color: #666;
 }
 
 /* Calendar */
@@ -143,3 +142,20 @@ footer a:link, footer a:visited, footer a:link, footer a:visited {
     text-shadow: 0px 1px 1px #4d4d4d;
 }
 
+/* Profile Page */
+.user-frown {
+	margin: 50px auto;
+	text-align: center;
+	font-size: 48pt;
+	transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+}
+
+/* Task List */
+.tasklist-empty-notice {
+	text-align: center;
+	font-size: 12pt;
+	padding: 0;
+	margin: 0;
+}

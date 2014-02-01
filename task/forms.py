@@ -63,8 +63,9 @@ class TaskForm(forms.ModelForm):
         return cleaned_data
 
 class TaskListForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user_id, *args, **kwargs):
         super(TaskListForm, self).__init__(*args, **kwargs)
+        self._user_id = user_id
         del self.fields['user']
         del self.fields['slug']
 
@@ -91,6 +92,12 @@ class TaskListForm(forms.ModelForm):
 
     class Meta:
         model = TaskModels.TaskList
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if TaskModels.TaskList.objects.filter(user=self._user_id, name=name).count() > 0:
+            raise forms.ValidationError('You already have a tasklist with this name.')
+        return name
 
 class TaskTriageCategoryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

@@ -14,8 +14,8 @@
         <div class="col-md-6">
             {% if edit_permission %}
             <div class="btn-group pull-right">
-                <a class="btn btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
-                <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a class="btn btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+                <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
             </div>
             {% endif %}
@@ -116,8 +116,8 @@
                                 </div>
                             {% else %}
                                 <div class="btn-group pull-right">
-                                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-                                    <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}"><span class="glyphicon glyphicon-ok-circle"></span></a>
+                                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                                 </div>
                             {% endif %}
                         {% endif %}
@@ -127,6 +127,8 @@
                 </tbody>
                 <tfoot></tfoot>
                 </table>
+                {% else %}
+                <p class="tasklist-empty-notice">No tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
                 {% endif %}
     </div>
 </div>

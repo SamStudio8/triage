@@ -1,5 +1,48 @@
 #CHANGELOG
 
+####0.1.1-340D
+
+Use `EventRecord` to determine creator and last modifier  
+Removed recently added fields: `Task.created_by`, `Task.modified_by`
+
+    python mange.py migrate task
+
+####0.1.1-328D
+
+Added fields to `Task`: `Task.created_by`, `Task.modified_by`
+
+    python mange.py migrate task
+
+####0.1.1-316D
+
+Following a POST users will typically be redirected to the previous page  
+Added context_processor to return current url for use in post-POST redirection  
+Update your triage/settings.py as demonstrated below:
+
+    TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+        "task.context_processors.current_url",
+    )
+
+####0.1.1-310D
+
+Catch empty attributes on `view_task`  
+
+    python manage.py collectstatic
+
+####0.1.1-306D
+
+Drop /list/ from URL scheme in favour of username/tasklist  
+Move /triage/, /milestone/ to /settings/triage/, /settings/milestone/  
+Show message for lists with no open tasks  
+
+    python manage.py collectstatic
+
+####0.1.1-299D
+
+@danharibo strikes again with halfway upsidedown frown functionality  
+
+    python manage.py collectstatic
+
 ####0.1.1
 
 `TaskMilestone` model  
