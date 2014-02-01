@@ -97,3 +97,26 @@ def LinkChange(request, link):
     )
     to_entry.save()
 
+def CreationEvent(request, task):
+    event = EventModels.EventRecord(
+            content_type=ContentType.objects.get_for_model(task),
+            object_id=task.pk,
+            user_id=request.user.id
+    )
+    event.save()
+
+    # Create field change event
+    change = EventModels.EventFieldChange(
+            field="Created",
+            original="",
+            new=""
+    )
+    change.save()
+
+    # Attach field change to event record
+    entry = EventModels.EventRecordEntry(
+            event_id=event.pk,
+            content_type=ContentType.objects.get_for_model(change),
+            object_id=change.pk
+    )
+    entry.save()

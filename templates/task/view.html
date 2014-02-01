@@ -56,7 +56,7 @@
                 <tbody>
                 <tr>
                     <td class="col-md-4"><b>Created</b></td>
-                    <td>{{ task.creation_date }} by <a href="{% url 'task:profile' task.created_by.username %}">{{ task.created_by.username }}</a></td>
+                    <td>{{ task.creation_date }}{% if task.created_by %} by <a href="{% url 'task:profile' task.created_by.username %}">{{ task.created_by.username }}</a>{% endif %}</td>
                 </tr>
                 <tr>
                     <td class="col-md-4"><b>Updated</b></td>

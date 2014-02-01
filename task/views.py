@@ -95,7 +95,9 @@ def edit_task(request, username, task_id, tasklist_id=None):
         task = form.save(commit=False)
         task.save()
 
-        # Save the history
+        # Save the history, make a CreationEvent if Task is new
+        if not original:
+            TaskEvents.CreationEvent(request, task)
         TaskEvents.FieldChange(request, original, task)
 
         redirect_to = request.POST.get('next', "/")
