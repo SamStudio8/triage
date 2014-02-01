@@ -60,7 +60,7 @@
                 </tr>
                 <tr>
                     <td class="col-md-4"><b>Updated</b></td>
-                    <td>{{ task.modified_date }} by <a href="{% url 'task:profile' task.modified_by.username %}">{{ task.modified_by.username }}</a></td>
+                    <td>{{ task.modified_date }}{% if task.modified_by %} by <a href="{% url 'task:profile' task.modified_by.username %}">{{ task.modified_by.username }}</a>{% endif %}</td>
                 </tr>
                 <tr>
                     <td class="col-md-4"><b>Completed</b></td>
