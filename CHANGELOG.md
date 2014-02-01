@@ -1,5 +1,15 @@
 #CHANGELOG
 
+####0.1.1-316D
+
+Following a POST users will typically be redirected to the previous page  
+Added context_processor to return current url for use in post-POST redirection  
+Update your triage/settings.py as demonstrated below:
+
+    TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+        "task.context_processors.current_url",
+    )
+
 ####0.1.1-310D
 
 Catch empty attributes on `view_task`  
