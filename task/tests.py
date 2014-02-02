@@ -669,19 +669,19 @@ class SimpleTaskTest(TestCase):
         not_due = TaskModels.Task.objects.create(name="Not Due",
                                                 tasklist_id=1,
                                                 due_date=not_due_date)
-        self.assertEquals(not_due.is_due(), 0)
+        self.assertEquals(not_due.is_due, 0)
 
         #  1   Due Today
         due_today_date = today + datetime.timedelta(seconds=10)
         due_today = TaskModels.Task.objects.create(name="Due Today",
                                                   tasklist_id=1,
                                                   due_date=due_today_date)
-        self.assertEquals(due_today.is_due(), 1)
+        self.assertEquals(due_today.is_due, 1)
 
         # -1   Overdue
         overdue_date = today
         overdue = TaskModels.Task.objects.create(name="Overdue",
                                                 tasklist_id=1,
                                                 due_date=overdue_date)
-        self.assertEquals(overdue.is_due(), -1)
+        self.assertEquals(overdue.is_due, -1)
 

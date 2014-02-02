@@ -84,10 +84,6 @@ class Task(models.Model):
             return None
 
     @property
-    def user_id(self):
-        return self.tasklist.user_id
-
-    @property
     def local_id(self):
         return self._id
 
