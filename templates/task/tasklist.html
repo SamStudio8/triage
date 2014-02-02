@@ -67,16 +67,22 @@
 <div class="row">
     <div class="col-md-2">
         <h3>{{ tasklist.name }}</h3>
+        <p><b>Owner</b><br/><a href="{% url 'task:profile' tasklist.user.username %}">{{ tasklist.user.username }}</a></p>
         <p><b>Open</b><br/>{{ tasklist.num_incomplete }}</p>
         <p><b>Closed</b><br/>{{ tasklist.num_complete }}</p>
-        <p>
-          <b>Recently Closed</b><br/>
-          {% for task in recently_closed %}
-              {{ task.local_id }}
-              {{ task.name }}
-              <br/>
-          {% endfor %}
-        </p>
+        {% if tasklist.num_complete > 0 %}
+          <p>
+              <b>Recently Closed</b><br/>
+              <table class="table table-condensed">
+              {% for task in recently_closed %}
+                  <tr>
+                      <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
+                      <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
+                  </tr>
+              {% endfor %}
+              </table>
+          </p>
+        {% endif %}
     </div>
     <div class="col-md-10">
         {% if tasklist.tasks.all %}
