@@ -177,6 +177,9 @@ class TaskList(models.Model):
     def open_tasks(self):
         return self.tasks.filter(completed=False)
 
+    def recently_closed(self, limit):
+        return self.tasks.filter(completed=True).order_by("completed_date")[:limit].reverse()
+
     @property
     def num_incomplete(self):
         return self.tasks.filter(completed=False).count()
