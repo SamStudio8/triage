@@ -102,6 +102,16 @@ TEST_DATA = {
         "description": "This is [an example](http://triage.ironowl.io/ 'Title') inline link.",
         "progress": 50
     },
+    "milestone": {
+        "name": "Major Milestone",
+        "fg_colour": "FF0000",
+        "bg_colour": "000",
+    },
+    "milestone_edit": {
+        "name": "Minor Milestone",
+        "fg_colour": "000",
+        "bg_colour": "FF0000",
+    },
 }
 class SimpleTaskTest(TestCase):
     def setUp(self):
@@ -602,7 +612,6 @@ class SimpleTaskTest(TestCase):
         response = self.client.get(url)
         self.assertRedirects(response, '/')
 
-
     def test_add_triage_category(self):
         self.client.login(
                 username=TEST_DATA['user']['username'],
@@ -736,3 +745,37 @@ class SimpleTaskTest(TestCase):
         self.assertEqual(len(response.context['task_overdue']), 1)
         self.assertEqual(len(response.context['task_week']), 2)
         self.assertEqual(len(response.context['task_nodue']), 1)
+
+    def test_add_milestone(self):
+        self.client.login(
+                username=TEST_DATA['user']['username'],
+                password=TEST_DATA['user']['password']
+        )
+        url = reverse("task:new_milestone", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changemilestone.html')
+        response = self.client.post(url, TEST_DATA['milestone'], follow=True)
+
+        self.assertEqual(len(response.context['milestones']), 1)
+        self.assertContains(response, TEST_DATA['milestone']['name'])
+        self.assertContains(response, "style=\"background-color:#"+TEST_DATA['milestone']['bg_colour']+"; color:#"+TEST_DATA['milestone']['fg_colour'])
+
+    def test_edit_milestone(self):
+        self.test_add_milestone()
+        url = reverse("task:edit_milestone", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "milestone_id": 1
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changemilestone.html')
+        response = self.client.post(url, TEST_DATA['milestone_edit'], follow=True)
+
+        self.assertEqual(len(response.context['milestones']), 1)
+        self.assertContains(response, TEST_DATA['milestone_edit']['name'])
+        self.assertContains(response, "style=\"background-color:#"+TEST_DATA['milestone_edit']['bg_colour']+"; color:#"+TEST_DATA['milestone_edit']['fg_colour'])
