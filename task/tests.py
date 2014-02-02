@@ -271,6 +271,36 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['public_tasklist']['name'])
         self.assertContains(response, TEST_DATA['public_tasklist']['description'])
 
+    def test_evil_edit_public_tasklist(self):
+        self.test_add_public_tasklist()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:edit_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
+    def test_evil_delete_public_tasklist(self):
+        self.test_add_public_tasklist()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:delete_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
     def test_globalview_public_tasklist(self):
         self.test_add_public_tasklist()
 
