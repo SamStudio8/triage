@@ -340,6 +340,17 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 tasks")
         self.assertContains(response, TEST_DATA['task']['name'])
 
+    def test_add_task_prefill_list(self):
+        self.test_add_tasklist()
+        url = reverse("task:new_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+        }) + "?tasklist=" + slugify(TEST_DATA['tasklist']['name'])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changetask.html')
+        self.assertContains(response, "selected=\"selected\">"+TEST_DATA['tasklist']['name']+"</option>")
+
     def test_view_task(self):
         self.test_add_task()
         url = reverse("task:view_task", kwargs={
