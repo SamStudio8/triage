@@ -27,6 +27,12 @@ TEST_DATA = {
         "description": "A task list for your life's particulars.",
         "order": 0
     },
+    "public_tasklist": {
+        "name": "Global List",
+        "description": "A globally visible task list to share your dull existence.",
+        "order": 0,
+        "public": True
+    },
     "task": {
         "tasklist": 1,
         "name": "Create a todo list manager",
@@ -230,6 +236,51 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['tasklist']['name'])
         self.assertContains(response, TEST_DATA['tasklist']['description'])
 
+    def test_add_public_tasklist(self):
+        self.client.login(
+                username=TEST_DATA['user']['username'],
+                password=TEST_DATA['user']['password']
+        )
+        url = reverse("task:add_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changelist.html')
+        response = self.client.post(url, TEST_DATA['public_tasklist'], follow=True)
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['description'])
+
+    def test_view_public_tasklist(self):
+        self.test_add_public_tasklist()
+
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/tasklist.html')
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['description'])
+
+    def test_globalview_public_tasklist(self):
+        self.test_add_public_tasklist()
+
+        self.client.logout()
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/tasklist.html')
+        tasklist_expected = TEST_DATA['user']['username'] + "</a> / " + TEST_DATA['public_tasklist']['name']
+        self.assertContains(response, tasklist_expected)
+
     def test_add_task(self):
         self.test_add_tasklist()
         url = reverse("task:new_task", kwargs={
@@ -333,6 +384,23 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, TEST_DATA['tasklist_edit']['name'])
         self.assertContains(response, TEST_DATA['tasklist_edit']['description'])
+
+    def test_view_profile(self):
+        self.test_add_tasklist()
+        self.test_add_public_tasklist()
+        self.client.logout()
+
+        url = reverse("task:profile", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/profile.html')
+
+        self.assertContains(response, TEST_DATA['user']['username'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertNotContains(response, TEST_DATA['tasklist']['name'])
 
     def test_complete_task(self):
         self.test_add_task()
