@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 from django.test.client import Client
 
+import task.models as TaskModels
+
 TEST_DATA = {
     "user": {
         "username": "testlo",
@@ -58,6 +60,9 @@ TEST_DATA = {
         "name": "Life Goals",
         "description": "A detailed task list for your adventures.",
         "order": 0
+    },
+    "tasklist_delete": {
+        "tasklist_transfer": 2,
     },
     "triage_category_low": {
         "name": "Expectant",
@@ -384,6 +389,31 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, TEST_DATA['tasklist_edit']['name'])
         self.assertContains(response, TEST_DATA['tasklist_edit']['description'])
+
+    def test_delete_tasklist(self):
+        self.test_add_task()
+        self.test_add_public_tasklist()
+
+        url = reverse("task:delete_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/deletelist.html')
+        response = self.client.post(url, TEST_DATA['tasklist_delete'], follow=True)
+
+        self.assertContains(response, "1 task lists")
+        self.assertNotContains(response, TEST_DATA['tasklist']['name'])
+        self.assertNotContains(response, TEST_DATA['tasklist']['description'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['description'])
+
+        # Check task was transferred
+        task = TaskModels.Task.objects.filter(pk=1)
+        self.assertEquals(task.count(), 1)
+        self.assertEquals(task[0].tasklist.slug, slugify(TEST_DATA['public_tasklist']['name']))
 
     def test_view_profile(self):
         self.test_add_tasklist()
