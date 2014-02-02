@@ -105,7 +105,7 @@ class TaskListDeleteForm(forms.Form):
                                                required=True,
                                                empty_label=None,
                                                help_text=("Select a tasklist to transfer all tasks within this tasklist to."),
-                                               queryset=TaskModels.TaskList.objects.all())
+                                               queryset=[])
 
     def __init__(self, user_id, tasklist_pk, *args, **kwargs):
         super(TaskListDeleteForm, self).__init__(*args, **kwargs)
