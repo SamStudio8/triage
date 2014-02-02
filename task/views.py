@@ -41,7 +41,8 @@ def view_tasklist(request, username, listslug):
                                                   "calendar": calendar,
                                                   "recently_added": tasklist.recently_added(limit=5),
                                                   "recently_closed": tasklist.recently_closed(limit=5),
-                                                  "upcoming": tasklist.upcoming_tasks(days=7),
+                                                  "upcoming_week": tasklist.upcoming_tasks(days=7),
+                                                  "upcoming_month": tasklist.upcoming_tasks(offset=7, days=30),
                                                   "overdue": tasklist.overdue_tasks,
                                                   "edit_permission": edit_permission})
 

@@ -65,8 +65,80 @@
 </div>
 
 <div class="row">
+    <div class="col-sm-2">
+        <h2>{{ tasklist.name }}</h2>
+        <p><b>Owner</b><br/><a href="{% url 'task:profile' tasklist.user.username %}">{{ tasklist.user.username }}</a></p>
+        <p><b>Open</b><br/>{{ tasklist.num_incomplete }}</p>
+        <p><b>Closed</b><br/>{{ tasklist.num_complete }}</p>
+    </div>
+    <div class="col-sm-4">
+        <h2>This Week</h2>
+        {% if upcoming_week %}
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th class="text-center col-md-1">#</th>
+                    <th class="col-md-7">Task</th>
+                    <th class="col-md-2">List</th>
+                    <th class="text-center col-md-2">Triage</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in upcoming_week %}
+                {% include "task/includes/task_row.html" %}
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        {% else %}
+            No upcoming tasks this week!
+        {% endif %}
+    </div>
+    <div class="col-sm-4">
+        <h2>This Month</h2>
+        {% if upcoming_month %}
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th class="text-center col-md-1">#</th>
+                    <th class="col-md-7">Task</th>
+                    <th class="col-md-2">List</th>
+                    <th class="text-center col-md-2">Triage</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in upcoming_month %}
+                {% include "task/includes/task_row.html" %}
+            {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        {% else %}
+            No upcoming tasks later this month!
+        {% endif %}
+    </div>
+    <div class="col-sm-2">
+        <h2>Overdue</h2>
+        <br/>
+        {% if overdue %}
+            <table class="table table-condensed">
+            {% for task in overdue %}
+                <tr>
+                    <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
+                    <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+            No overdue tasks!
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
     <div class="col-sm-10 col-sm-push-2">
         {% if tasklist.tasks.all %}
+            <h2>All Tasks</h2>
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -133,66 +205,29 @@
         {% endif %}
     </div>
     <div class="col-sm-2 col-sm-pull-10">
-        <h3>{{ tasklist.name }}</h3>
-        <p><b>Owner</b><br/><a href="{% url 'task:profile' tasklist.user.username %}">{{ tasklist.user.username }}</a></p>
-        <p><b>Open</b><br/>{{ tasklist.num_incomplete }}</p>
-        <p><b>Closed</b><br/>{{ tasklist.num_complete }}</p>
+        <hr>
         {% if tasklist.tasks.count > 0 %}
-            <p>
-                <b>Recently Added</b><br/>
-                <table class="table table-condensed">
-                {% for task in recently_added %}
-                    <tr>
-                        <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
-                        <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
-                    </tr>
-                {% endfor %}
-                </table>
-            </p>
+            <p><b>Recently Added</b></p>
+            <table class="table table-condensed">
+            {% for task in recently_added %}
+                <tr>
+                    <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
+                    <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
+                </tr>
+            {% endfor %}
+            </table>
         {% endif %}
         {% if tasklist.num_complete > 0 %}
-            <p>
-                <b>Recently Closed</b><br/>
-                <table class="table table-condensed">
-                {% for task in recently_closed %}
-                    <tr>
-                        <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
-                        <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
-                    </tr>
-                {% endfor %}
-                </table>
-            </p>
+            <p>Recently Closed</b></p>
+            <table class="table table-condensed">
+            {% for task in recently_closed %}
+                <tr>
+                    <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
+                    <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
+                </tr>
+            {% endfor %}
+            </table>
         {% endif %}
-        <p>
-            <b>Upcoming</b><br/>
-            {% if upcoming %}
-                <table class="table table-condensed">
-                {% for task in upcoming %}
-                    <tr>
-                        <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
-                        <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
-                    </tr>
-                {% endfor %}
-                </table>
-            {% else %}
-                No upcoming tasks!
-            {% endif %}
-        </p>
-        <p>
-            <b>Overdue</b><br/>
-            {% if overdue %}
-                <table class="table table-condensed">
-                {% for task in overdue %}
-                    <tr>
-                        <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
-                        <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
-                    </tr>
-                {% endfor %}
-                </table>
-            {% else %}
-                No overdue tasks!
-            {% endif %}
-        </p>
     </div>
 </div>
 {% endblock %}

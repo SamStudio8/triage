@@ -174,11 +174,12 @@ class TaskList(models.Model):
     def open_tasks(self):
         return self.tasks.filter(completed=False)
 
-    def upcoming_tasks(self, days=7):
+    def upcoming_tasks(self, offset=0, days=7):
         today = datetime.datetime.utcnow().replace(tzinfo=utc)
-        deltadate = today + datetime.timedelta(days=days)
+        offset_date = today + datetime.timedelta(days=offset)
+        delta_date = today + datetime.timedelta(days=days+offset)
 
-        return self.tasks.filter(completed=False, due_date__range=[today, deltadate]).order_by("-triage__priority")
+        return self.tasks.filter(completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority")
 
     def overdue_tasks(self):
         today = datetime.datetime.utcnow().replace(tzinfo=utc)
