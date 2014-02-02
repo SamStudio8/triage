@@ -280,6 +280,35 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['public_tasklist']['name'])
         self.assertContains(response, TEST_DATA['public_tasklist']['description'])
 
+    def test_view_tasklist(self):
+        self.test_add_task()
+
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name'])
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/tasklist.html')
+        self.assertContains(response, TEST_DATA['tasklist']['name'])
+        self.assertContains(response, TEST_DATA['tasklist']['description'])
+
+    def test_evil_view_tasklist(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name'])
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
     def test_evil_edit_public_tasklist(self):
         self.test_add_public_tasklist()
         self.client.logout()
