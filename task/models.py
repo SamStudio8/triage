@@ -160,7 +160,7 @@ class TaskList(models.Model):
             help_text=("Use to change the order in which your lists appear. "
                 "Higher numbers will take priority."))
     public = models.BooleanField(default=False,
-            help_text=("Share this tasklist publically - ALL TASKS WILL BE VISIBLE TO ANYONE"))
+            help_text=("Share this tasklist publicly - ALL TASKS WILL BE VISIBLE TO ANYONE"))
 
     def __unicode__(self):
         return self.name
