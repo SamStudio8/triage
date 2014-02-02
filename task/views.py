@@ -39,6 +39,7 @@ def view_tasklist(request, username, listslug):
     edit_permission = tasklist.has_edit_permission(request.user.pk)
     return render(request, "task/tasklist.html", {"tasklist": tasklist,
                                                   "calendar": calendar,
+                                                  "recently_closed": tasklist.recently_closed(5),
                                                   "edit_permission": edit_permission})
 
 def view_task(request, username, task_id):

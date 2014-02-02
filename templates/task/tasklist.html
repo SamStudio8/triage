@@ -65,7 +65,20 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-2">
+        <h3>{{ tasklist.name }}</h3>
+        <p><b>Open</b><br/>{{ tasklist.num_incomplete }}</p>
+        <p><b>Closed</b><br/>{{ tasklist.num_complete }}</p>
+        <p>
+          <b>Recently Closed</b><br/>
+          {% for task in recently_closed %}
+              {{ task.local_id }}
+              {{ task.name }}
+              <br/>
+          {% endfor %}
+        </p>
+    </div>
+    <div class="col-md-10">
         {% if tasklist.tasks.all %}
             <table class="table table-hover table-condensed">
                 <thead>
