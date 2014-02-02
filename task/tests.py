@@ -7,6 +7,7 @@ from django.template.defaultfilters import slugify
 from django.test.client import Client
 
 import task.models as TaskModels
+import task.utils as TaskUtils
 
 TEST_DATA = {
     "user": {
@@ -647,3 +648,11 @@ class SimpleTaskTest(TestCase):
 
         self.assertContains(response, TEST_DATA['triage_category_low']['name'])
         self.assertContains(response, "style=\"background-color:#"+TEST_DATA['triage_category_low']['bg_colour']+"; color:#"+TEST_DATA['triage_category_low']['fg_colour'])
+
+    def test_util_create_default_triages(self):
+        user = User.objects.get(username=TEST_DATA['user']['username'])
+        TaskUtils.create_default_triage_categories(user.pk)
+        defaults = TaskUtils._DEFAULT_TRIAGE
+
+        for triage in user.triages.all():
+            self.assertIn(triage.name, defaults)
