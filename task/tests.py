@@ -378,6 +378,21 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['task']['name'])
         self.assertContains(response, TEST_DATA['task']['description'])
 
+    def test_evil_view_task(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:view_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
     def test_edit_task(self):
         self.test_add_task()
         url = reverse("task:edit_task", kwargs={
@@ -511,6 +526,22 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, "0 tasks")
         self.assertContains(response, "(1 completed)")
+
+    def test_evil_complete_task(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:complete_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
 
     def test_add_triage_category(self):
         self.client.login(
