@@ -20,7 +20,8 @@ def list_tasks(request):
     return render(request, "task/list.html", {"tasklists": tasklists})
 
 @login_required
-def new_task(request, username, listslug=None):
+def new_task(request, username):
+    listslug = request.GET.get("tasklist", None)
     if listslug:
         tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
         if tasklist.has_edit_permission(request.user.pk):
@@ -38,6 +39,7 @@ def view_tasklist(request, username, listslug):
     edit_permission = tasklist.has_edit_permission(request.user.pk)
     return render(request, "task/tasklist.html", {"tasklist": tasklist,
                                                   "calendar": calendar,
+                                                  "recently_closed": tasklist.recently_closed(5),
                                                   "edit_permission": edit_permission})
 
 def view_task(request, username, task_id):
@@ -60,14 +62,10 @@ def edit_task(request, username, task_id, tasklist_id=None):
 
     task = None
     if task_id:
-        try:
-            task = TaskModels.Task.objects.get(tasklist__user__username=username, _id=task_id)
-        except TaskModels.Task.DoesNotExist:
-            pass
-        else:
-            if not task.has_edit_permission(request.user.pk):
-                return HttpResponseRedirect(reverse('home'))
-            tasklist_id = task.tasklist_id
+        task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
+        if not task.has_edit_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
+        tasklist_id = task.tasklist_id
 
     # Fill in POST with data from the model that is not in the request
     post = request.POST or None
@@ -182,6 +180,36 @@ def edit_tasklist(request, username=None, listslug=None):
                                                     "next": redirect_to})
 
 @login_required
+def delete_tasklist(request, username=None, listslug=None):
+    tasklist = None
+    if username and listslug:
+        tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+        if not tasklist.has_edit_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
+
+    form = TaskForms.TaskListDeleteForm(request.user.id, tasklist.pk, request.POST or None)
+    if form.is_valid():
+        transfer_to = form.cleaned_data["tasklist_transfer"]
+
+        # Transfer Tasks and Delete
+        # TODO Currently assuming user has right to move all tasks in a list
+        # NOTE This is a fair assumption given the current permission model
+        for task in TaskModels.Task.objects.filter(tasklist__pk=tasklist.pk):
+            task.tasklist = transfer_to
+            task.save()
+        tasklist.delete()
+
+        # Update the redirect to the list that tasks will be transferred to
+        redirect_to = request.POST.get('next', "/")
+        redirect_to = redirect_to.replace(tasklist.slug, transfer_to.slug)
+        return HttpResponseRedirect(redirect_to)
+
+    redirect_to = request.GET.get('next', "/")
+    return render(request, "task/deletelist.html", {"form": form,
+                                                    "tasklist": tasklist,
+                                                    "next": redirect_to})
+
+@login_required
 def list_triage_category(request, username):
     triages = request.user.triages.all()
     return render(request, "task/triages.html", {"triages": triages})
@@ -225,13 +253,9 @@ def add_triage_category(request, username):
 def edit_triage_category(request, username, triage_category_id=None):
     triage = None
     if triage_category_id:
-        try:
-            triage = TaskModels.TaskTriageCategory.objects.get(pk=triage_category_id)
-        except TaskModels.TaskTriageCategory.DoesNotExist:
-            pass
-        else:
-            if triage.user.id != request.user.id:
-                return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
+        triage = get_object_or_404(TaskModels.TaskTriageCategory, pk=triage_category_id)
+        if triage.user.id != request.user.id:
+            return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
 
     form = TaskForms.TaskTriageCategoryForm(request.POST or None, instance=triage)
     if form.is_valid():

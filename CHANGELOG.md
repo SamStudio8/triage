@@ -1,5 +1,9 @@
 #CHANGELOG
 
+####0.1.3
+
+Improved test coverage  
+
 ####0.1.2
 
 @danharibo strikes again with halfway upsidedown frown functionality  

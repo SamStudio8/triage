@@ -1,10 +1,15 @@
+import datetime
 from markdown import markdown
 
-from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from django.test import TestCase
 from django.test.client import Client
+from django.utils.timezone import utc
+
+import task.models as TaskModels
+import task.utils as TaskUtils
 
 TEST_DATA = {
     "user": {
@@ -24,7 +29,18 @@ TEST_DATA = {
     },
     "tasklist_2": {
         "name": "Specific",
-        "description": "A task list for your life's particulars.",
+        "description": "A task list for your life based particulars.",
+        "order": 0
+    },
+    "public_tasklist": {
+        "name": "Global List",
+        "description": "A globally visible task list to share your dull existence.",
+        "order": 0,
+        "public": True
+    },
+    "another_tasklist": {
+        "name": "Another List",
+        "description": "A task list that is not yours.",
         "order": 0
     },
     "task": {
@@ -52,6 +68,9 @@ TEST_DATA = {
         "name": "Life Goals",
         "description": "A detailed task list for your adventures.",
         "order": 0
+    },
+    "tasklist_delete": {
+        "tasklist_transfer": 2,
     },
     "triage_category_low": {
         "name": "Expectant",
@@ -83,6 +102,16 @@ TEST_DATA = {
         "description": "This is [an example](http://triage.ironowl.io/ 'Title') inline link.",
         "progress": 50
     },
+    "milestone": {
+        "name": "Major Milestone",
+        "fg_colour": "FF0000",
+        "bg_colour": "000",
+    },
+    "milestone_edit": {
+        "name": "Minor Milestone",
+        "fg_colour": "000",
+        "bg_colour": "FF0000",
+    },
 }
 class SimpleTaskTest(TestCase):
     def setUp(self):
@@ -98,7 +127,6 @@ class SimpleTaskTest(TestCase):
     def test_login_required(self):
         url = reverse("task:new_task", kwargs={
             "username": TEST_DATA['user']['username'],
-            "listslug": slugify(TEST_DATA['tasklist']['name']),
         })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
@@ -214,7 +242,33 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "Hello, "+TEST_DATA['user']['username'])
         self.assertContains(response, "0 task lists")
 
-    def test_add_tasklist(self):
+    def test_add_tasklist(self, user=TEST_DATA['user'], tasklist=TEST_DATA['tasklist'], number=1):
+        self.client.login(
+                username=user['username'],
+                password=user['password']
+        )
+        url = reverse("task:add_tasklist", kwargs={
+            "username": user['username'],
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changelist.html')
+        response = self.client.post(url, tasklist, follow=True)
+        self.assertContains(response, str(number) + " task lists")
+        self.assertContains(response, tasklist['name'])
+        self.assertContains(response, tasklist['description'])
+
+    def test_add_non_unique_tasklist(self):
+        self.test_add_tasklist()
+        url = reverse("task:add_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
+        response = self.client.get(url)
+        response = self.client.post(url, TEST_DATA['tasklist'], follow=True)
+        self.assertContains(response, "You already have a tasklist with this name")
+
+    def test_add_public_tasklist(self):
         self.client.login(
                 username=TEST_DATA['user']['username'],
                 password=TEST_DATA['user']['password']
@@ -226,16 +280,102 @@ class SimpleTaskTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'task/changelist.html')
-        response = self.client.post(url, TEST_DATA['tasklist'], follow=True)
-        self.assertContains(response, "1 task lists")
+        response = self.client.post(url, TEST_DATA['public_tasklist'], follow=True)
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['description'])
+
+    def test_view_public_tasklist(self):
+        self.test_add_public_tasklist()
+
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/tasklist.html')
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['description'])
+
+    def test_view_tasklist(self):
+        self.test_add_task()
+
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name'])
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/tasklist.html')
         self.assertContains(response, TEST_DATA['tasklist']['name'])
         self.assertContains(response, TEST_DATA['tasklist']['description'])
+
+    def test_evil_view_tasklist(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name'])
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
+    def test_evil_edit_public_tasklist(self):
+        self.test_add_public_tasklist()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:edit_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
+    def test_evil_delete_public_tasklist(self):
+        self.test_add_public_tasklist()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:delete_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
+    def test_globalview_public_tasklist(self):
+        self.test_add_public_tasklist()
+
+        self.client.logout()
+        url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['public_tasklist']['name']),
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/tasklist.html')
+        tasklist_expected = TEST_DATA['user']['username'] + "</a> / " + TEST_DATA['public_tasklist']['name']
+        self.assertContains(response, tasklist_expected)
 
     def test_add_task(self):
         self.test_add_tasklist()
         url = reverse("task:new_task", kwargs={
             "username": TEST_DATA['user']['username'],
-            "listslug": slugify(TEST_DATA['tasklist']['name']),
         })
         response = self.client.get(url)
 
@@ -246,6 +386,31 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, "1 tasks")
         self.assertContains(response, TEST_DATA['task']['name'])
+
+    def test_add_task_prefill_list(self):
+        self.test_add_tasklist()
+        url = reverse("task:new_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+        }) + "?tasklist=" + slugify(TEST_DATA['tasklist']['name'])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changetask.html')
+        self.assertContains(response, "selected=\"selected\">"+TEST_DATA['tasklist']['name']+"</option>")
+
+    def test_evil_add_task_prefill_list(self):
+        self.test_add_tasklist()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:new_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+        }) + "?tasklist=" + slugify(TEST_DATA['tasklist']['name'])
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
 
     def test_view_task(self):
         self.test_add_task()
@@ -259,6 +424,21 @@ class SimpleTaskTest(TestCase):
 
         self.assertContains(response, TEST_DATA['task']['name'])
         self.assertContains(response, TEST_DATA['task']['description'])
+
+    def test_evil_view_task(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:view_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
 
     def test_edit_task(self):
         self.test_add_task()
@@ -336,6 +516,71 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['tasklist_edit']['name'])
         self.assertContains(response, TEST_DATA['tasklist_edit']['description'])
 
+    def test_edit_tasklist_redirect(self):
+        self.test_add_tasklist()
+        view_url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name'])
+        })
+        url = reverse("task:edit_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        }) + "?next=" + view_url
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changelist.html')
+        self.assertContains(response, "<input type=\"hidden\" name=\"next\" value=\"" + view_url + "\"")
+
+        TEST_DATA_PLUS_HIDDEN = TEST_DATA['tasklist_edit']
+        TEST_DATA_PLUS_HIDDEN["next"] = view_url
+        response = self.client.post(url, TEST_DATA_PLUS_HIDDEN, follow=True)
+        new_url = reverse("task:view_tasklist", kwargs={"username": TEST_DATA['user']['username'],
+                                                    "listslug": slugify(TEST_DATA['tasklist_edit']['name'])})
+        self.assertRedirects(response, new_url)
+
+    def test_delete_tasklist(self):
+        self.test_add_task()
+        self.test_add_public_tasklist()
+
+        url = reverse("task:delete_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/deletelist.html')
+        response = self.client.post(url, TEST_DATA['tasklist_delete'], follow=True)
+
+        self.assertContains(response, "1 task lists")
+        self.assertNotContains(response, TEST_DATA['tasklist']['name'])
+        self.assertNotContains(response, TEST_DATA['tasklist']['description'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['description'])
+
+        # Check task was transferred
+        task = TaskModels.Task.objects.filter(pk=1)
+        self.assertEquals(task.count(), 1)
+        self.assertEquals(task[0].tasklist.slug, slugify(TEST_DATA['public_tasklist']['name']))
+
+    def test_view_profile(self):
+        self.test_add_tasklist()
+        self.test_add_public_tasklist()
+        self.client.logout()
+
+        url = reverse("task:profile", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/profile.html')
+
+        self.assertContains(response, TEST_DATA['user']['username'])
+        self.assertContains(response, TEST_DATA['public_tasklist']['name'])
+        self.assertNotContains(response, TEST_DATA['tasklist']['name'])
+
     def test_complete_task(self):
         self.test_add_task()
         url = reverse("task:complete_task", kwargs={
@@ -351,6 +596,21 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "1 task lists")
         self.assertContains(response, "0 tasks")
         self.assertContains(response, "(1 completed)")
+
+    def test_evil_complete_task(self):
+        self.test_add_task()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:complete_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "task_id": 1,
+        })
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
 
     def test_add_triage_category(self):
         self.client.login(
@@ -404,3 +664,118 @@ class SimpleTaskTest(TestCase):
 
         self.assertContains(response, TEST_DATA['triage_category_low']['name'])
         self.assertContains(response, "style=\"background-color:#"+TEST_DATA['triage_category_low']['bg_colour']+"; color:#"+TEST_DATA['triage_category_low']['fg_colour'])
+
+    def test_util_create_default_triages(self):
+        user = User.objects.get(username=TEST_DATA['user']['username'])
+        TaskUtils.create_default_triage_categories(user.pk)
+        defaults = TaskUtils._DEFAULT_TRIAGE
+
+        for triage in user.triages.all():
+            self.assertIn(triage.name, defaults)
+
+    def test_task_due_date(self):
+        self.test_add_tasklist()
+
+        today = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+        #  0   Not Due
+        not_due_date = today + datetime.timedelta(days=7)
+        not_due = TaskModels.Task.objects.create(name="Not Due",
+                                                tasklist_id=1,
+                                                due_date=not_due_date)
+        self.assertEquals(not_due.is_due, 0)
+
+        #  1   Due Today
+        due_today_date = today + datetime.timedelta(seconds=10)
+        due_today = TaskModels.Task.objects.create(name="Due Today",
+                                                  tasklist_id=1,
+                                                  due_date=due_today_date)
+        self.assertEquals(due_today.is_due, 1)
+
+        # -1   Overdue
+        overdue_date = today
+        overdue = TaskModels.Task.objects.create(name="Overdue",
+                                                tasklist_id=1,
+                                                due_date=overdue_date)
+        self.assertEquals(overdue.is_due, -1)
+
+    def test_task_local_id_ordering(self):
+        self.test_add_tasklist(TEST_DATA['user'], TEST_DATA['tasklist'])
+        self.test_add_tasklist(TEST_DATA['user2'], TEST_DATA['another_tasklist'])
+
+        task_user1_1 = TaskModels.Task.objects.create(name="T1",
+                                                tasklist_id=1)
+        task_user1_2 = TaskModels.Task.objects.create(name="T2",
+                                                tasklist_id=1)
+        task_user2_1 = TaskModels.Task.objects.create(name="T1",
+                                                tasklist_id=2)
+        task_user1_3 = TaskModels.Task.objects.create(name="T3",
+                                                tasklist_id=1)
+
+        self.assertEquals(task_user2_1.local_id, 1)
+        self.assertEquals(task_user1_3.local_id, 3)
+
+    def test_dashboard(self):
+        self.test_add_tasklist()
+        self.test_add_tasklist(TEST_DATA['user'], TEST_DATA['tasklist_2'], 2)
+
+        today = datetime.datetime.utcnow().replace(tzinfo=utc)
+        this_week_date = today + datetime.timedelta(days=5)
+
+        thisweek_1 = TaskModels.Task.objects.create(name="This Week (1)",
+                                                tasklist_id=1,
+                                                due_date=this_week_date)
+        thisweek_2 = TaskModels.Task.objects.create(name="This Week (2)",
+                                                tasklist_id=2,
+                                                due_date=this_week_date)
+        overdue_date = today
+        overdue = TaskModels.Task.objects.create(name="Overdue",
+                                                tasklist_id=1,
+                                                due_date=overdue_date)
+
+        not_due = TaskModels.Task.objects.create(name="Not Due",
+                                                tasklist_id=2)
+
+        url = reverse("task:dashboard", kwargs={
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/dashboard.html')
+        self.assertEqual(len(response.context['task_overdue']), 1)
+        self.assertEqual(len(response.context['task_week']), 2)
+        self.assertEqual(len(response.context['task_nodue']), 1)
+
+    def test_add_milestone(self):
+        self.client.login(
+                username=TEST_DATA['user']['username'],
+                password=TEST_DATA['user']['password']
+        )
+        url = reverse("task:new_milestone", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changemilestone.html')
+        response = self.client.post(url, TEST_DATA['milestone'], follow=True)
+
+        self.assertEqual(len(response.context['milestones']), 1)
+        self.assertContains(response, TEST_DATA['milestone']['name'])
+        self.assertContains(response, "style=\"background-color:#"+TEST_DATA['milestone']['bg_colour']+"; color:#"+TEST_DATA['milestone']['fg_colour'])
+
+    def test_edit_milestone(self):
+        self.test_add_milestone()
+        url = reverse("task:edit_milestone", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "milestone_id": 1
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changemilestone.html')
+        response = self.client.post(url, TEST_DATA['milestone_edit'], follow=True)
+
+        self.assertEqual(len(response.context['milestones']), 1)
+        self.assertContains(response, TEST_DATA['milestone_edit']['name'])
+        self.assertContains(response, "style=\"background-color:#"+TEST_DATA['milestone_edit']['bg_colour']+"; color:#"+TEST_DATA['milestone_edit']['fg_colour'])

@@ -54,6 +54,7 @@ class Task(models.Model):
     def has_edit_permission(self, uid):
           return uid == self.tasklist.user.pk
 
+    @property
     def is_due(self):
         if self.due_date == self.modified_date:
             return 0
@@ -81,10 +82,6 @@ class Task(models.Model):
             return EventUtils._get_history(self).reverse()[0].user
         except IndexError:
             return None
-
-    @property
-    def user_id(self):
-        return self.tasklist.user_id
 
     @property
     def local_id(self):
@@ -160,7 +157,7 @@ class TaskList(models.Model):
             help_text=("Use to change the order in which your lists appear. "
                 "Higher numbers will take priority."))
     public = models.BooleanField(default=False,
-            help_text=("Share this tasklist publically - ALL TASKS WILL BE VISIBLE TO ANYONE"))
+            help_text=("Share this tasklist publicly - ALL TASKS WILL BE VISIBLE TO ANYONE"))
 
     def __unicode__(self):
         return self.name
@@ -176,6 +173,9 @@ class TaskList(models.Model):
 
     def open_tasks(self):
         return self.tasks.filter(completed=False)
+
+    def recently_closed(self, limit):
+        return self.tasks.filter(completed=True).order_by("completed_date")[:limit].reverse()
 
     @property
     def num_incomplete(self):
