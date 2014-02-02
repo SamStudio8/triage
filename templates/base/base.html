@@ -27,7 +27,14 @@
                 <div class="collapse navbar-collapse navbar-ex1-collapse">
                     <ul class="nav navbar-nav">
                         {% if user.is_authenticated %}
-                            <li><a href="{% url 'home' %}"><span class="glyphicon glyphicon-list"></span> Task Lists</a></li>
+                            <li class="dropdown">
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle"><span class="glyphicon glyphicon-list"></span> Task Lists <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    {% for tasklist in user.tasklists.all|dictsort:"name" %}
+                                        <li><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
                             <li><a href="{% url 'task:dashboard' %}"><span class="glyphicon glyphicon-th"></span> Dashboard</a></li>
                             <li><a href="{% url 'task:calendar' %}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
                         {% endif %}
