@@ -1,5 +1,9 @@
 #CHANGELOG
 
+####0.1.1-348D
+
+Users can now delete TaskLists (but are required to migrate all tasks contained to another list)
+
 ####0.1.1-340D
 
 Use `EventRecord` to determine creator and last modifier  
