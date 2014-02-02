@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.1.3-400D
+
+Dropped `Task.progress`  
+
+    python mange.py migrate task
+
 ####0.1.3-396D
 
 Improved `view_tasklist`, now features upcoming (week and month) sublists and recently added and completed  
