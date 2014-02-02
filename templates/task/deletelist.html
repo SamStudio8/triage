@@ -1,0 +1,28 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Delete Tasklist{% endblock %}
+
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<a style="color: white;" title="Return Home" href="{% url 'home' %}">
+    <div style="float: left;" class="col-md-1 text-center">
+        <h3><span class="glyphicon glyphicon-chevron-left pull-right"></span></h3>
+    </div>
+</a>
+<div class="container">
+    <div class="row">
+        <h1>Delete Tasklist "{{ tasklist.name }}"?</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<p>Are you sure you wish to delete the <b>{{ tasklist.name }}</b> tasklist?
+It is not possible to undo this!</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{next}}" />
+    {% crispy form %}
+</form>
+{% endblock %}
