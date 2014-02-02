@@ -37,8 +37,10 @@
                 </tfoot>
             </table>
         {% else %}
-            <h1 class="user-frown">:(</h1>
-            <p>Sorry this user is keeping their lists a secret, <a href="{% url 'home' %}">go away</a>.</p>
+            <div class="jumbotron">
+                <h1 class="user-frown">:(</h1>
+                <p class="text-center">Sorry this user is keeping their lists a secret, <a href="{% url 'home' %}">go away</a>.</p>
+            </div>
         {% endif %}
     </div>
 </div>
