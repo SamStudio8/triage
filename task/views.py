@@ -62,14 +62,10 @@ def edit_task(request, username, task_id, tasklist_id=None):
 
     task = None
     if task_id:
-        try:
-            task = TaskModels.Task.objects.get(tasklist__user__username=username, _id=task_id)
-        except TaskModels.Task.DoesNotExist:
-            pass
-        else:
-            if not task.has_edit_permission(request.user.pk):
-                return HttpResponseRedirect(reverse('home'))
-            tasklist_id = task.tasklist_id
+        task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
+        if not task.has_edit_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
+        tasklist_id = task.tasklist_id
 
     # Fill in POST with data from the model that is not in the request
     post = request.POST or None
@@ -257,13 +253,9 @@ def add_triage_category(request, username):
 def edit_triage_category(request, username, triage_category_id=None):
     triage = None
     if triage_category_id:
-        try:
-            triage = TaskModels.TaskTriageCategory.objects.get(pk=triage_category_id)
-        except TaskModels.TaskTriageCategory.DoesNotExist:
-            pass
-        else:
-            if triage.user.id != request.user.id:
-                return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
+        triage = get_object_or_404(TaskModels.TaskTriageCategory, pk=triage_category_id)
+        if triage.user.id != request.user.id:
+            return HttpResponseRedirect(reverse('task:list_triage_category', kwargs={"username": request.user.username}))
 
     form = TaskForms.TaskTriageCategoryForm(request.POST or None, instance=triage)
     if form.is_valid():
