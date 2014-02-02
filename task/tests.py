@@ -351,6 +351,20 @@ class SimpleTaskTest(TestCase):
         self.assertTemplateUsed(response, 'task/changetask.html')
         self.assertContains(response, "selected=\"selected\">"+TEST_DATA['tasklist']['name']+"</option>")
 
+    def test_evil_add_task_prefill_list(self):
+        self.test_add_tasklist()
+        self.client.logout()
+        self.client.login(
+                username=TEST_DATA['user2']['username'],
+                password=TEST_DATA['user2']['password']
+        )
+
+        url = reverse("task:new_task", kwargs={
+            "username": TEST_DATA['user']['username'],
+        }) + "?tasklist=" + slugify(TEST_DATA['tasklist']['name'])
+        response = self.client.get(url)
+        self.assertRedirects(response, '/')
+
     def test_view_task(self):
         self.test_add_task()
         url = reverse("task:view_task", kwargs={
