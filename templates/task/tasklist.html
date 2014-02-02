@@ -119,15 +119,23 @@
     </div>
     <div class="col-sm-2">
         <h2>Overdue</h2>
-        <br/>
         {% if overdue %}
             <table class="table table-condensed">
-            {% for task in overdue %}
-                <tr>
-                    <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
-                    <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
-                </tr>
-            {% endfor %}
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Task</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for task in overdue %}
+                    <tr>
+                        <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
+                        <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot></tfoot>
             </table>
         {% else %}
             No overdue tasks!
