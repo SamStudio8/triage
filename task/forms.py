@@ -35,7 +35,6 @@ class TaskForm(forms.ModelForm):
                 Div(
                     Fieldset('Meta',
                         'triage',
-                        'progress',
                         'milestone',
                         AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>', data_format="YYYY-MM-DD H:mm"),
                     ),
@@ -54,13 +53,6 @@ class TaskForm(forms.ModelForm):
 
     class Meta:
         model = TaskModels.Task
-
-    def clean(self):
-        cleaned_data = super(TaskForm, self).clean()
-
-        if cleaned_data.get('progress') == None:
-            cleaned_data["progress"] = 0
-        return cleaned_data
 
 class TaskListForm(forms.ModelForm):
     def __init__(self, user_id, *args, **kwargs):

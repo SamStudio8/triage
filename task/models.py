@@ -25,7 +25,6 @@ class Task(models.Model):
 #    status = models.ForeignKey('TaskStatus')
 
     due_date = models.DateTimeField(null=True, blank=True)
-    progress = models.IntegerField(default=0, blank=True)
 
     creation_date = models.DateTimeField()
     modified_date = models.DateTimeField()
