@@ -98,7 +98,6 @@ class SimpleTaskTest(TestCase):
     def test_login_required(self):
         url = reverse("task:new_task", kwargs={
             "username": TEST_DATA['user']['username'],
-            "listslug": slugify(TEST_DATA['tasklist']['name']),
         })
         response = self.client.get(url)
         self.assertRedirects(response, '/account/login/?next='+url)
@@ -235,7 +234,6 @@ class SimpleTaskTest(TestCase):
         self.test_add_tasklist()
         url = reverse("task:new_task", kwargs={
             "username": TEST_DATA['user']['username'],
-            "listslug": slugify(TEST_DATA['tasklist']['name']),
         })
         response = self.client.get(url)
 
