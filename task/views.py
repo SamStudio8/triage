@@ -182,6 +182,36 @@ def edit_tasklist(request, username=None, listslug=None):
                                                     "next": redirect_to})
 
 @login_required
+def delete_tasklist(request, username=None, listslug=None):
+    tasklist = None
+    if username and listslug:
+        tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+        if not tasklist.has_edit_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
+
+    form = TaskForms.TaskListDeleteForm(request.user.id, tasklist.pk, request.POST or None)
+    if form.is_valid():
+        transfer_to = form.cleaned_data["tasklist_transfer"]
+
+        # Transfer Tasks and Delete
+        # TODO Currently assuming user has right to move all tasks in a list
+        # NOTE This is a fair assumption given the current permission model
+        for task in TaskModels.Task.objects.filter(tasklist__pk=tasklist.pk):
+            task.tasklist = transfer_to
+            task.save()
+        tasklist.delete()
+
+        # Update the redirect to the list that tasks will be transferred to
+        redirect_to = request.POST.get('next', "/")
+        redirect_to = redirect_to.replace(tasklist.slug, transfer_to.slug)
+        return HttpResponseRedirect(redirect_to)
+
+    redirect_to = request.GET.get('next', "/")
+    return render(request, "task/deletelist.html", {"form": form,
+                                                    "tasklist": tasklist,
+                                                    "next": redirect_to})
+
+@login_required
 def list_triage_category(request, username):
     triages = request.user.triages.all()
     return render(request, "task/triages.html", {"triages": triages})

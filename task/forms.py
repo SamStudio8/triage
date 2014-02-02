@@ -99,6 +99,33 @@ class TaskListForm(forms.ModelForm):
             raise forms.ValidationError('You already have a tasklist with this name.')
         return name
 
+class TaskListDeleteForm(forms.Form):
+    tasklist_transfer = forms.ModelChoiceField(label="",
+                                               initial="",
+                                               required=True,
+                                               empty_label=None,
+                                               help_text=("Select a tasklist to transfer all tasks within this tasklist to."),
+                                               queryset=TaskModels.TaskList.objects.all())
+
+    def __init__(self, user_id, tasklist_pk, *args, **kwargs):
+        super(TaskListDeleteForm, self).__init__(*args, **kwargs)
+        self.fields['tasklist_transfer'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id).exclude(pk=tasklist_pk)
+
+        # django-crispy-forms
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Transfer',
+                'tasklist_transfer',
+            ),
+            FormActions(
+                Submit('delete', 'Delete', css_class="btn-danger"),
+            )
+        )
+
 class TaskTriageCategoryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskTriageCategoryForm, self).__init__(*args, **kwargs)
