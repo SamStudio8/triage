@@ -498,6 +498,29 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['tasklist_edit']['name'])
         self.assertContains(response, TEST_DATA['tasklist_edit']['description'])
 
+    def test_edit_tasklist_redirect(self):
+        self.test_add_tasklist()
+        view_url = reverse("task:view_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name'])
+        })
+        url = reverse("task:edit_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
+        }) + "?next=" + view_url
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/changelist.html')
+        self.assertContains(response, "<input type=\"hidden\" name=\"next\" value=\"" + view_url + "\"")
+
+        TEST_DATA_PLUS_HIDDEN = TEST_DATA['tasklist_edit']
+        TEST_DATA_PLUS_HIDDEN["next"] = view_url
+        response = self.client.post(url, TEST_DATA_PLUS_HIDDEN, follow=True)
+        new_url = reverse("task:view_tasklist", kwargs={"username": TEST_DATA['user']['username'],
+                                                    "listslug": slugify(TEST_DATA['tasklist_edit']['name'])})
+        self.assertRedirects(response, new_url)
+
     def test_delete_tasklist(self):
         self.test_add_task()
         self.test_add_public_tasklist()
