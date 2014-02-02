@@ -65,26 +65,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-2">
-        <h3>{{ tasklist.name }}</h3>
-        <p><b>Owner</b><br/><a href="{% url 'task:profile' tasklist.user.username %}">{{ tasklist.user.username }}</a></p>
-        <p><b>Open</b><br/>{{ tasklist.num_incomplete }}</p>
-        <p><b>Closed</b><br/>{{ tasklist.num_complete }}</p>
-        {% if tasklist.num_complete > 0 %}
-          <p>
-              <b>Recently Closed</b><br/>
-              <table class="table table-condensed">
-              {% for task in recently_closed %}
-                  <tr>
-                      <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
-                      <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
-                  </tr>
-              {% endfor %}
-              </table>
-          </p>
-        {% endif %}
-    </div>
-    <div class="col-md-10">
+    <div class="col-md-10 col-md-push-2">
         {% if tasklist.tasks.all %}
             <table class="table table-hover table-condensed">
                 <thead>
@@ -149,6 +130,25 @@
             </table>
             {% else %}
                 <p class="tasklist-empty-notice">No tasks! <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current.url }}">New Task</a></p>
+        {% endif %}
+    </div>
+    <div class="col-md-2 col-md-pull-10">
+        <h3>{{ tasklist.name }}</h3>
+        <p><b>Owner</b><br/><a href="{% url 'task:profile' tasklist.user.username %}">{{ tasklist.user.username }}</a></p>
+        <p><b>Open</b><br/>{{ tasklist.num_incomplete }}</p>
+        <p><b>Closed</b><br/>{{ tasklist.num_complete }}</p>
+        {% if tasklist.num_complete > 0 %}
+          <p>
+              <b>Recently Closed</b><br/>
+              <table class="table table-condensed">
+              {% for task in recently_closed %}
+                  <tr>
+                      <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
+                      <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
+                  </tr>
+              {% endfor %}
+              </table>
+          </p>
         {% endif %}
     </div>
 </div>
