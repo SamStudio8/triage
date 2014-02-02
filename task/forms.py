@@ -109,7 +109,7 @@ class TaskListDeleteForm(forms.Form):
 
     def __init__(self, user_id, tasklist_pk, *args, **kwargs):
         super(TaskListDeleteForm, self).__init__(*args, **kwargs)
-        self.fields['tasklist_transfer'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id).exclude(pk=tasklist_pk)
+        self.fields['tasklist_transfer'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id).exclude(pk=tasklist_pk).order_by("name")
 
         # django-crispy-forms
         self.helper = FormHelper()
