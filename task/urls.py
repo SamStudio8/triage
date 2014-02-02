@@ -21,7 +21,6 @@ urlpatterns = patterns('',
     url(r'^(?P<username>\w+)/settings/triage/$', TaskViews.list_triage_category, name="list_triage_category"),
 
     url(r'^(?P<username>\w+)/list/new/$', TaskViews.add_tasklist, name="add_tasklist"),
-    url(r'^(?P<username>\w+)/(?P<listslug>[-\w]+)/new-task/$', TaskViews.new_task, name="new_task"),
     url(r'^(?P<username>\w+)/(?P<listslug>[-\w]+)/edit/$', TaskViews.edit_tasklist, name="edit_tasklist"),
     url(r'^(?P<username>\w+)/(?P<listslug>[-\w]+)/delete/$', TaskViews.delete_tasklist, name="delete_tasklist"),
     url(r'^(?P<username>\w+)/(?P<listslug>[-\w]+)/$', TaskViews.view_tasklist, name="view_tasklist"),

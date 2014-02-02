@@ -20,7 +20,8 @@ def list_tasks(request):
     return render(request, "task/list.html", {"tasklists": tasklists})
 
 @login_required
-def new_task(request, username, listslug=None):
+def new_task(request, username):
+    listslug = request.GET.get("tasklist", None)
     if listslug:
         tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
         if tasklist.has_edit_permission(request.user.pk):

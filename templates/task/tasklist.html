@@ -14,7 +14,7 @@
         <div class="col-md-6">
             {% if edit_permission %}
             <div class="btn-group pull-right">
-                <a class="btn btn-success" href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+                <a class="btn btn-success" href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
                 <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a class="btn btn-danger" href="{% url 'task:delete_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-remove"></span></a>
             </div>
@@ -128,7 +128,7 @@
                 <tfoot></tfoot>
                 </table>
                 {% else %}
-                <p class="tasklist-empty-notice">No tasks! <a href="{% url 'task:new_task' tasklist.user.username tasklist.slug %}">New Task</a></p>
+                <p class="tasklist-empty-notice">No tasks! <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current.url }}">New Task</a></p>
                 {% endif %}
     </div>
 </div>
