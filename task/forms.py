@@ -95,8 +95,9 @@ class TaskListForm(forms.ModelForm):
 
     def clean_name(self):
         name = self.cleaned_data['name']
-        if TaskModels.TaskList.objects.filter(user=self._user_id, name=name).count() > 0:
-            raise forms.ValidationError('You already have a tasklist with this name.')
+        if not self.instance.pk:
+            if TaskModels.TaskList.objects.filter(user=self._user_id, name=name).count() > 0:
+                raise forms.ValidationError('You already have a tasklist with this name.')
         return name
 
 class TaskListDeleteForm(forms.Form):
