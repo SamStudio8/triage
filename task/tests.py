@@ -241,6 +241,15 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, TEST_DATA['tasklist']['name'])
         self.assertContains(response, TEST_DATA['tasklist']['description'])
 
+    def test_add_non_unique_tasklist(self):
+        self.test_add_tasklist()
+        url = reverse("task:add_tasklist", kwargs={
+            "username": TEST_DATA['user']['username'],
+        })
+        response = self.client.get(url)
+        response = self.client.post(url, TEST_DATA['tasklist'], follow=True)
+        self.assertContains(response, "You already have a tasklist with this name")
+
     def test_add_public_tasklist(self):
         self.client.login(
                 username=TEST_DATA['user']['username'],
