@@ -8,8 +8,8 @@
                 <tr>
             {% endif %}
                 <td class="text-small-task text-center">{{ task.local_id }}</td>
-                <td><a href="{% url 'task:view_task' user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
-                <td>{{ task.tasklist.name }}</td>
+                <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
+                <td><a href="{% url 'task:view_tasklist' task.tasklist.user.username task.tasklist.slug %}">{{ task.tasklist.name }}</a></td>
                 <td class="text-center">
                     <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
                 {% if task.due_date %}
