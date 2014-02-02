@@ -54,6 +54,7 @@ class Task(models.Model):
     def has_edit_permission(self, uid):
           return uid == self.tasklist.user.pk
 
+    @property
     def is_due(self):
         if self.due_date == self.modified_date:
             return 0

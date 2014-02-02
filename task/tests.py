@@ -1,10 +1,12 @@
+import datetime
 from markdown import markdown
 
-from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from django.test import TestCase
 from django.test.client import Client
+from django.utils.timezone import utc
 
 import task.models as TaskModels
 import task.utils as TaskUtils
@@ -656,3 +658,30 @@ class SimpleTaskTest(TestCase):
 
         for triage in user.triages.all():
             self.assertIn(triage.name, defaults)
+
+    def test_task_due_date(self):
+        self.test_add_tasklist()
+
+        today = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+        #  0   Not Due
+        not_due_date = today + datetime.timedelta(days=7)
+        not_due = TaskModels.Task.objects.create(name="Not Due",
+                                                tasklist_id=1,
+                                                due_date=not_due_date)
+        self.assertEquals(not_due.is_due(), 0)
+
+        #  1   Due Today
+        due_today_date = today + datetime.timedelta(seconds=10)
+        due_today = TaskModels.Task.objects.create(name="Due Today",
+                                                  tasklist_id=1,
+                                                  due_date=due_today_date)
+        self.assertEquals(due_today.is_due(), 1)
+
+        # -1   Overdue
+        overdue_date = today
+        overdue = TaskModels.Task.objects.create(name="Overdue",
+                                                tasklist_id=1,
+                                                due_date=overdue_date)
+        self.assertEquals(overdue.is_due(), -1)
+
