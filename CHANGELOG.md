@@ -3,6 +3,8 @@
 ####0.1.3
 
 Improved test coverage  
+Remove /listslug/new-task/ URL and just use GET to /task/new/  
+Users can now delete TaskLists (but are required to migrate all tasks contained to another list)  
 
 ####0.1.2
 
