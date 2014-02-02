@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.1.3-396D
+
+Improved `view_tasklist`, now features upcoming (week and month) sublists and recently added and completed  
+
+    python manage.py collectstatic
+
 ####0.1.3
 
 Improved test coverage  

@@ -66,10 +66,21 @@
 
 <div class="row">
     <div class="col-sm-2">
-        <h2>{{ tasklist.name }}</h2>
-        <p><b>Owner</b><br/><a href="{% url 'task:profile' tasklist.user.username %}">{{ tasklist.user.username }}</a></p>
-        <p><b>Open</b><br/>{{ tasklist.num_incomplete }}</p>
-        <p><b>Closed</b><br/>{{ tasklist.num_complete }}</p>
+        <h2 class="text-center">Status</h2>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th class="col-md-6 text-center">Open</th>
+                    <th class="col-md-6 text-center">Closed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-center task-counter">{{ tasklist.num_incomplete }}</td>
+                    <td class="text-center task-counter">{{ tasklist.num_complete }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div class="col-sm-4">
         <h2>This Week</h2>
@@ -213,7 +224,6 @@
         {% endif %}
     </div>
     <div class="col-sm-2 col-sm-pull-10">
-        <hr>
         {% if tasklist.tasks.count > 0 %}
             <p><b>Recently Added</b></p>
             <table class="table table-condensed">
