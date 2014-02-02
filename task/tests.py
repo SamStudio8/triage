@@ -29,7 +29,7 @@ TEST_DATA = {
     },
     "tasklist_2": {
         "name": "Specific",
-        "description": "A task list for your life's particulars.",
+        "description": "A task list for your life based particulars.",
         "order": 0
     },
     "public_tasklist": {
@@ -232,20 +232,20 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "Hello, "+TEST_DATA['user']['username'])
         self.assertContains(response, "0 task lists")
 
-    def test_add_tasklist(self, user=TEST_DATA['user'], tasklist=TEST_DATA['tasklist']):
+    def test_add_tasklist(self, user=TEST_DATA['user'], tasklist=TEST_DATA['tasklist'], number=1):
         self.client.login(
                 username=user['username'],
                 password=user['password']
         )
         url = reverse("task:add_tasklist", kwargs={
-            "username": TEST_DATA['user']['username'],
+            "username": user['username'],
         })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'task/changelist.html')
         response = self.client.post(url, tasklist, follow=True)
-        self.assertContains(response, "1 task lists")
+        self.assertContains(response, str(number) + " task lists")
         self.assertContains(response, tasklist['name'])
         self.assertContains(response, tasklist['description'])
 
@@ -706,3 +706,33 @@ class SimpleTaskTest(TestCase):
         self.assertEquals(task_user2_1.local_id, 1)
         self.assertEquals(task_user1_3.local_id, 3)
 
+    def test_dashboard(self):
+        self.test_add_tasklist()
+        self.test_add_tasklist(TEST_DATA['user'], TEST_DATA['tasklist_2'], 2)
+
+        today = datetime.datetime.utcnow().replace(tzinfo=utc)
+        this_week_date = today + datetime.timedelta(days=5)
+
+        thisweek_1 = TaskModels.Task.objects.create(name="This Week (1)",
+                                                tasklist_id=1,
+                                                due_date=this_week_date)
+        thisweek_2 = TaskModels.Task.objects.create(name="This Week (2)",
+                                                tasklist_id=2,
+                                                due_date=this_week_date)
+        overdue_date = today
+        overdue = TaskModels.Task.objects.create(name="Overdue",
+                                                tasklist_id=1,
+                                                due_date=overdue_date)
+
+        not_due = TaskModels.Task.objects.create(name="Not Due",
+                                                tasklist_id=2)
+
+        url = reverse("task:dashboard", kwargs={
+        })
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'task/dashboard.html')
+        self.assertEqual(len(response.context['task_overdue']), 1)
+        self.assertEqual(len(response.context['task_week']), 2)
+        self.assertEqual(len(response.context['task_nodue']), 1)
