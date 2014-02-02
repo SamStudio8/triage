@@ -174,8 +174,21 @@ class TaskList(models.Model):
     def open_tasks(self):
         return self.tasks.filter(completed=False)
 
-    def recently_closed(self, limit):
+    def upcoming_tasks(self, days=7):
+        today = datetime.datetime.utcnow().replace(tzinfo=utc)
+        deltadate = today + datetime.timedelta(days=days)
+
+        return self.tasks.filter(completed=False, due_date__range=[today, deltadate]).order_by("-triage__priority")
+
+    def overdue_tasks(self):
+        today = datetime.datetime.utcnow().replace(tzinfo=utc)
+        return self.tasks.filter(completed=False, due_date__lte=today).order_by("-due_date")
+
+    def recently_closed(self, limit=None):
         return self.tasks.filter(completed=True).order_by("completed_date")[:limit].reverse()
+
+    def recently_added(self, limit=None):
+        return self.tasks.order_by("creation_date")[:limit].reverse()
 
     @property
     def num_incomplete(self):
