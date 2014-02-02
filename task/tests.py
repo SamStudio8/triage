@@ -38,6 +38,11 @@ TEST_DATA = {
         "order": 0,
         "public": True
     },
+    "another_tasklist": {
+        "name": "Another List",
+        "description": "A task list that is not yours.",
+        "order": 0
+    },
     "task": {
         "tasklist": 1,
         "name": "Create a todo list manager",
@@ -227,10 +232,10 @@ class SimpleTaskTest(TestCase):
         self.assertContains(response, "Hello, "+TEST_DATA['user']['username'])
         self.assertContains(response, "0 task lists")
 
-    def test_add_tasklist(self):
+    def test_add_tasklist(self, user=TEST_DATA['user'], tasklist=TEST_DATA['tasklist']):
         self.client.login(
-                username=TEST_DATA['user']['username'],
-                password=TEST_DATA['user']['password']
+                username=user['username'],
+                password=user['password']
         )
         url = reverse("task:add_tasklist", kwargs={
             "username": TEST_DATA['user']['username'],
@@ -239,10 +244,10 @@ class SimpleTaskTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'task/changelist.html')
-        response = self.client.post(url, TEST_DATA['tasklist'], follow=True)
+        response = self.client.post(url, tasklist, follow=True)
         self.assertContains(response, "1 task lists")
-        self.assertContains(response, TEST_DATA['tasklist']['name'])
-        self.assertContains(response, TEST_DATA['tasklist']['description'])
+        self.assertContains(response, tasklist['name'])
+        self.assertContains(response, tasklist['description'])
 
     def test_add_non_unique_tasklist(self):
         self.test_add_tasklist()
@@ -684,4 +689,20 @@ class SimpleTaskTest(TestCase):
                                                 tasklist_id=1,
                                                 due_date=overdue_date)
         self.assertEquals(overdue.is_due, -1)
+
+    def test_task_local_id_ordering(self):
+        self.test_add_tasklist(TEST_DATA['user'], TEST_DATA['tasklist'])
+        self.test_add_tasklist(TEST_DATA['user2'], TEST_DATA['another_tasklist'])
+
+        task_user1_1 = TaskModels.Task.objects.create(name="T1",
+                                                tasklist_id=1)
+        task_user1_2 = TaskModels.Task.objects.create(name="T2",
+                                                tasklist_id=1)
+        task_user2_1 = TaskModels.Task.objects.create(name="T1",
+                                                tasklist_id=2)
+        task_user1_3 = TaskModels.Task.objects.create(name="T3",
+                                                tasklist_id=1)
+
+        self.assertEquals(task_user2_1.local_id, 1)
+        self.assertEquals(task_user1_3.local_id, 3)
 
