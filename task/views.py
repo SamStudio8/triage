@@ -62,14 +62,10 @@ def edit_task(request, username, task_id, tasklist_id=None):
 
     task = None
     if task_id:
-        try:
-            task = TaskModels.Task.objects.get(tasklist__user__username=username, _id=task_id)
-        except TaskModels.Task.DoesNotExist:
-            pass
-        else:
-            if not task.has_edit_permission(request.user.pk):
-                return HttpResponseRedirect(reverse('home'))
-            tasklist_id = task.tasklist_id
+        task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
+        if not task.has_edit_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
+        tasklist_id = task.tasklist_id
 
     # Fill in POST with data from the model that is not in the request
     post = request.POST or None
