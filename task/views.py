@@ -288,8 +288,8 @@ def dashboard(request):
     calendar = TaskUtils.calendarize(request.user.pk, 30)
     return render(request, "task/dashboard.html", {
         "calendar": calendar,
-        "recently_added": TaskUtils.recently_added(request.user.pk, limit=5),
-        "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=5),
+        "recently_added": TaskUtils.recently_added(request.user.pk, limit=10),
+        "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=10),
         "upcoming_week": TaskUtils.upcoming_tasks(request.user.pk, days=7),
         "upcoming_month": TaskUtils.upcoming_tasks(request.user.pk, offset=7, days=30),
         "overdue": TaskUtils.overdue_tasks(request.user.pk),

@@ -719,6 +719,7 @@ class SimpleTaskTest(TestCase):
 
         today = datetime.datetime.utcnow().replace(tzinfo=utc)
         this_week_date = today + datetime.timedelta(days=5)
+        this_month_date = today + datetime.timedelta(days=30)
 
         thisweek_1 = TaskModels.Task.objects.create(name="This Week (1)",
                                                 tasklist_id=1,
@@ -731,8 +732,9 @@ class SimpleTaskTest(TestCase):
                                                 tasklist_id=1,
                                                 due_date=overdue_date)
 
-        not_due = TaskModels.Task.objects.create(name="Not Due",
-                                                tasklist_id=2)
+        not_due = TaskModels.Task.objects.create(name="Later This Month",
+                                                tasklist_id=2,
+                                                due_date=this_month_date)
 
         url = reverse("task:dashboard", kwargs={
         })
@@ -740,9 +742,9 @@ class SimpleTaskTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'task/dashboard.html')
-        self.assertEqual(len(response.context['task_overdue']), 1)
-        self.assertEqual(len(response.context['task_week']), 2)
-        self.assertEqual(len(response.context['task_nodue']), 1)
+        self.assertEqual(len(response.context['overdue']), 1)
+        self.assertEqual(len(response.context['upcoming_week']), 2)
+        self.assertEqual(len(response.context['upcoming_month']), 1)
 
     def test_add_milestone(self):
         self.client.login(
