@@ -3,6 +3,7 @@
         <form action="{% url 'task:new_task' user.username %}" method="post" role="form">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ current_url }}" />
+            <input type="hidden" name="quick" value="1" />
             <input type="text" name="name" class="form-control" placeholder="Task Name" autofocus="" required />
 
                 {% if tasklist %}

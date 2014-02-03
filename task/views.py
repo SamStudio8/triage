@@ -1,6 +1,7 @@
 import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db.models.fields.related import ForeignKey
 from django.http import HttpResponseRedirect
@@ -101,6 +102,13 @@ def edit_task(request, username, task_id, tasklist_id=None):
         if not original:
             TaskEvents.CreationEvent(request, task)
         TaskEvents.FieldChange(request, original, task)
+
+        # Display a message if this was sent from quick_add
+        if request.POST.get('quick', None):
+            url = reverse('task:view_task', kwargs={"username": task.tasklist.user.username,
+                                                    "task_id": task.local_id})
+            msg = "Task <b><a class='alert-link' href='" + url + "'>#" + str(task.local_id) + ": " + task.name + "</a></b> added successfully."
+            messages.add_message(request, messages.SUCCESS, msg, extra_tags='safe')
 
         redirect_to = request.POST.get('next', "/")
         return HttpResponseRedirect(redirect_to)
