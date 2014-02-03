@@ -1,6 +1,7 @@
 import datetime
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Count
 from django.template.defaultfilters import slugify
 from django.utils.timezone import utc
 
@@ -176,7 +177,7 @@ class TaskList(models.Model):
           return uid == self.user.pk
 
     def open_tasks(self):
-        return self.tasks.filter(completed=False)
+        return self.tasks.annotate(null=Count("due_date")).filter(completed=False).order_by("-null", "due_date", "-triage__priority")
 
     def closed_tasks(self):
         return self.tasks.filter(completed=True).order_by("-completed_date")
