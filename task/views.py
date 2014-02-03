@@ -308,6 +308,21 @@ def dashboard(request):
                                                    "task_overdue": task_overdue})
 
 @login_required
+def dashboard_beta(request):
+
+    calendar = TaskUtils.calendarize(request.user.pk, 30)
+    return render(request, "task/dashboard_beta.html", {
+        "calendar": calendar,
+        "recently_added": TaskUtils.recently_added(request.user.pk, limit=5),
+        "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=5),
+        "upcoming_week": TaskUtils.upcoming_tasks(request.user.pk, days=7),
+        "upcoming_month": TaskUtils.upcoming_tasks(request.user.pk, offset=7, days=30),
+        "overdue": TaskUtils.overdue_tasks(request.user.pk),
+        "open_tasks": TaskUtils.open_tasks(request.user.pk),
+        "closed_tasks": TaskUtils.closed_tasks(request.user.pk)
+    })
+
+@login_required
 def calendar(request):
     calendar = TaskUtils.calendarize(request.user.pk, 30)
     return render(request, "task/calendar.html", {"calendar": calendar })
