@@ -154,8 +154,8 @@
 
 <div class="row">
     <div class="col-sm-10 col-sm-push-2">
+        <h2>All Tasks</h2>
         {% if tasklist.tasks.all %}
-            <h2>All Tasks</h2>
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -218,7 +218,7 @@
                 <tfoot></tfoot>
             </table>
             {% else %}
-                <p class="tasklist-empty-notice">No tasks! <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current.url }}">New Task</a></p>
+                <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}">New Task</a>{% endif %}</p>
         {% endif %}
     </div>
     <div class="col-sm-2 col-sm-pull-10">
