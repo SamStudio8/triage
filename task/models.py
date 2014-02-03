@@ -99,6 +99,9 @@ class Task(models.Model):
                 self._id = first._id + 1
 
         self.modified_date = datetime.datetime.utcnow().replace(tzinfo=utc)
+
+        if self.completed:
+            self.completed_date = datetime.datetime.utcnow().replace(tzinfo=utc)
         super(Task, self).save(*args, **kwargs)
 
 class TaskTriageCategory(models.Model):
