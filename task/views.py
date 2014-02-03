@@ -135,8 +135,8 @@ def complete_task(request, username, task_id):
 
 @login_required
 def link_task(request, task_id):
-    task = get_object_or_404(TaskModels.Task, pk=task_id)
-    if not task.has_edit_permission(request.user.username):
+    task = get_object_or_404(TaskModels.Task, _id=task_id)
+    if not task.has_edit_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskLinkForm(request.user.id, request.POST or None,
@@ -145,7 +145,8 @@ def link_task(request, task_id):
     if form.is_valid():
         link = form.save()
         TaskEvents.LinkChange(request, link)
-        return HttpResponseRedirect(reverse('task:view_task', args=(task.pk,)))
+        return HttpResponseRedirect(reverse('task:view_task', kwargs={"username": task.tasklist.user.username,
+                                                                      "task_id": task.local_id}))
     return render(request, "task/changelink.html", {"form": form})
 
 @login_required

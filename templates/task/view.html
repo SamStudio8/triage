@@ -98,7 +98,7 @@
     <div class="col-md-12">
         <legend>Links
             {% if edit_permission %}
-            <a class="pull-right btn btn-sm btn-success" href="{% url 'task:link_task' task.id %}"><span class="glyphicon glyphicon-link"></span> Add Link</a></legend>
+            <a class="pull-right btn btn-sm btn-success" href="{% url 'task:link_task' task.local_id %}"><span class="glyphicon glyphicon-link"></span> Add Link</a></legend>
             {% endif %}
     </div>
     <div class="col-sm-6">
