@@ -30,6 +30,9 @@
         return moment(timestamp).fromNow();
     };
     $(document).ready(function(){
+        $(".human_date").html(function() {
+            return humanize($(this).html());
+        });
         $(".due_date").html(function() {
             return humanize($(this).html());
         });
@@ -154,8 +157,8 @@
 
 <div class="row">
     <div class="col-sm-10 col-sm-push-2">
-        <h2>All Tasks</h2>
-        {% if tasklist.tasks.all %}
+        <h2>All Open Tasks</h2>
+        {% if tasklist.num_incomplete > 0 %}
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -167,51 +170,86 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% for task in tasklist.tasks.all %}
-                    {% if task.completed %}
+                {% for task in tasklist.open_tasks %}
+                    {% if not task.due_date %}
+                        <tr class="warning">
+                    {% elif task.is_due == -1 %}
+                        <tr class="danger">
+                    {% elif task.is_due == 1 %}
+                        <tr class="warning">
+                    {% else %}
                         <tr>
-                    {% else %}
-                        {% if not task.due_date %}
-                            <tr class="warning">
-                        {% elif task.is_due == -1 %}
-                            <tr class="danger">
-                        {% elif task.is_due == 1 %}
-                            <tr class="warning">
-                        {% else %}
-                            <tr>
-                        {% endif %}
                     {% endif %}
-                    <td class="text-center">{{ task.local_id }}</td>
-                    <td class="text-center">
-                        <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
-                    </td>
 
-                    {% if task.completed %}
-                        <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><strike><b>{{ task.name }}</b></strike></a></td>
-                    {% else %}
+                        <td class="text-center">{{ task.local_id }}</td>
+                        <td class="text-center">
+                            <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
+                        </td>
+
                         <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
-                    {% endif %}
-                    {% if task.due_date %}
-                        <td class="due_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
 
-                    <td>
-                    {% if edit_permission %}
-                        {% if task.completed %}
-                            <div class="btn-group pull-right">
-                                <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
-                            </div>
+                        {% if task.due_date %}
+                            <td class="human_date" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</td>
                         {% else %}
+                            <td></td>
+                        {% endif %}
+
+                        <td>
+                        {% if edit_permission %}
                             <div class="btn-group pull-right">
                                 <a class="btn btn-sm btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
                                 <a class="btn btn-sm btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span></a>
                             </div>
                         {% endif %}
-                    {% endif %}
-                    </td>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+            {% else %}
+                <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}">New Task</a>{% endif %}</p>
+        {% endif %}
+        <hr>
+        <h2>Closed Tasks</h2>
+        {% if tasklist.num_complete > 0 %}
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th class="col-md-1 text-center">#</th>
+                        <th class="col-md-1 text-center">Triage</th>
+                        <th class="col-md-7">Task</th>
+                        <th class="col-md-2">Completed</th>
+                        <th class="col-md-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for task in tasklist.closed_tasks %}
+                    <tr>
+                        <td class="text-center">{{ task.local_id }}</td>
+                        <td class="text-center">
+                            <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
+                        </td>
 
+                        <td>
+                            <a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">
+                                <b>{{ task.name }}</b>
+                            </a>
+                        </td>
+
+                        {% if task.completed_date %}
+                            <td class="human_date" title="{{ task.completed_date }}">{{ task.completed_date|date:"c" }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+
+                        <td>
+                        {% if edit_permission %}
+                            <div class="btn-group pull-right">
+                                <a class="btn btn-sm btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+                            </div>
+                        {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
