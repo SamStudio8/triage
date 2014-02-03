@@ -78,6 +78,9 @@ def edit_task(request, username, task_id, tasklist_id=None):
         post = request.POST.copy()
         for field in task._meta.fields:
             attr = field.name
+            if attr is "completed":
+                continue
+
             value = getattr(task, attr)
             if value is not None and isinstance(field, ForeignKey):
                 value = value._get_pk_val()
