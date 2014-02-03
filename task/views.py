@@ -285,33 +285,8 @@ def edit_triage_category(request, username, triage_category_id=None):
 
 @login_required
 def dashboard(request):
-    today = datetime.datetime.utcnow().replace(tzinfo=utc)
-    deltadate = today + datetime.timedelta(days=7)
-
-    task_week = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                                completed=False,
-                                                due_date__range=[today, deltadate],
-                                        ).order_by("-triage__priority")
-
-    task_nodue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                                completed=False,
-                                                due_date=None
-                                        ).order_by("-triage__priority")
-
-    task_overdue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                                completed=False,
-                                                due_date__lte=today
-                                        ).order_by("-triage__priority")
-
-    return render(request, "task/dashboard.html", {"task_week": task_week,
-                                                   "task_nodue": task_nodue,
-                                                   "task_overdue": task_overdue})
-
-@login_required
-def dashboard_beta(request):
-
     calendar = TaskUtils.calendarize(request.user.pk, 30)
-    return render(request, "task/dashboard_beta.html", {
+    return render(request, "task/dashboard.html", {
         "calendar": calendar,
         "recently_added": TaskUtils.recently_added(request.user.pk, limit=5),
         "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=5),
