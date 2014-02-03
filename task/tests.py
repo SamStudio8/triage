@@ -94,13 +94,11 @@ TEST_DATA = {
         "tasklist": 2,
         "name": "Write witty diary entry",
         "description": "Maintain a record of exciting happenings.",
-        "progress": 10
     },
     "task_edit_for_markdown": {
         "tasklist": 1,
         "name": "Write a marked down diary entry",
         "description": "This is [an example](http://triage.ironowl.io/ 'Title') inline link.",
-        "progress": 50
     },
     "milestone": {
         "name": "Major Milestone",
