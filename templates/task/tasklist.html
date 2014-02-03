@@ -171,9 +171,7 @@
                 </thead>
                 <tbody>
                 {% for task in tasklist.open_tasks %}
-                    {% if not task.due_date %}
-                        <tr class="warning">
-                    {% elif task.is_due == -1 %}
+                    {% if task.is_due == -1 %}
                         <tr class="danger">
                     {% elif task.is_due == 1 %}
                         <tr class="warning">
