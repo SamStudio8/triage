@@ -1,5 +1,9 @@
 #CHANGELOG
 
+####0.1.3-406D
+
+Introduce use of Django messages framework to deliver success status on Task quick_add  
+
 ####0.1.3-400D
 
 Dropped `Task.progress`  
