@@ -294,7 +294,9 @@ def dashboard(request):
         "upcoming_month": TaskUtils.upcoming_tasks(request.user.pk, offset=7, days=30),
         "overdue": TaskUtils.overdue_tasks(request.user.pk),
         "open_tasks": TaskUtils.open_tasks(request.user.pk),
-        "closed_tasks": TaskUtils.closed_tasks(request.user.pk)
+        "closed_tasks": TaskUtils.closed_tasks(request.user.pk),
+        "edit_permission": True, # NOTE Currently a user has edit permission for any task on their dashboard
+        "dashboard": True
     })
 
 @login_required
