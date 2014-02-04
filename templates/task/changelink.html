@@ -18,6 +18,10 @@
 {% endblock %}
 
 {% block content %}
+<div class="alert alert-danger">
+    <strong>Sorry!</strong><br/>
+    Task Linking is an incomplete feature! Please come back another day.
+</div>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

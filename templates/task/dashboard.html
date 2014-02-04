@@ -175,7 +175,7 @@
                 <tfoot></tfoot>
             </table>
             {% else %}
-                <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}">New Task</a>{% endif %}</p>
+                <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' user.username %}?next={{ current_url }}">New Task</a>{% endif %}</p>
         {% endif %}
         <hr>
         <h2>Closed Tasks</h2>
@@ -223,7 +223,7 @@
                 <tfoot></tfoot>
             </table>
             {% else %}
-                <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}">New Task</a>{% endif %}</p>
+                <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' user.username %}?next={{ current_url }}">New Task</a>{% endif %}</p>
         {% endif %}
     </div>
     <div class="col-sm-2 col-sm-pull-10">
