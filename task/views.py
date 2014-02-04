@@ -145,8 +145,8 @@ def complete_task(request, username, task_id):
     return HttpResponseRedirect(redirect_to)
 
 @login_required
-def link_task(request, task_id):
-    task = get_object_or_404(TaskModels.Task, _id=task_id)
+def link_task(request, username, task_id):
+    task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
     if not task.has_edit_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
