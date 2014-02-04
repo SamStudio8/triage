@@ -36,7 +36,7 @@ def view_tasklist(request, username, listslug):
     tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
     if not tasklist.has_view_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
-    calendar = TaskUtils.calendarize(True, 30, tasklist.pk)
+    calendar = TaskUtils.calendarize(None, 30, tasklist.pk)
     edit_permission = tasklist.has_edit_permission(request.user.pk)
     return render(request, "task/tasklist.html", {"tasklist": tasklist,
                                                   "calendar": calendar,
@@ -285,27 +285,17 @@ def edit_triage_category(request, username, triage_category_id=None):
 
 @login_required
 def dashboard(request):
-    today = datetime.datetime.utcnow().replace(tzinfo=utc)
-    deltadate = today + datetime.timedelta(days=7)
-
-    task_week = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                                completed=False,
-                                                due_date__range=[today, deltadate],
-                                        ).order_by("-triage__priority")
-
-    task_nodue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                                completed=False,
-                                                due_date=None
-                                        ).order_by("-triage__priority")
-
-    task_overdue = TaskModels.Task.objects.filter(tasklist__user__id=request.user.pk,
-                                                completed=False,
-                                                due_date__lte=today
-                                        ).order_by("-triage__priority")
-
-    return render(request, "task/dashboard.html", {"task_week": task_week,
-                                                   "task_nodue": task_nodue,
-                                                   "task_overdue": task_overdue})
+    calendar = TaskUtils.calendarize(request.user.pk, 30)
+    return render(request, "task/dashboard.html", {
+        "calendar": calendar,
+        "recently_added": TaskUtils.recently_added(request.user.pk, limit=10),
+        "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=10),
+        "upcoming_week": TaskUtils.upcoming_tasks(request.user.pk, days=7),
+        "upcoming_month": TaskUtils.upcoming_tasks(request.user.pk, offset=7, days=30),
+        "overdue": TaskUtils.overdue_tasks(request.user.pk),
+        "open_tasks": TaskUtils.open_tasks(request.user.pk),
+        "closed_tasks": TaskUtils.closed_tasks(request.user.pk)
+    })
 
 @login_required
 def calendar(request):

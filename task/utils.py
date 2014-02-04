@@ -1,4 +1,5 @@
 import datetime
+from django.db.models import Count
 from django.utils.timezone import utc
 
 import task.models as TaskModels
@@ -52,11 +53,15 @@ def calendarize(uid, num_days, tasklist_id=0):
     today = datetime.datetime.utcnow().replace(tzinfo=utc)
     deltadate = today + datetime.timedelta(days=num_days)
 
-    tasks = TaskModels.Task.objects.filter(tasklist__user__id=uid,
-                                           completed=False,
+    tasks = TaskModels.Task.objects.filter(completed=False,
                                            due_date__range=[today, deltadate],
                                     ).order_by("triage__priority")
+    if uid:
+        # Fetch all tasks on any lists owned by a particular user
+        tasks = tasks.filter(tasklist__user__id=uid)
+
     if tasklist_id:
+        # Fetch all tasks on a particular list
         tasks = tasks.filter(tasklist=tasklist_id)
 
     calendar = {}
@@ -73,3 +78,25 @@ def calendarize(uid, num_days, tasklist_id=0):
 def fetch_public_tasklists(uid):
     return TaskModels.TaskList.objects.filter(user__pk=uid, public=True)
 
+def recently_added(uid, limit=5):
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid).order_by("creation_date")[:limit].reverse()
+
+def recently_closed(uid, limit=5):
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=True).order_by("completed_date")[:limit].reverse()
+
+def upcoming_tasks(uid, offset=0, days=7):
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    offset_date = today + datetime.timedelta(days=offset)
+    delta_date = today + datetime.timedelta(days=days+offset)
+
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority")
+
+def overdue_tasks(uid):
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date__lte=today).order_by("-due_date")
+
+def open_tasks(uid):
+    return TaskModels.Task.objects.annotate(null=Count("due_date")).filter(tasklist__user__pk=uid, completed=False).order_by("-null", "due_date", "-triage__priority")
+
+def closed_tasks(uid):
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=True).order_by("-completed_date")
