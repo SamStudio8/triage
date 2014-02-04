@@ -33,6 +33,8 @@
                                     {% for tasklist in user.tasklists.all|dictsort:"name" %}
                                         <li><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></li>
                                     {% endfor %}
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'task:add_tasklist' user.username %}">New...</a></li>
                                 </ul>
                             </li>
                             <li><a href="{% url 'task:dashboard' %}"><span class="glyphicon glyphicon-th"></span> Dashboard</a></li>
