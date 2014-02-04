@@ -36,7 +36,7 @@ def view_tasklist(request, username, listslug):
     tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
     if not tasklist.has_view_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
-    calendar = TaskUtils.calendarize(True, 30, tasklist.pk)
+    calendar = TaskUtils.calendarize(None, 30, tasklist.pk)
     edit_permission = tasklist.has_edit_permission(request.user.pk)
     return render(request, "task/tasklist.html", {"tasklist": tasklist,
                                                   "calendar": calendar,

@@ -53,11 +53,15 @@ def calendarize(uid, num_days, tasklist_id=0):
     today = datetime.datetime.utcnow().replace(tzinfo=utc)
     deltadate = today + datetime.timedelta(days=num_days)
 
-    tasks = TaskModels.Task.objects.filter(tasklist__user__id=uid,
-                                           completed=False,
+    tasks = TaskModels.Task.objects.filter(completed=False,
                                            due_date__range=[today, deltadate],
                                     ).order_by("triage__priority")
+    if uid:
+        # Fetch all tasks on any lists owned by a particular user
+        tasks = tasks.filter(tasklist__user__id=uid)
+
     if tasklist_id:
+        # Fetch all tasks on a particular list
         tasks = tasks.filter(tasklist=tasklist_id)
 
     calendar = {}
