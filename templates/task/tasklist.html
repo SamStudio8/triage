@@ -208,9 +208,9 @@
             {% else %}
                 <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}">New Task</a>{% endif %}</p>
         {% endif %}
-        <hr>
-        <h2>Closed Tasks</h2>
         {% if tasklist.num_complete > 0 %}
+            <hr>
+            <h2>Closed Tasks</h2>
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -253,8 +253,6 @@
                 </tbody>
                 <tfoot></tfoot>
             </table>
-            {% else %}
-                <p class="tasklist-empty-notice">No tasks!{% if edit_permission %} <a href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}">New Task</a>{% endif %}</p>
         {% endif %}
     </div>
     <div class="col-sm-2 col-sm-pull-10">
