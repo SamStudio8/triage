@@ -89,7 +89,7 @@ def upcoming_tasks(uid, offset=0, days=7):
     offset_date = today + datetime.timedelta(days=offset)
     delta_date = today + datetime.timedelta(days=days+offset)
 
-    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority")
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority", "due_date")
 
 def overdue_tasks(uid):
     today = datetime.datetime.utcnow().replace(tzinfo=utc)

@@ -187,7 +187,7 @@ class TaskList(models.Model):
         offset_date = today + datetime.timedelta(days=offset)
         delta_date = today + datetime.timedelta(days=days+offset)
 
-        return self.tasks.filter(completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority")
+        return self.tasks.filter(completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority", "due_date")
 
     def overdue_tasks(self):
         today = datetime.datetime.utcnow().replace(tzinfo=utc)
