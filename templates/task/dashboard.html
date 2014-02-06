@@ -82,6 +82,8 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#upcoming" data-toggle="tab">Upcoming</a></li>
             <li><a href="#recent" data-toggle="tab">Recent</a></li>
+            <li><a href="#overdue" data-toggle="tab">Overdue</a></li>
+            <li><a href="#housekeeping" data-toggle="tab">Housekeeping</a></li>
         </ul>
 
         <div class="tab-content">
@@ -133,6 +135,7 @@
                 </div>
               </div>
             </div>
+
             <div class="tab-pane fade" id="recent">
               <div class="row">
                 <div class="col-sm-6">
@@ -180,6 +183,83 @@
                     {% endif %}
                 </div>
               </div>
+            </div>
+
+            <div class="tab-pane fade" id="overdue">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>Overdue</h2>
+                    {% if overdue %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in overdue %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        No overdue tasks, yay!
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="housekeeping">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>Awaiting Triage</h2>
+                    {% if no_triage %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in no_triage %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <h2>No Due Date</h2>
+                    {% if no_due %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in no_due %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

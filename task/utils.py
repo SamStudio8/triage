@@ -100,3 +100,9 @@ def open_tasks(uid):
 
 def closed_tasks(uid):
     return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=True).order_by("-completed_date")
+
+def undue_tasks(uid):
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date=None)
+
+def untriage_tasks(uid):
+    return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, triage=None)
