@@ -78,49 +78,110 @@
             </tbody>
         </table>
     </div>
-    <div class="col-sm-5">
-        <h2>This Week</h2>
-        {% if upcoming_week %}
-        <table class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th class="text-center col-md-1">#</th>
-                    <th class="col-md-9">Task</th>
-                    <th class="text-center col-md-2"></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for task in upcoming_week %}
-                {% include "task/includes/task_row.html" %}
-            {% endfor %}
-            </tbody>
-            <tfoot></tfoot>
-        </table>
-        {% else %}
-            No upcoming tasks this week!
-        {% endif %}
-    </div>
-    <div class="col-sm-5">
-        <h2>This Month</h2>
-        {% if upcoming_month %}
-        <table class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th class="text-center col-md-1">#</th>
-                    <th class="col-md-9">Task</th>
-                    <th class="text-center col-md-2"></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for task in upcoming_month %}
-                {% include "task/includes/task_row.html" %}
-            {% endfor %}
-            </tbody>
-            <tfoot></tfoot>
-        </table>
-        {% else %}
-            No upcoming tasks later this month!
-        {% endif %}
+    <div class="col-sm-10">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#upcoming" data-toggle="tab">Upcoming</a></li>
+            <li><a href="#recent" data-toggle="tab">Recent</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="upcoming">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>This Week</h2>
+                    {% if upcoming_week %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in upcoming_week %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        No upcoming tasks this week!
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <h2>This Month</h2>
+                    {% if upcoming_month %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in upcoming_month %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        No upcoming tasks later this month!
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="recent">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>Recently Added</h2>
+                    {% if recently_added %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in recently_added %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <h2>Recently Closed</h2>
+                    {% if recently_closed %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in recently_closed %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 </div>
 

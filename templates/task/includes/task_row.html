@@ -1,9 +1,11 @@
-            {% if not task.due_date %}
-                <tr class="warning">
-            {% elif task.is_due == -1 %}
-                <tr class="danger">
-            {% elif task.is_due == 1 %}
-                <tr class="warning">
+            {% if not task.completed %}
+                {% if task.is_due == -1 %}
+                    <tr class="danger">
+                {% elif task.is_due == 1 %}
+                    <tr class="warning">
+                {% else %}
+                    <tr>
+                {% endif %}
             {% else %}
                 <tr>
             {% endif %}
@@ -14,9 +16,15 @@
                 {% endif %}
                 <td class="text-center">
                     <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
-                {% if task.due_date %}
+
+                {% if task.completed %}
                     <br />
-                    <span class="due_date text-small-task" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
+                    <span class="human_date text-small-task" title="{{ task.completed_date }}">{{ task.completed_date|date:"c" }}</span>
+                {% else %}
+                    {% if task.due_date %}
+                        <br />
+                            <span class="human_date text-small-task" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
+                    {% endif %}
                 {% endif %}
                     </td>
 
