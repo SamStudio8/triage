@@ -72,7 +72,7 @@
     <div class="col-sm-11">
         <table class="calendar-table table table-condensed">
             <tbody>
-            {% for task in day.tasks %}
+            {% for task in day.tasks|dictsort:"due_date" %}
                 <tr>
                     <td class="col-xs-7 label_light" style="border-left-color:#{{ task.triage.bg_colour }}">
                         <a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a>
