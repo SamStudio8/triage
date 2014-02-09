@@ -7,14 +7,14 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js" type="text/javascript"></script>
 <div class="container">
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-sm-6">
             <h1>Tasks</h1>
             <p>Hello, {{ user.username }}, you have {{ tasklists.count }} task lists:</p>
         </div>
-        <div class="col-xs-6">
+        <div class="col-sm-6">
             <div class="btn-group pull-right">
-                <a class="btn btn-success" href="{% url 'task:add_tasklist' user.username %}"><span class="glyphicon glyphicon-plus"></span> Add Task List</a>
-                <a class="btn btn-info" href="{% url 'task:list_triage_category' user.username %}"><span class="glyphicon glyphicon-cog"></span> Triage Categories</a>
+                <a class="btn btn-success" href="{% url 'task:add_tasklist' user.username %}"><span class="glyphicon glyphicon-plus"></span> Task List</a>
+                <a class="btn btn-info" href="{% url 'task:list_triage_category' user.username %}"><span class="glyphicon glyphicon-cog"></span> Triages</a>
                 <a class="btn btn-info" href="{% url 'task:list_milestones' user.username %}"><span class="glyphicon glyphicon-cog"></span> Milestones</a>
             </div>
         </div>
@@ -45,10 +45,17 @@
     <div class="col-md-10">
     {% for tasklist in tasklists %}
         <div class="row">
-            <div class="col-xs-6">
+            <div class="col-sm-8">
                 <h2><a href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}">{{ tasklist.name }}</a></h2>
+                <h3>{{ tasklist.description }}</h3>
+                <p>
+                    {% if tasklist.public %}
+                        <span class="glyphicon glyphicon-globe"></span>
+                    {% endif %}
+                    {{ tasklist.num_incomplete }} tasks ({{ tasklist.num_complete }} completed)
+                </p>
             </div>
-            <div class="col-xs-6">
+            <div class="col-sm-4">
                 <div class="btn-group pull-right">
                     <a class="btn btn-sm btn-info" href="{% url 'task:view_tasklist' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-eye-open"></span></a>
                     <a class="btn btn-sm btn-success" href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
@@ -70,13 +77,6 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <h3>{{ tasklist.description }}</h3>
-                <p>
-                    {% if tasklist.public %}
-                        <span class="glyphicon glyphicon-globe"></span>
-                    {% endif %}
-                    {{ tasklist.num_incomplete }} tasks ({{ tasklist.num_complete }} completed)
-                </p>
                 {% if tasklist.open_tasks %}
                 <table class="table table-hover table-condensed">
                     <thead>
