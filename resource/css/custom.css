@@ -15,7 +15,7 @@ h1,h2,h3,h4,h5,h6{
     min-height: 100%;
     height: auto !important;
     margin: 0 auto -30px;
-    padding: 0 0 30px 0;
+    padding: 0;
 }
 #content-head {
     padding-top: 25px;
@@ -94,9 +94,12 @@ h1,h2,h3,h4,h5,h6{
 
 .calendar-row {
     border-width: 0 0 1px 0;
-    border-color: #999;
+    border-color: #ccc;
     border-style: solid;
     margin: 0;
+}
+.calendar-rows {
+    margin-bottom: 50px;
 }
 .calendar-table {
     margin: 0;
