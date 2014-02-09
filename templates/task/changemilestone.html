@@ -5,15 +5,7 @@
 
 {% block content-head-class %}head-dark{% endblock %}
 {% block content-head %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js" type="text/javascript"></script>
-<script src="/static/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
-<link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#id_due_date').datetimepicker();
-    });
-</script>
 <a style="color: white;" title="Return Home" href="{% url 'home' %}">
     <div style="float: left;" class="col-md-1 text-center">
         <h3><span class="glyphicon glyphicon-chevron-left pull-right"></span></h3>

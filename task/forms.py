@@ -6,6 +6,12 @@ from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions
 
 import task.models as TaskModels
 
+class TriageSplitDateTimeWidget(forms.SplitDateTimeWidget):
+    def __init__(self):
+        widgets = (forms.DateInput(attrs={'type' : "date", 'data_input':"YYYY-MM-DD"}, format="%Y-%m-%d"),
+               forms.TimeInput(attrs={'type': "time"}))
+        super(forms.SplitDateTimeWidget, self).__init__(widgets)
+
 class TaskForm(forms.ModelForm):
     def __init__(self, user_id, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
@@ -17,6 +23,7 @@ class TaskForm(forms.ModelForm):
         self.fields['tasklist'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id)
         self.fields['triage'].queryset = TaskModels.TaskTriageCategory.objects.filter(user_id=user_id)
         self.fields['milestone'].queryset = TaskModels.TaskMilestone.objects.filter(user_id=user_id)
+        self.fields['due_date'].widget = TriageSplitDateTimeWidget()
 
         # django-crispy-forms
         self.helper = FormHelper()
@@ -36,7 +43,7 @@ class TaskForm(forms.ModelForm):
                     Fieldset('Meta',
                         'triage',
                         'milestone',
-                        AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>', data_format="YYYY-MM-DD H:mm"),
+                        AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>'),
                     ),
                     css_class="col-lg-6"
                 ),
@@ -186,6 +193,7 @@ class TaskMilestoneForm(forms.ModelForm):
         del self.fields['user']
         self.fields['bg_colour'].label = "Background"
         self.fields['fg_colour'].label = "Text"
+        self.fields['due_date'].widget = TriageSplitDateTimeWidget()
 
         # django-crispy-forms
         self.helper = FormHelper()
@@ -197,7 +205,7 @@ class TaskMilestoneForm(forms.ModelForm):
                 Fieldset(
                     'Basic',
                     'name',
-                    AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>', data_format="YYYY-MM-DD H:mm"),
+                    AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>'),
                     css_class="col-lg-6",
                 ),
                 Fieldset(

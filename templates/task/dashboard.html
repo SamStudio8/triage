@@ -37,10 +37,6 @@
 {% endblock %}
 
 {% block content %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js" type="text/javascript"></script>
-<script src="/static/js/bootstrap-datetimepicker.js" type="text/javascript"></script>
-<link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-
 <script type="text/javascript">
     function humanize(timestamp){
         return moment(timestamp).fromNow();
@@ -54,9 +50,6 @@
         $(".human_date").html(function() {
             return humanize($(this).html());
         });
-    });
-    $(document).ready(function(){
-        $('.datetimeinput').datetimepicker();
     });
 </script>
 
