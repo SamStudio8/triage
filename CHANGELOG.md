@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.1.3-436D
+
+Removed bootstrap-datetimepicker  
+
+    python manage.py collectstatic
+
 ####0.1.3-431D
 
 Allow tasks to actually be re-opened  
