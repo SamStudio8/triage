@@ -1,5 +1,14 @@
 #CHANGELOG
 
+####0.1.3-431D
+
+Allow tasks to actually be re-opened  
+Improved dashboard now uses tabbed navigation  
+Responsive calendar now uses touch scolling on smaller devices  
+Fixed link_task causing HTTP500  
+
+    python manage.py collectstatic
+
 ####0.1.3-406D
 
 Introduce use of Django messages framework to deliver success status on Task quick_add  
