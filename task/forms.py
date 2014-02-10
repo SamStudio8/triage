@@ -12,6 +12,11 @@ class TriageSplitDateTimeWidget(forms.SplitDateTimeWidget):
                forms.TimeInput(attrs={'type': "time"}))
         super(forms.SplitDateTimeWidget, self).__init__(widgets)
 
+def clean_colour(color):
+    if color[0] == "#":
+        color = color[1:]
+    return color
+
 class TaskForm(forms.ModelForm):
     def __init__(self, user_id, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
@@ -133,6 +138,13 @@ class TaskTriageCategoryForm(forms.ModelForm):
         self.fields['bg_colour'].label = "Background"
         self.fields['fg_colour'].label = "Text"
 
+        # Add 'color' type to colour fields, increase max_length to include hash symbol
+        # NOTE The '#' is stripped out in the form validation, model still has max_length of 6
+        self.fields['bg_colour'].widget = forms.TextInput(attrs={'type': 'color', 'max_length': 7})
+        self.fields['fg_colour'].widget = forms.TextInput(attrs={'type': 'color', 'max_length': 7})
+        self.fields['bg_colour'].validators[0].limit_value = 7
+        self.fields['fg_colour'].validators[0].limit_value = 7
+
         # django-crispy-forms
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -161,6 +173,12 @@ class TaskTriageCategoryForm(forms.ModelForm):
 
     class Meta:
         model = TaskModels.TaskTriageCategory
+
+    def clean_bg_colour(self):
+        return clean_colour(self.cleaned_data['bg_colour'])
+
+    def clean_fg_colour(self):
+        return clean_colour(self.cleaned_data['fg_colour'])
 
 class TaskLinkForm(forms.ModelForm):
     def __init__(self, user_id, *args, **kwargs):
@@ -195,6 +213,13 @@ class TaskMilestoneForm(forms.ModelForm):
         self.fields['fg_colour'].label = "Text"
         self.fields['due_date'].widget = TriageSplitDateTimeWidget()
 
+        # Add 'color' type to colour fields, increase max_length to include hash symbol
+        # NOTE The '#' is stripped out in the form validation, model still has max_length of 6
+        self.fields['bg_colour'].widget = forms.TextInput(attrs={'type': 'color', 'max_length': 7})
+        self.fields['fg_colour'].widget = forms.TextInput(attrs={'type': 'color', 'max_length': 7})
+        self.fields['bg_colour'].validators[0].limit_value = 7
+        self.fields['fg_colour'].validators[0].limit_value = 7
+
         # django-crispy-forms
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
@@ -223,3 +248,10 @@ class TaskMilestoneForm(forms.ModelForm):
 
     class Meta:
         model = TaskModels.TaskMilestone
+
+    def clean_bg_colour(self):
+        return clean_colour(self.cleaned_data['bg_colour'])
+
+    def clean_fg_colour(self):
+        return clean_colour(self.cleaned_data['fg_colour'])
+
