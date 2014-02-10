@@ -8,7 +8,12 @@
 <script>
     $(document).ready(function(){
         $('input[type=color]').val(function(val) {
-            return "#" + $(this).prop("defaultValue");
+            if($(this).prop("defaultValue").length == 3){ 
+                return "#" + $(this).prop("defaultValue") + $(this).prop("defaultValue");
+            }
+            else {
+               return "#" + $(this).prop("defaultValue");
+           }
         });
     });
 </script>

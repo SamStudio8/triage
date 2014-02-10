@@ -1,9 +1,8 @@
 #CHANGELOG
 
-####0.1.3-438D
+####0.1.3-440D
 
 Using `color` fields on milestone and triage settings forms  
-NOTE: This may incorrectly display CSS fields that are truncated, eg `fff` rather than `ffffff`
 
 ####0.1.3-436D
 
