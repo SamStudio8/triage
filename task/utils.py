@@ -56,9 +56,13 @@ def calendarize(uid, num_days, tasklist_id=0):
     tasks = TaskModels.Task.objects.filter(completed=False,
                                            due_date__range=[today, deltadate],
                                     ).order_by("triage__priority")
+    milestones = []
+
     if uid:
         # Fetch all tasks on any lists owned by a particular user
         tasks = tasks.filter(tasklist__user__id=uid)
+        milestones = TaskModels.TaskMilestone.objects.filter(user__id=uid,
+                due_date__range=[today, deltadate])
 
     if tasklist_id:
         # Fetch all tasks on a particular list
@@ -70,9 +74,15 @@ def calendarize(uid, num_days, tasklist_id=0):
         calendar[i]["month"] = date.strftime("%b")
         calendar[i]["day"] = date.day
         calendar[i]["datestamp"] = "%d %d" % (date.month, date.day)
+
         calendar[i]["tasks"] = []
         for task in filter(lambda t: t.due_date.date() == date, tasks):
             calendar[i]["tasks"].append(task)
+
+        if uid:
+            calendar[i]["milestones"] = []
+            for milestone in filter(lambda t: t.due_date.date() == date, milestones):
+                calendar[i]["milestones"].append(milestone)
     return calendar
 
 def fetch_public_tasklists(uid):
