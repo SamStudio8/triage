@@ -70,6 +70,14 @@
                 </tr>
             </tbody>
         </table>
+        <table class="table table-condensed">
+        {% for triage in user.triages.all %}
+            <tr>
+                <td class="label_light-right text-center" style="border-right-color:#{{ triage.bg_colour }}">{{ triage.open_tasks.count }}</td>
+                <td class="label_light text-center" style="border-left-color:#{{ triage.bg_colour }}">{{ triage.closed_tasks.count }}</td>
+            </tr>
+        {% endfor %}
+        </table>
     </div>
     <div class="col-sm-10">
         <ul class="nav nav-tabs">

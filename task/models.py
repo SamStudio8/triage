@@ -122,6 +122,12 @@ class TaskTriageCategory(models.Model):
     class Meta:
         ordering = ["-priority"]
 
+    def open_tasks(self):
+        return self.task_set.annotate(null=Count("due_date")).filter(completed=False).order_by("-null", "due_date", "-triage__priority")
+
+    def closed_tasks(self):
+        return self.task_set.filter(completed=True).order_by("-completed_date")
+
 class TaskMilestone(models.Model):
     """
     TODO
