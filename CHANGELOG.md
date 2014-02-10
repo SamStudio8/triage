@@ -1,5 +1,11 @@
 #CHANGELOG
 
+####0.1.3-446D
+
+Milestones displayed on calendar (dotted lines) and enumerated on dashboard  
+
+    python manage.py collectstatic
+
 ####0.1.3-440D
 
 Using `color` fields on milestone and triage settings forms  
