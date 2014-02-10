@@ -163,7 +163,6 @@
                 <thead>
                     <tr>
                         <th class="col-md-1 text-center">#</th>
-                        <th class="col-md-1 text-center"></th>
                         <th class="col-md-7">Task</th>
                         <th class="col-md-2">Due</th>
                         <th class="col-md-1"></th>
@@ -179,11 +178,7 @@
                         <tr>
                     {% endif %}
 
-                        <td class="text-center">{{ task.local_id }}</td>
-                        <td class="text-center">
-                            <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
-                        </td>
-
+                        <td class="label_light text-center" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
                         <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}"><b>{{ task.name }}</b></a></td>
 
                         {% if task.due_date %}
@@ -215,7 +210,6 @@
                 <thead>
                     <tr>
                         <th class="col-md-1 text-center">#</th>
-                        <th class="col-md-1 text-center"></th>
                         <th class="col-md-7">Task</th>
                         <th class="col-md-2">Completed</th>
                         <th class="col-md-1"></th>
@@ -224,11 +218,7 @@
                 <tbody>
                 {% for task in tasklist.closed_tasks %}
                     <tr>
-                        <td class="text-center">{{ task.local_id }}</td>
-                        <td class="text-center">
-                            <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
-                        </td>
-
+                        <td class="label_light text-center" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
                         <td>
                             <a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">
                                 <b>{{ task.name }}</b>
