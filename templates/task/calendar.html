@@ -35,31 +35,7 @@
 </div>
 
 <div class="row">
-    <div class="calendar-wrapper col-md-12">
-        <table id="calendar-bar" class="table">
-            <tbody>
-                <tr class="no-border">
-                {% for day in calendar.values %}
-                    <td class="calendar-lamp-wrapper">
-                        <ul class="calendar-lamps">
-                        {% for task in day.tasks %}
-                            <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
-                        {% endfor %}
-                        </ul>
-                    </td>
-                {% endfor %}
-                </tr>
-                <tr>
-                {% for day in calendar.values %}
-                    <td class="text-center {% if forloop.first %}today{%endif%}">
-                        <span class="text-small-task">{{ day.month }}</span></br>
-                        <b>{{ day.day }}</b>
-                    </td>
-                {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    {% include "task/includes/calendar.html" %}
 </div>
 
 <div class="calendar-rows">
@@ -72,6 +48,13 @@
     <div class="col-sm-11">
         <table class="calendar-table table table-condensed">
             <tbody>
+            {% for milestone in day.milestones|dictsort:"due_date" %}
+                <tr style="background-color:#{{ milestone.bg_colour }}">
+                    <td class="col-xs-7"> <b>Milestone: {{ milestone.name }}</b></td>
+                    <td class="col-xs-3"></td>
+                    <td class="col-xs-2"></td>
+                </tr>
+            {% endfor %}
             {% for task in day.tasks|dictsort:"due_date" %}
                 <tr>
                     <td class="col-xs-7 label_light" style="border-left-color:#{{ task.triage.bg_colour }}">
