@@ -1,5 +1,10 @@
 #CHANGELOG
 
+####0.1.3-438D
+
+Using `color` fields on milestone and triage settings forms  
+NOTE: This may incorrectly display CSS fields that are truncated, eg `fff` rather than `ffffff`
+
 ####0.1.3-436D
 
 Removed bootstrap-datetimepicker  
