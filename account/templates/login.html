@@ -40,7 +40,7 @@
         <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
 
         <button type="submit" class="btn btn-primary btn-block">Log in</button>
-        <button class="btn btn-block" disabled>Register</button>
+        <a class="btn btn-block btn-info" href="{% url 'account:register' %}">Register</a>
     </form>
     <a href="{% url 'account:reset' %}">Forgotten password?</a>
 </div>
