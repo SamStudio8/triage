@@ -7,6 +7,7 @@
     <h1>Register</h1>
     <p>Begin handling the disaster that is your day by creating an account...</p>
     <hr />
+    <div class="alert alert-info"><b>Beta Testing</b><br/>Please note that Triage is still under active development, there will be incomplete or non-functional components and occasional bugs.</div>
       <form action="{% url 'account:register' %}" method="post">
           {% crispy form %}
       </form>
