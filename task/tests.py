@@ -804,6 +804,8 @@ class SimpleTaskTest(TestCase):
 
         response = self.client.post(url, TEST_DATA['register'], follow=True)
         self.assertRedirects(response, '/')
+        self.assertContains(response, "Hello, "+TEST_DATA['register']['username'])
+        self.assertContains(response, "0 task lists")
 
         user = User.objects.get(username=TEST_DATA['register']['username'])
         defaults = TaskUtils._DEFAULT_TRIAGE
@@ -813,11 +815,30 @@ class SimpleTaskTest(TestCase):
 
         self.client.logout()
 
+    def test_register_login(self):
+        self.test_register()
+
+        # Triage defaults to forwarding user to / after login
+        # Note that django will actually try to forward to "accounts/profile"
+        url = reverse("account:login") + "/?next=/"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'login.html')
+
+        login_data = {
+            "username": TEST_DATA["register"]["username"],
+            "password": TEST_DATA["register"]["password1"],
+        }
+        response = self.client.post(url, login_data, follow=True)
+        self.assertRedirects(response, '/')
+        self.assertContains(response, "Hello, "+TEST_DATA['register']['username'])
+        self.assertContains(response, "0 task lists")
+
     def test_register_missing(self):
         url = reverse("account:register")
         pops = ["username", "first_name", "last_name", "email"]
         for pop in pops:
-            reg_data = TEST_DATA["register"]
+            reg_data = TEST_DATA["register"].copy()
             del reg_data[pop]
             response = self.client.post(url, reg_data, follow=True)
             self.assertContains(response, "field is required")
@@ -825,7 +846,7 @@ class SimpleTaskTest(TestCase):
     def test_register_duplicate_username(self):
         self.test_register()
         url = reverse("account:register")
-        reg_data = TEST_DATA["register2"]
+        reg_data = TEST_DATA["register2"].copy()
         reg_data["username"] = TEST_DATA["register"]["username"]
 
         response = self.client.post(url, reg_data, follow=True)
@@ -835,7 +856,7 @@ class SimpleTaskTest(TestCase):
         self.test_register()
         url = reverse("account:register")
 
-        reg_data = TEST_DATA["register2"]
+        reg_data = TEST_DATA["register2"].copy()
         reg_data["email"] = TEST_DATA["register"]["email"]
 
         response = self.client.post(url, reg_data, follow=True)
@@ -844,7 +865,7 @@ class SimpleTaskTest(TestCase):
     def test_register_password_match(self):
         url = reverse("account:register")
 
-        reg_data = TEST_DATA["register2"]
+        reg_data = TEST_DATA["register2"].copy()
         reg_data["password2"] = "not the password..."
 
         response = self.client.post(url, reg_data, follow=True)
