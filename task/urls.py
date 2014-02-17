@@ -1,4 +1,7 @@
 from django.conf.urls import patterns, url
+
+import receivers
+
 import task.views as TaskViews
 
 urlpatterns = patterns('',

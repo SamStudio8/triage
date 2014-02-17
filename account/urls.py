@@ -6,7 +6,7 @@ from account import views
 
 urlpatterns = patterns('',
     #TODO Disable Registration Setting
-    #url(r'^register/$', views.register, name="register"),
+    url(r'^register/$', views.register, name="register"),
     url(r'^login/$', login, {'template_name':'login.html'}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/'}, name='logout'),
 
