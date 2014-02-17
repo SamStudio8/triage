@@ -22,6 +22,22 @@ TEST_DATA = {
         "email": "shady@example.org",
         "password": "secretspls"
     },
+    "register": {
+        "username": "hootle",
+        "first_name": "Hoot",
+        "last_name": "McHootleson",
+        "email": "hootle@ironowl.io",
+        "password1": "secrets",
+        "password2": "secrets"
+    },
+    "register2": {
+        "username": "hoota",
+        "first_name": "Hoota",
+        "last_name": "O'Wise",
+        "email": "hoota@ironowl.io",
+        "password1": "wisewords",
+        "password2": "wisewords"
+    },
     "tasklist": {
         "name": "General",
         "description": "A generic task list for your dull existence.",
@@ -779,3 +795,57 @@ class SimpleTaskTest(TestCase):
         self.assertEqual(len(response.context['milestones']), 1)
         self.assertContains(response, TEST_DATA['milestone_edit']['name'])
         self.assertContains(response, "style=\"background-color:#"+TEST_DATA['milestone_edit']['bg_colour']+"; color:#"+TEST_DATA['milestone_edit']['fg_colour'])
+
+    def test_register(self):
+        url = reverse("account:register")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'register.html')
+
+        response = self.client.post(url, TEST_DATA['register'], follow=True)
+        self.assertRedirects(response, '/')
+
+        user = User.objects.get(username=TEST_DATA['register']['username'])
+        defaults = TaskUtils._DEFAULT_TRIAGE
+
+        for triage in user.triages.all():
+            self.assertIn(triage.name, defaults)
+
+        self.client.logout()
+
+    def test_register_missing(self):
+        url = reverse("account:register")
+        pops = ["username", "first_name", "last_name", "email"]
+        for pop in pops:
+            reg_data = TEST_DATA["register"]
+            del reg_data[pop]
+            response = self.client.post(url, reg_data, follow=True)
+            self.assertContains(response, "field is required")
+
+    def test_register_duplicate_username(self):
+        self.test_register()
+        url = reverse("account:register")
+        reg_data = TEST_DATA["register2"]
+        reg_data["username"] = TEST_DATA["register"]["username"]
+
+        response = self.client.post(url, reg_data, follow=True)
+        self.assertContains(response, "username has already been registered")
+
+    def test_register_duplicate_email(self):
+        self.test_register()
+        url = reverse("account:register")
+
+        reg_data = TEST_DATA["register2"]
+        reg_data["email"] = TEST_DATA["register"]["email"]
+
+        response = self.client.post(url, reg_data, follow=True)
+        self.assertContains(response, "email has already been registered")
+
+    def test_register_password_match(self):
+        url = reverse("account:register")
+
+        reg_data = TEST_DATA["register2"]
+        reg_data["password2"] = "not the password..."
+
+        response = self.client.post(url, reg_data, follow=True)
+        self.assertContains(response, "passwords do not match")
