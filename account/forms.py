@@ -14,7 +14,7 @@ class RegistrationForm(forms.Form):
     password1 = forms.CharField(widget=forms.PasswordInput(), label="Password")
     password2 = forms.CharField(widget=forms.PasswordInput(), label="Confirm password")
 
-    def __init__(self, user_id, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
 
         # django-crispy-forms
