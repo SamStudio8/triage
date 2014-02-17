@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.views.decorators.debug import sensitive_post_parameters
 
 from account.forms import RegistrationForm
+from account.signals import user_registered
 
 @sensitive_post_parameters('password', 'password2')
 def register(request):
@@ -18,6 +19,7 @@ def register(request):
         user = User.objects.create(**newUser)
         user.set_password(form.cleaned_data["password2"])
         user.save()
+        user_registered.send(sender=post, post=post, request=request)
         return HttpResponseRedirect(request.POST.get('next', '/'))
 
     return render(request, "register.html", {
