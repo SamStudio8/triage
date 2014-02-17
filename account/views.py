@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -20,6 +21,10 @@ def register(request):
         user.set_password(form.cleaned_data["password2"])
         user.save()
         user_registered.send(sender=request.POST, post=request.POST, new_user=user, request=request)
+
+        auth_user = authenticate(username=user.username, password=form.cleaned_data["password2"])
+        if auth_user:
+            login(request, auth_user)
         return HttpResponseRedirect(request.POST.get('next', '/'))
 
     return render(request, "register.html", {
