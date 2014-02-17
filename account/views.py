@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.debug import sensitive_post_parameters
@@ -9,6 +10,9 @@ from account.signals import user_registered
 
 @sensitive_post_parameters('password', 'password2')
 def register(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('task:profile', kwargs={"username": request.user.username}))
+
     form = RegistrationForm(request.POST or None)
     if form.is_valid():
         newUser = {
