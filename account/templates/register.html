@@ -5,6 +5,7 @@
 {% block content %}
    <div class="row-fluid">
     <h1>Register</h1>
+    <p>Begin handling the disaster that is your day by creating an account...</p>
     <hr />
       <form action="{% url 'account:register' %}" method="post">
           {% crispy form %}
