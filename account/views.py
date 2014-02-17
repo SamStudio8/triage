@@ -19,7 +19,7 @@ def register(request):
         user = User.objects.create(**newUser)
         user.set_password(form.cleaned_data["password2"])
         user.save()
-        user_registered.send(sender=post, post=post, request=request)
+        user_registered.send(sender=request.POST, post=request.POST, new_user=user, request=request)
         return HttpResponseRedirect(request.POST.get('next', '/'))
 
     return render(request, "register.html", {
