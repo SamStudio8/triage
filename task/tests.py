@@ -820,7 +820,7 @@ class SimpleTaskTest(TestCase):
 
         # Triage defaults to forwarding user to / after login
         # Note that django will actually try to forward to "accounts/profile"
-        url = reverse("account:login") + "/?next=/"
+        url = reverse("account:login")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
@@ -828,6 +828,7 @@ class SimpleTaskTest(TestCase):
         login_data = {
             "username": TEST_DATA["register"]["username"],
             "password": TEST_DATA["register"]["password1"],
+            "next": "/" # Hidden next field
         }
         response = self.client.post(url, login_data, follow=True)
         self.assertRedirects(response, '/')
