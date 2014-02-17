@@ -42,7 +42,7 @@ class RegistrationForm(forms.Form):
                 css_class="row"
             ),
             FormActions(
-                Submit('save', 'Save'),
+                Submit('register', 'Register'),
             )
         )
 
