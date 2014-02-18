@@ -129,14 +129,9 @@ class TaskTriageCategory(models.Model):
         return self.task_set.filter(completed=True).order_by("-completed_date")
 
 class TaskMilestone(models.Model):
-    """
-    TODO
-      Milestones are currently a property of a user but might change this to 
-      be on a per-tasklist basis in future
-    """
-    user = models.ForeignKey(User,
-                            verbose_name="owner",
-                            related_name="milestones")
+    tasklist = models.ForeignKey('TaskList',
+                                related_name='milestones',
+                                null=True, blank=True)
     name = models.CharField(max_length=30)
     due_date = models.DateTimeField(null=True, blank=True)
     fg_colour = models.CharField(max_length=6)
