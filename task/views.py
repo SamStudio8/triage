@@ -231,8 +231,12 @@ def list_triage_category(request, username):
     return render(request, "task/triages.html", {"triages": triages})
 
 @login_required
-def list_milestones(request, username):
-    milestones = request.user.milestones.all()
+def list_milestones(request, username, listslug):
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+    if not tasklist.has_edit_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+
+    milestones = tasklist.milestones
     return render(request, "task/milestones.html", {"milestones": milestones})
 
 @login_required
