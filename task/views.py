@@ -236,7 +236,7 @@ def list_milestones(request, username, listslug):
     if not tasklist.has_edit_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
-    milestones = tasklist.milestones
+    milestones = tasklist.milestones.all()
     return render(request, "task/milestones.html", {"milestones": milestones})
 
 @login_required
