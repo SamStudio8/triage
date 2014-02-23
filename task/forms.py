@@ -209,7 +209,6 @@ class TaskLinkForm(forms.ModelForm):
 class TaskMilestoneForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskMilestoneForm, self).__init__(*args, **kwargs)
-        del self.fields['user']
         self.fields['bg_colour'].label = "Background"
         self.fields['fg_colour'].label = "Text"
         self.fields['due_date'].widget = TriageSplitDateTimeWidget()
