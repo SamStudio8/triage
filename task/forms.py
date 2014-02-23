@@ -18,7 +18,7 @@ def clean_colour(color):
     return color
 
 class TaskForm(forms.ModelForm):
-    def __init__(self, user_id, *args, **kwargs):
+    def __init__(self, user_id, tasklist_id, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self._user_id = user_id
         del self.fields['_id']
@@ -26,8 +26,9 @@ class TaskForm(forms.ModelForm):
         del self.fields['modified_date']
         del self.fields['completed_date']
         self.fields['tasklist'].queryset = TaskModels.TaskList.objects.filter(user_id=user_id)
+        self.fields['tasklist'].help_text = "* Moving a task to a different list will remove its milestone"
         self.fields['triage'].queryset = TaskModels.TaskTriageCategory.objects.filter(user_id=user_id)
-        self.fields['milestone'].queryset = TaskModels.TaskMilestone.objects.filter(user_id=user_id)
+        self.fields['milestone'].queryset = TaskModels.TaskMilestone.objects.filter(tasklist_id=tasklist_id)
         self.fields['due_date'].widget = TriageSplitDateTimeWidget()
 
         # django-crispy-forms

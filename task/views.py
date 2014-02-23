@@ -87,7 +87,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
             if attr not in post:
                 post[attr] = value
 
-    form = TaskForms.TaskForm(request.user.id, post,
+    form = TaskForms.TaskForm(request.user.id, tasklist_id, post,
             initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
