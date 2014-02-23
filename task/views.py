@@ -252,8 +252,12 @@ def edit_milestone(request, username, milestone_id=None):
         except TaskModels.TaskMilestone.DoesNotExist:
             pass
         else:
-            if milestone.user.id != request.user.id:
-                return HttpResponseRedirect(reverse('task:list_milestones', kwargs={"username": request.user.username}))
+            if milestone.tasklist.user.id != request.user.id:
+                return HttpResponseRedirect(reverse('task:list_milestones',
+                                            kwargs={
+                                                "username": request.user.username,
+                                                "listslug": milestone.tasklist.slug
+                                            }))
 
     form = TaskForms.TaskMilestoneForm(request.POST or None, instance=milestone)
     if form.is_valid():
@@ -262,7 +266,11 @@ def edit_milestone(request, username, milestone_id=None):
             # New instance, attach user
             milestone.user = request.user
         milestone.save()
-        return HttpResponseRedirect(reverse('task:list_milestones', kwargs={"username": request.user.username}))
+        return HttpResponseRedirect(reverse('task:list_milestones',
+                                    kwargs={
+                                        "username": request.user.username,
+                                        "listslug": milestone.tasklist.slug
+                                    }))
     return render(request, "task/changemilestone.html", {"form": form, "milestone": milestone})
 
 @login_required
@@ -292,6 +300,7 @@ def dashboard(request):
     calendar = TaskUtils.calendarize(request.user.pk, 30)
     return render(request, "task/dashboard.html", {
         "calendar": calendar,
+        "milestones": TaskUtils.upcoming_milestones(request.user.pk, offset=0, days=30),
         "recently_added": TaskUtils.recently_added(request.user.pk, limit=10),
         "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=10),
         "upcoming_week": TaskUtils.upcoming_tasks(request.user.pk, days=7),

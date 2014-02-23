@@ -61,7 +61,7 @@ def calendarize(uid, num_days, tasklist_id=0):
     if uid:
         # Fetch all tasks on any lists owned by a particular user
         tasks = tasks.filter(tasklist__user__id=uid)
-        milestones = TaskModels.TaskMilestone.objects.filter(user__id=uid,
+        milestones = TaskModels.TaskMilestone.objects.filter(tasklist__user__id=uid,
                 due_date__range=[today, deltadate])
 
     if tasklist_id:
@@ -100,6 +100,13 @@ def upcoming_tasks(uid, offset=0, days=7):
     delta_date = today + datetime.timedelta(days=days+offset)
 
     return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority", "due_date")
+
+def upcoming_milestones(uid, offset=0, days=30):
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    offset_date = today + datetime.timedelta(days=offset)
+    delta_date = today + datetime.timedelta(days=days+offset)
+
+    return TaskModels.TaskMilestone.objects.filter(tasklist__user__pk=uid, due_date__range=[offset_date, delta_date]).order_by("due_date")
 
 def overdue_tasks(uid):
     today = datetime.datetime.utcnow().replace(tzinfo=utc)

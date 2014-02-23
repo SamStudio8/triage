@@ -62,7 +62,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for milestone in user.milestones.all|dictsort:"due_date" %}
+                {% for milestone in milestones %}
                 <tr>
                     <td class="label_light" style="border-left-color:#{{ milestone.bg_colour }}">
                         {{ milestone.name }}</br>
