@@ -54,25 +54,29 @@
         </table>
         <hr>
         <h3 class="text-center">Milestones</h3>
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th class="col-md-8">Name</th>
-                    <th class="col-md-4 text-center">&#8470;</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for milestone in milestones %}
-                <tr>
-                    <td class="label_light" style="border-left-color:#{{ milestone.bg_colour }}">
-                        {{ milestone.name }}</br>
-                        <span class="human_date text-small-task" title="{{ milestone.due_date }}">{{ milestone.due_date|date:"c" }}</span>
-                    </td>
-                    <td class="text-center">{{ milestone.task_set.count }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% if milestones %}
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th class="col-md-8">Name</th>
+                        <th class="col-md-4 text-center">&#8470;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for milestone in milestones %}
+                    <tr>
+                        <td class="label_light" style="border-left-color:#{{ milestone.bg_colour }}">
+                            {{ milestone.name }}</br>
+                            <span class="human_date text-small-task" title="{{ milestone.due_date }}">{{ milestone.due_date|date:"c" }}</span>
+                        </td>
+                        <td class="text-center">{{ milestone.task_set.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            No milestones
+        {% endif %}
     </div>
     <div class="col-sm-10">
         <ul class="nav nav-tabs">
