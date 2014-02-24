@@ -244,11 +244,16 @@ def new_milestone(request, username, listslug):
     if not tasklist.has_edit_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
-    return edit_milestone(request, username, milestone_id=None, tasklist_id=tasklist.pk)
+    return edit_milestone(request, username, tasklist.slug, milestone_id=None)
 
 @login_required
-def edit_milestone(request, username, milestone_id=None, tasklist_id=None):
+def edit_milestone(request, username, listslug, milestone_id=None):
     milestone = None
+
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+    if not tasklist.has_edit_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+
     if milestone_id:
         try:
             milestone = TaskModels.TaskMilestone.objects.get(pk=milestone_id)
@@ -261,14 +266,6 @@ def edit_milestone(request, username, milestone_id=None, tasklist_id=None):
                                                 "username": request.user.username,
                                                 "listslug": milestone.tasklist.slug
                                             }))
-
-    if tasklist_id:
-        tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
-        if not tasklist.has_edit_permission(request.user.pk):
-            return HttpResponseRedirect(reverse('home'))
-    else:
-        # Need a tasklist id to save the form
-        return HttpResponseRedirect(reverse('home'))
 
     form = TaskForms.TaskMilestoneForm(request.POST or None, instance=milestone)
     if form.is_valid():

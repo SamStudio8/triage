@@ -28,7 +28,7 @@
         <tr>
             <td style="background-color:#{{ m.bg_colour }}; color:#{{ m.fg_colour }}"><b>{{ m.name }}</b>
                 <div class="btn-group pull-right">
-                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_milestone' user.username m.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a class="btn btn-sm btn-warning" href="{% url 'task:edit_milestone' m.tasklist.user.username m.tasklist.slug m.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
                 </div>
             </td>
         </tr>
