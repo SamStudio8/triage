@@ -17,6 +17,7 @@
                 <a class="btn btn-success" href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
                 <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a class="btn btn-danger" href="{% url 'task:delete_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="btn btn-info" href="{% url 'task:list_milestones' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-cog"></span> Milestones</a>
             </div>
             {% endif %}
         </div>

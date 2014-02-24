@@ -236,15 +236,18 @@ def list_milestones(request, username, listslug):
     if not tasklist.has_edit_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
 
-    milestones = tasklist.milestones.all()
-    return render(request, "task/milestones.html", {"milestones": milestones})
+    return render(request, "task/milestones.html", {"tasklist": tasklist})
 
 @login_required
-def new_milestone(request, username):
-    return edit_milestone(request, None)
+def new_milestone(request, username, listslug):
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+    if not tasklist.has_edit_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+
+    return edit_milestone(request, username, milestone_id=None, tasklist_id=tasklist.pk)
 
 @login_required
-def edit_milestone(request, username, milestone_id=None):
+def edit_milestone(request, username, milestone_id=None, tasklist_id=None):
     milestone = None
     if milestone_id:
         try:
@@ -259,12 +262,20 @@ def edit_milestone(request, username, milestone_id=None):
                                                 "listslug": milestone.tasklist.slug
                                             }))
 
+    if tasklist_id:
+        tasklist = get_object_or_404(TaskModels.TaskList, pk=tasklist_id)
+        if not tasklist.has_edit_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
+    else:
+        # Need a tasklist id to save the form
+        return HttpResponseRedirect(reverse('home'))
+
     form = TaskForms.TaskMilestoneForm(request.POST or None, instance=milestone)
     if form.is_valid():
         milestone = form.save(commit=False)
         if not form.instance.pk:
-            # New instance, attach user
-            milestone.user = request.user
+            # New instance, attach tasklist
+            milestone.tasklist = tasklist
         milestone.save()
         return HttpResponseRedirect(reverse('task:list_milestones',
                                     kwargs={
