@@ -1,5 +1,13 @@
 #CHANGELOG
 
+####0.1.3-483D
+
+TaskMilestones are now a property of a particular TaskList rather than a User  
+**Migrating backwards can potentially leave a User with multiple copies of a milestone which will need to be pruned**
+
+    python manage.py collectstatic
+    python mange.py migrate task
+
 ####0.1.3-446D
 
 Milestones displayed on calendar (dotted lines) and enumerated on dashboard  
