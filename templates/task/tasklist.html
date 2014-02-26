@@ -17,6 +17,7 @@
                 <a class="btn btn-success" href="{% url 'task:new_task' tasklist.user.username %}?tasklist={{ tasklist.slug }}&next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
                 <a class="btn btn-warning" href="{% url 'task:edit_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a class="btn btn-danger" href="{% url 'task:delete_tasklist' tasklist.user.username tasklist.slug %}?next={{ current_url }}"><span class="glyphicon glyphicon-remove"></span></a>
+            <a class="btn btn-info" href="{% url 'task:list_milestones' tasklist.user.username tasklist.slug %}"><span class="glyphicon glyphicon-cog"></span> Milestones</a>
             </div>
             {% endif %}
         </div>
@@ -246,6 +247,29 @@
         {% endif %}
     </div>
     <div class="col-sm-2 col-sm-pull-10">
+        {% if tasklist.milestones.count > 0 %}
+            <h3 class="text-center">Milestones</h3>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th class="col-md-8">Name</th>
+                        <th class="col-md-4 text-center">&#8470;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for milestone in tasklist.milestones.all %}
+                    <tr>
+                        <td class="label_light" style="border-left-color:#{{ milestone.bg_colour }}">
+                            {{ milestone.name }}</br>
+                            <span class="human_date text-small-task" title="{{ milestone.due_date }}">{{ milestone.due_date|date:"c" }}</span>
+                        </td>
+                        <td class="text-center">{{ milestone.task_set.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr/>
+        {% endif %}
         {% if tasklist.tasks.count > 0 %}
             <p><b>Recently Added</b></p>
             <table class="table table-condensed">

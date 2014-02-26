@@ -87,7 +87,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
             if attr not in post:
                 post[attr] = value
 
-    form = TaskForms.TaskForm(request.user.id, post,
+    form = TaskForms.TaskForm(request.user.id, tasklist_id, post,
             initial={'tasklist': tasklist_id},
             instance=task)
     if form.is_valid():
@@ -231,34 +231,54 @@ def list_triage_category(request, username):
     return render(request, "task/triages.html", {"triages": triages})
 
 @login_required
-def list_milestones(request, username):
-    milestones = request.user.milestones.all()
-    return render(request, "task/milestones.html", {"milestones": milestones})
+def list_milestones(request, username, listslug):
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+    if not tasklist.has_edit_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+
+    return render(request, "task/milestones.html", {"tasklist": tasklist})
 
 @login_required
-def new_milestone(request, username):
-    return edit_milestone(request, None)
+def new_milestone(request, username, listslug):
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+    if not tasklist.has_edit_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+
+    return edit_milestone(request, username, tasklist.slug, milestone_id=None)
 
 @login_required
-def edit_milestone(request, username, milestone_id=None):
+def edit_milestone(request, username, listslug, milestone_id=None):
     milestone = None
+
+    tasklist = get_object_or_404(TaskModels.TaskList, slug=listslug, user__username=username)
+    if not tasklist.has_edit_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+
     if milestone_id:
         try:
             milestone = TaskModels.TaskMilestone.objects.get(pk=milestone_id)
         except TaskModels.TaskMilestone.DoesNotExist:
             pass
         else:
-            if milestone.user.id != request.user.id:
-                return HttpResponseRedirect(reverse('task:list_milestones', kwargs={"username": request.user.username}))
+            if milestone.tasklist.user.id != request.user.id:
+                return HttpResponseRedirect(reverse('task:list_milestones',
+                                            kwargs={
+                                                "username": request.user.username,
+                                                "listslug": milestone.tasklist.slug
+                                            }))
 
     form = TaskForms.TaskMilestoneForm(request.POST or None, instance=milestone)
     if form.is_valid():
         milestone = form.save(commit=False)
         if not form.instance.pk:
-            # New instance, attach user
-            milestone.user = request.user
+            # New instance, attach tasklist
+            milestone.tasklist = tasklist
         milestone.save()
-        return HttpResponseRedirect(reverse('task:list_milestones', kwargs={"username": request.user.username}))
+        return HttpResponseRedirect(reverse('task:list_milestones',
+                                    kwargs={
+                                        "username": request.user.username,
+                                        "listslug": milestone.tasklist.slug
+                                    }))
     return render(request, "task/changemilestone.html", {"form": form, "milestone": milestone})
 
 @login_required
@@ -288,6 +308,7 @@ def dashboard(request):
     calendar = TaskUtils.calendarize(request.user.pk, 30)
     return render(request, "task/dashboard.html", {
         "calendar": calendar,
+        "milestones": TaskUtils.upcoming_milestones(request.user.pk, offset=0, days=30),
         "recently_added": TaskUtils.recently_added(request.user.pk, limit=10),
         "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=10),
         "upcoming_week": TaskUtils.upcoming_tasks(request.user.pk, days=7),

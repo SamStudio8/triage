@@ -763,20 +763,17 @@ class SimpleTaskTest(TestCase):
         self.assertEqual(len(response.context['upcoming_month']), 1)
 
     def test_add_milestone(self):
-        self.client.login(
-                username=TEST_DATA['user']['username'],
-                password=TEST_DATA['user']['password']
-        )
+        self.test_add_tasklist()
         url = reverse("task:new_milestone", kwargs={
             "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
         })
         response = self.client.get(url)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'task/changemilestone.html')
         response = self.client.post(url, TEST_DATA['milestone'], follow=True)
-
-        self.assertEqual(len(response.context['milestones']), 1)
+        self.assertEqual(len(response.context['tasklist'].milestones.all()), 1)
         self.assertContains(response, TEST_DATA['milestone']['name'])
         self.assertContains(response, "style=\"background-color:#"+TEST_DATA['milestone']['bg_colour']+"; color:#"+TEST_DATA['milestone']['fg_colour'])
 
@@ -784,6 +781,7 @@ class SimpleTaskTest(TestCase):
         self.test_add_milestone()
         url = reverse("task:edit_milestone", kwargs={
             "username": TEST_DATA['user']['username'],
+            "listslug": slugify(TEST_DATA['tasklist']['name']),
             "milestone_id": 1
         })
         response = self.client.get(url)
@@ -792,7 +790,7 @@ class SimpleTaskTest(TestCase):
         self.assertTemplateUsed(response, 'task/changemilestone.html')
         response = self.client.post(url, TEST_DATA['milestone_edit'], follow=True)
 
-        self.assertEqual(len(response.context['milestones']), 1)
+        self.assertEqual(len(response.context['tasklist'].milestones.all()), 1)
         self.assertContains(response, TEST_DATA['milestone_edit']['name'])
         self.assertContains(response, "style=\"background-color:#"+TEST_DATA['milestone_edit']['bg_colour']+"; color:#"+TEST_DATA['milestone_edit']['fg_colour'])
 

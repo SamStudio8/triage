@@ -105,6 +105,14 @@ class Task(models.Model):
             self.completed_date = datetime.datetime.utcnow().replace(tzinfo=utc)
         else:
             self.completed_date = None
+
+        # Remove milestone if list doesn't contain it
+        if self.id:
+            #TODO This would be a bit inefficient if users had a crazy number
+            #     of milestones in the given tasklist
+            if self.milestone not in self.tasklist.milestones.all():
+                self.milestone = None
+
         super(Task, self).save(*args, **kwargs)
 
 class TaskTriageCategory(models.Model):
@@ -129,14 +137,9 @@ class TaskTriageCategory(models.Model):
         return self.task_set.filter(completed=True).order_by("-completed_date")
 
 class TaskMilestone(models.Model):
-    """
-    TODO
-      Milestones are currently a property of a user but might change this to 
-      be on a per-tasklist basis in future
-    """
-    user = models.ForeignKey(User,
-                            verbose_name="owner",
-                            related_name="milestones")
+    tasklist = models.ForeignKey('TaskList',
+                                related_name='milestones',
+                                null=True, blank=True)
     name = models.CharField(max_length=30)
     due_date = models.DateTimeField(null=True, blank=True)
     fg_colour = models.CharField(max_length=6)
