@@ -50,6 +50,7 @@ def create_default_triage_categories(uid):
         tcat.save()
 
 def calendarize(uid, num_days, tasklist_id=0):
+    # TODO This may yet still cause some trouble over DST but it wouldn't be catastrophic
     today = datetime.datetime.utcnow().replace(tzinfo=utc, hour=0, minute=0, second=0, microsecond=0)
     deltadate = today + datetime.timedelta(days=num_days)
 
