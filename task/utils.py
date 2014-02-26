@@ -50,7 +50,7 @@ def create_default_triage_categories(uid):
         tcat.save()
 
 def calendarize(uid, num_days, tasklist_id=0):
-    today = datetime.date.today()
+    today = datetime.datetime.utcnow().replace(tzinfo=utc, hour=0, minute=0, second=0, microsecond=0)
     deltadate = today + datetime.timedelta(days=num_days)
 
     tasks = TaskModels.Task.objects.filter(completed=False,
