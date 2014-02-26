@@ -7,6 +7,11 @@ TaskMilestones are now a property of a particular TaskList rather than a User
 
     python mange.py migrate task
 
+####0.1.3-463D
+
+User registration enabled  
+`user_registered` signal creates default triage categories for new user
+
 ####0.1.3-446D
 
 Milestones displayed on calendar (dotted lines) and enumerated on dashboard  
