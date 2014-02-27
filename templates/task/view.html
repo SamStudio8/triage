@@ -83,7 +83,7 @@
                 <tr>
                     <td class="col-md-4"><b>Milestone</b></td>
                     {% if task.milestone %}
-                    <td><span class="label label-default" title="{{ task.milestone.due_date }}" style="background-color:#{{ task.milestone.bg_colour }}; color:#{{ task.milestone.fg_colour }}">{{ task.milestone.name }}</span> {{ task.milestone.due_date }}</td>
+                    <td><a href="{% url 'task:view_milestone' task.milestone.tasklist.user.username task.milestone.tasklist.slug task.milestone.id%}"><span class="label label-default" title="{{ task.milestone.due_date }}" style="background-color:#{{ task.milestone.bg_colour }}; color:#{{ task.milestone.fg_colour }}">{{ task.milestone.name }}</span></a> {{ task.milestone.due_date }}</td>
                     {% else %}
                     <td><span class="missing-property">No milestone</span></td>
                     {% endif %}
