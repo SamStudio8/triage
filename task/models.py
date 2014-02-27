@@ -151,6 +151,12 @@ class TaskMilestone(models.Model):
     class Meta:
         ordering = ["-due_date"]
 
+    def has_view_permission(self, uid):
+        if self.tasklist.public:
+            return True
+        else:
+            return uid == self.tasklist.user.pk
+
 #class TaskStatus(models.Model):
 #    user = models.ForeignKey(User)
 #    name = models.CharField(max_length=30)
