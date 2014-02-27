@@ -57,6 +57,12 @@ def view_task(request, username, task_id):
                                               "history": history,
                                               "edit_permission": edit_permission})
 
+def view_milestone(request, username, listslug, milestone_id):
+    milestone = get_object_or_404(TaskModels.TaskMilestone, tasklist__user__username=username, pk=milestone_id)
+    if not milestone.has_view_permission(request.user.pk):
+        return HttpResponseRedirect(reverse('home'))
+    return render(request, "task/milestone.html", {"milestone": milestone })
+
 @login_required
 def edit_task(request, username, task_id, tasklist_id=None):
 
