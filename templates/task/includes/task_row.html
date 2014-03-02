@@ -33,6 +33,7 @@
                         {% if dashboard %}
                         {% else %}
                             {% if task.is_due == -1 %}
+                                {% if edit_permission %}
                                 <a class="btn btn-sm btn-warning" data-toggle="dropdown">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
@@ -44,6 +45,7 @@
                                         </div>
                                     </li>
                                 </ul>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                       </div>

@@ -83,79 +83,203 @@
                     <td class="text-center task-counter">{{ tasklist.num_incomplete }}</td>
                     <td class="text-center task-counter">{{ tasklist.num_complete }}</td>
                 </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="col-sm-4">
-        <h2>This Week</h2>
-        {% if upcoming_week %}
-        <table class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th class="text-center col-md-1">#</th>
-                    <th class="col-md-9">Task</th>
-                    <th class="text-center col-md-2"></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for task in upcoming_week %}
-                {% include "task/includes/task_row.html" %}
-            {% endfor %}
-            </tbody>
-            <tfoot></tfoot>
-        </table>
-        {% else %}
-            No upcoming tasks this week!
-        {% endif %}
-    </div>
-    <div class="col-sm-4">
-        <h2>This Month</h2>
-        {% if upcoming_month %}
-        <table class="table table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th class="text-center col-md-1">#</th>
-                    <th class="col-md-9">Task</th>
-                    <th class="text-center col-md-2"></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for task in upcoming_month %}
-                {% include "task/includes/task_row.html" %}
-            {% endfor %}
-            </tbody>
-            <tfoot></tfoot>
-        </table>
-        {% else %}
-            No upcoming tasks later this month!
-        {% endif %}
-    </div>
-    <div class="col-sm-2">
-        <h2>Overdue</h2>
-        {% if overdue %}
-            <table class="table table-condensed">
-                <thead>
+                {% for triage in tasklist.user.triages.all %}
                     <tr>
-                        <th>#</th>
-                        <th>Task</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for task in overdue %}
-                    <tr>
-                        <td class="label_light" style="border-left-color:#{{ task.triage.bg_colour }}">{{ task.local_id }}</td>
-                        <td><a href="{% url 'task:view_task' task.tasklist.user.username task.local_id %}">{{ task.name }}</a></td>
+                        <td class="label_light-right text-center" style="border-right-color:#{{ triage.bg_colour }}">{{ triage.open_tasks.count }}</td>
+                        <td class="label_light text-center" style="border-left-color:#{{ triage.bg_colour }}">{{ triage.closed_tasks.count }}</td>
                     </tr>
                 {% endfor %}
-                </tbody>
-                <tfoot></tfoot>
-            </table>
-        {% else %}
-            No overdue tasks!
-        {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-10">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#upcoming" data-toggle="tab">Upcoming</a></li>
+            <li><a href="#recent" data-toggle="tab">Recent</a></li>
+            <li><a href="#overdue" data-toggle="tab">Overdue</a></li>
+            <li><a href="#housekeeping" data-toggle="tab">Housekeeping</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="upcoming">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>This Week</h2>
+                    {% if upcoming_week %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in upcoming_week %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        No upcoming tasks this week!
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <h2>This Month</h2>
+                    {% if upcoming_month %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in upcoming_month %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        No upcoming tasks later this month!
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="recent">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>Recently Added</h2>
+                    {% if recently_added %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in recently_added %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <h2>Recently Closed</h2>
+                    {% if recently_closed %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in recently_closed %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="overdue">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>Overdue</h2>
+                    {% if overdue %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in overdue %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        No overdue tasks, yay!
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="housekeeping">
+              <div class="row">
+                <div class="col-sm-6">
+                    <h2>Awaiting Triage</h2>
+                    {% if no_triage %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in no_triage %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">
+                    <h2>No Due Date</h2>
+                    {% if no_due %}
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th class="text-center col-md-1">#</th>
+                                <th class="col-md-9">Task</th>
+                                <th class="text-center col-md-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in no_due %}
+                            {% include "task/includes/task_row.html" %}
+                        {% endfor %}
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    {% else %}
+                        Nothing to see here...
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 </div>
-
+<hr>
 <div class="row">
     <div class="col-sm-10 col-sm-push-2">
         <h2>All Open Tasks</h2>
