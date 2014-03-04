@@ -314,6 +314,7 @@ def dashboard(request):
     calendar = TaskUtils.calendarize(request.user.pk, 30)
     return render(request, "task/dashboard.html", {
         "calendar": calendar,
+        "oc_cal": TaskUtils.calendarize_open_closed(request.user.pk, 5),
         "milestones": TaskUtils.upcoming_milestones(request.user.pk, offset=0, days=0),
         "recently_added": TaskUtils.recently_added(request.user.pk, limit=10),
         "recently_closed": TaskUtils.recently_closed(request.user.pk, limit=10),

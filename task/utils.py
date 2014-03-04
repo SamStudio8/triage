@@ -86,6 +86,43 @@ def calendarize(uid, num_days, tasklist_id=0):
                 calendar[i]["milestones"].append(milestone)
     return calendar
 
+def calendarize_open_closed(uid, num_days, tasklist_id=0):
+    # TODO This may yet still cause some trouble over DST but it wouldn't be catastrophic
+    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    deltadate = today - datetime.timedelta(days=num_days)
+
+    closed_tasks = TaskModels.Task.objects.filter(completed=True,
+                                           completed_date__range=[deltadate, today],
+                                    ).order_by("triage__priority")
+    open_tasks = TaskModels.Task.objects.filter(completed=False,
+                                           creation_date__range=[deltadate, today],
+                                    ).order_by("triage__priority")
+
+    if uid:
+        # Fetch all tasks on any lists owned by a particular user
+        open_tasks = open_tasks.filter(tasklist__user__id=uid)
+        closed_tasks = closed_tasks.filter(tasklist__user__id=uid)
+
+    if tasklist_id:
+        # Fetch all tasks on a particular list
+        pass
+        #tasks = tasks.filter(tasklist=tasklist_id)
+
+    calendar = {}
+    for i, date in enumerate([today - datetime.timedelta(days=x) for x in reversed(range(num_days))]):
+        calendar[i] = {}
+        calendar[i]["month"] = date.strftime("%b")
+        calendar[i]["day"] = date.day
+        calendar[i]["datestamp"] = "%d %d" % (date.month, date.day)
+
+        calendar[i]["opened_tasks"] = []
+        calendar[i]["closed_tasks"] = []
+        for otask in filter(lambda t: t.creation_date.date() == date.date(), open_tasks):
+            calendar[i]["opened_tasks"].append(otask)
+        for ctask in filter(lambda t: t.completed_date.date() == date.date(), closed_tasks):
+            calendar[i]["closed_tasks"].append(ctask)
+    return calendar
+
 def fetch_public_tasklists(uid):
     return TaskModels.TaskList.objects.filter(user__pk=uid, public=True)
 

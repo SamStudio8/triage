@@ -53,6 +53,45 @@
             </tbody>
         </table>
         <hr>
+        <div class="calendar-wrapper">
+            <table id="calendar-bar" class="table">
+                <tbody>
+                    <tr class="no-border">
+                    <p class="text-center"><b>Opened</b></p>
+                    {% for day in oc_cal.values %}
+                        <td class="calendar-lamp-wrapper">
+                            <ul class="calendar-lamps">
+                            {% for task in day.opened_tasks %}
+                                <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
+                            {% endfor %}
+                            </ul>
+                        </td>
+                    {% endfor %}
+                    </tr>
+                    <tr>
+                    {% for day in oc_cal.values %}
+                        <td class="text-center {% if forloop.last %}today{%endif%}">
+                            <span class="text-small-task">{{ day.month }}</span></br>
+                            <b>{{ day.day }}</b>
+                        </td>
+                    {% endfor %}
+                    </tr>
+                    <tr>
+                    {% for day in oc_cal.values %}
+                        <td class="calendar-lamp-wrapper-invert">
+                            <ul class="calendar-lamps">
+                            {% for task in day.closed_tasks %}
+                                <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
+                            {% endfor %}
+                            </ul>
+                        </td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-center"><b>Closed</b></p>
+        </div>
+        <hr>
         <h3 class="text-center">Milestones</h3>
         {% if milestones %}
             <table class="table table-condensed">

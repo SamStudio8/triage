@@ -91,6 +91,21 @@ h1,h2,h3,h4,h5,h6{
     margin: 0px;
     padding: 3px 0 0 0;
 }
+.calendar-lamp-wrapper-inverse {
+    vertical-align: top !important;
+}
+
+.calendar-lamps {
+    width: auto;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+.calendar-lamps li {
+    width: auto;
+    margin: 0px;
+    padding: 3px 0 0 0;
+}
 
 .calendar-lamp {
     border-width: 0 0 5px 0;
