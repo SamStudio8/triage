@@ -198,3 +198,7 @@ footer a:link, footer a:visited, footer a:link, footer a:visited {
     padding: 0;
     margin: 0;
 }
+
+.badge-danger {
+    background-color: #d9534f;
+}

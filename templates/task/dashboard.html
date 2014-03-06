@@ -121,7 +121,7 @@
         <ul class="nav nav-tabs">
             <li class="active"><a href="#upcoming" data-toggle="tab">Upcoming</a></li>
             <li><a href="#recent" data-toggle="tab">Recent</a></li>
-            <li><a href="#overdue" data-toggle="tab">Overdue</a></li>
+            <li><a href="#overdue" data-toggle="tab">Overdue{% if overdue %} <span class="badge badge-danger">{{ overdue.count }}</span>{% endif %}</a></li>
             <li><a href="#housekeeping" data-toggle="tab">Housekeeping</a></li>
         </ul>
 
