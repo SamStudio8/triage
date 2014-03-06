@@ -163,6 +163,10 @@ input, textarea, select, .input-group {
     margin-top: 10px;
 }
 
+textarea {
+    resize: vertical;
+}
+
 /* Table */
 .no-border td {
     border-width: 0 !important;
