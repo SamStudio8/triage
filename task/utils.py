@@ -140,7 +140,8 @@ def upcoming_tasks(uid, offset=0, days=7):
     return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority", "due_date")
 
 def upcoming_milestones(uid, offset=0, days=0):
-    today = datetime.datetime.utcnow().replace(tzinfo=utc)
+    # TODO This may yet still cause some trouble over DST but it wouldn't be catastrophic
+    today = datetime.datetime.utcnow().replace(tzinfo=utc, hour=0, minute=0, second=0, microsecond=0)
     offset_date = today + datetime.timedelta(days=offset)
     delta_date = today + datetime.timedelta(days=days+offset)
 
