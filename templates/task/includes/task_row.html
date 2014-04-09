@@ -30,19 +30,26 @@
 
                 <td>
                   <div class="btn-group">
-                    {% if task.is_due == -1 and not task.completed %}
+                    {% if dashboard %}
                         {% if edit_permission %}
-                            <a class="btn btn-sm btn-warning" data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li class="dropdown">
+                        <a class="btn btn-sm" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a><li>
+                            {% if not task.completed %}
+                                <li><a href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span> Mark Complete</a><li>
+                            {% endif %}
+                            {% if task.is_due == -1 %}
+                                <li class="divider"></li>
+                                <li>
                                     <div class="dropdown-menu-form">
                                         {% include 'task/includes/postpone.html' %}
                                     </div>
                                 </li>
-                            </ul>
+                            {% endif %}
+                        </ul>
                         {% endif %}
                     {% endif %}
                   </div>
