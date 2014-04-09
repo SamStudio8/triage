@@ -19,13 +19,17 @@
                         <br />
                     {% endif %}
 
-                    {% if task.completed %}
-                        <span class="human_date text-small-task" title="{{ task.completed_date }}">{{ task.completed_date|date:"c" }}</span>
+                    {% if use_created %}
+                        <span class="human_date text-small-task" title="{{ task.creation_date }}">{{ task.creation_date|date:"c" }}</span>
                     {% else %}
-                        {% if task.due_date %}
-                            <span class="human_date text-small-task" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
+                        {% if task.completed %}
+                            <span class="human_date text-small-task" title="{{ task.completed_date }}">{{ task.completed_date|date:"c" }}</span>
+                        {% else %}
+                            {% if task.due_date %}
+                                <span class="human_date text-small-task" title="{{ task.due_date }}">{{ task.due_date|date:"c" }}</span>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
+                    {% endif %} 
                 </td>
 
                 <td>
@@ -40,14 +44,14 @@
                             <li><a href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a><li>
                             {% if not task.completed %}
                                 <li><a href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span> Mark Complete</a><li>
-                            {% endif %}
-                            {% if task.is_due == -1 %}
-                                <li class="divider"></li>
-                                <li>
-                                    <div class="dropdown-menu-form">
-                                        {% include 'task/includes/postpone.html' %}
-                                    </div>
-                                </li>
+                                {% if task.is_due == -1 %}
+                                    <li class="divider"></li>
+                                    <li>
+                                        <div class="dropdown-menu-form">
+                                            {% include 'task/includes/postpone.html' %}
+                                        </div>
+                                    </li>
+                                {% endif %}
                             {% endif %}
                         </ul>
                         {% endif %}
