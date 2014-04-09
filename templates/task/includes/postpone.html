@@ -2,7 +2,10 @@
     <div class="col-md-12">
         <form action="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}" method="post" role="form">
             {% csrf_token %}
-            <input type="text" id="due_date" name="due_date" class="datetimeinput form-control" data-format="YYYY-MM-DD H:mm" value="{% now "Y-m-d H:i" %}" required />
+            <div class="input-group">
+                <input class="dateinput form-control" data_input="YYYY-MM-DD" id="id_due_date_0" name="due_date_0" type="date">
+                <input class="timeinput form-control" id="id_due_date_1" name="due_date_1" type="time"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
             <button type="submit" class="btn btn-warning btn-block">Reschedule</button>
         </form>
     </div>
