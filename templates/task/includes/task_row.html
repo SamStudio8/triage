@@ -45,7 +45,7 @@
                                 <li><a href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span> Mark Complete</a><li>
                                 {% if task.is_due == -1 %}
                                     <li class="divider"></li>
-                                    <li>
+                                    <li class="dropdown open">
                                         <div class="dropdown-menu-form">
                                             {% include 'task/includes/postpone.html' %}
                                         </div>
