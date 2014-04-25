@@ -41,31 +41,7 @@
 </script>
 
 <div class="row">
-    <div class="calendar-wrapper col-md-12">
-        <table id="calendar-bar" class="table">
-            <tbody>
-                <tr class="no-border">
-                {% for day in calendar.values %}
-                    <td class="calendar-lamp-wrapper">
-                        <ul class="calendar-lamps">
-                        {% for task in day.tasks %}
-                            <li class="calendar-lamp" style="border-color:#{{ task.triage.bg_colour }}"></li>
-                        {% endfor %}
-                        </ul>
-                    </td>
-                {% endfor %}
-                </tr>
-                <tr>
-                {% for day in calendar.values %}
-                    <td class="text-center {% if forloop.first %}today{%endif%}">
-                        <span class="text-small-task">{{ day.month }}</span></br>
-                        <b>{{ day.day }}</b>
-                    </td>
-                {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    {% include "task/includes/calendar.html" %}
 </div>
 
 <div class="row">
