@@ -50,7 +50,6 @@ def create_default_triage_categories(uid):
         tcat.save()
 
 def calendarize(uid, num_days, tasklist_id=0):
-    # TODO This may yet still cause some trouble over DST but it wouldn't be catastrophic
     today = datetime.datetime.utcnow().replace(tzinfo=utc, hour=0, minute=0, second=0, microsecond=0)
     deltadate = today + datetime.timedelta(days=num_days)
 
@@ -68,6 +67,8 @@ def calendarize(uid, num_days, tasklist_id=0):
     if tasklist_id:
         # Fetch all tasks on a particular list
         tasks = tasks.filter(tasklist=tasklist_id)
+        milestones = TaskModels.TaskMilestone.objects.filter(tasklist_id=tasklist_id,
+                due_date__range=[today, deltadate])
 
     calendar = {}
     for i, date in enumerate([today + datetime.timedelta(days=x) for x in range(num_days)]):
@@ -80,14 +81,12 @@ def calendarize(uid, num_days, tasklist_id=0):
         for task in filter(lambda t: t.due_date.date() == date.date(), tasks):
             calendar[i]["tasks"].append(task)
 
-        if uid:
-            calendar[i]["milestones"] = []
-            for milestone in filter(lambda t: t.due_date.date() == date.date(), milestones):
-                calendar[i]["milestones"].append(milestone)
+        calendar[i]["milestones"] = []
+        for milestone in filter(lambda t: t.due_date.date() == date.date(), milestones):
+            calendar[i]["milestones"].append(milestone)
     return calendar
 
 def calendarize_open_closed(uid, num_days, tasklist_id=0):
-    # TODO This may yet still cause some trouble over DST but it wouldn't be catastrophic
     today = datetime.datetime.utcnow().replace(tzinfo=utc)
     deltadate = today - datetime.timedelta(days=num_days)
 
@@ -140,7 +139,6 @@ def upcoming_tasks(uid, offset=0, days=7):
     return TaskModels.Task.objects.filter(tasklist__user__pk=uid, completed=False, due_date__range=[offset_date, delta_date]).order_by("-triage__priority", "due_date")
 
 def upcoming_milestones(uid, offset=0, days=0):
-    # TODO This may yet still cause some trouble over DST but it wouldn't be catastrophic
     today = datetime.datetime.utcnow().replace(tzinfo=utc, hour=0, minute=0, second=0, microsecond=0)
     offset_date = today + datetime.timedelta(days=offset)
     delta_date = today + datetime.timedelta(days=days+offset)
