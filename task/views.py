@@ -294,10 +294,20 @@ def edit_milestone(request, username, listslug, milestone_id=None):
             milestone.tasklist = tasklist
         milestone.save()
 
-        redirect_to = request.POST.get('next', "/")
+        redirect_to = request.POST.get('next', reverse('task:list_milestones',
+                                                  kwargs={
+                                                    "username": request.user.username,
+                                                    "listslug": tasklist.slug
+                                                  })
+        )
         return HttpResponseRedirect(redirect_to)
 
-    redirect_to = request.GET.get('next', "/")
+    redirect_to = request.GET.get('next', reverse('task:list_milestones',
+                                              kwargs={
+                                                "username": request.user.username,
+                                                "listslug": tasklist.slug
+                                              })
+    )
     return render(request, "task/changemilestone.html", {"form": form,
                                                     "milestone": milestone,
                                                     "next": redirect_to})
