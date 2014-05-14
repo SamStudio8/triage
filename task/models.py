@@ -157,6 +157,9 @@ class TaskMilestone(models.Model):
         else:
             return uid == self.tasklist.user.pk
 
+    def has_edit_permission(self, uid):
+          return uid == self.tasklist.user.pk
+
 #class TaskStatus(models.Model):
 #    user = models.ForeignKey(User)
 #    name = models.CharField(max_length=30)

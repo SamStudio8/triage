@@ -59,9 +59,13 @@ def view_task(request, username, task_id):
 
 def view_milestone(request, username, listslug, milestone_id):
     milestone = get_object_or_404(TaskModels.TaskMilestone, tasklist__user__username=username, pk=milestone_id)
+    edit_permission = milestone.has_edit_permission(request.user.pk)
+
     if not milestone.has_view_permission(request.user.pk):
         return HttpResponseRedirect(reverse('home'))
-    return render(request, "task/milestone.html", {"milestone": milestone })
+    return render(request, "task/milestone.html", {"milestone": milestone,
+                                                  "edit_permission": edit_permission})
+
 
 @login_required
 def edit_task(request, username, task_id, tasklist_id=None):
@@ -77,6 +81,15 @@ def edit_task(request, username, task_id, tasklist_id=None):
         if not task.has_edit_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
         tasklist_id = task.tasklist_id
+
+    milestone = request.GET.get("milestone", None)
+    milestone_id = None
+    if milestone:
+        milestone = get_object_or_404(TaskModels.TaskMilestone, tasklist__user__username=username, pk=milestone)
+        if not milestone.has_edit_permission(request.user.pk):
+            return HttpResponseRedirect(reverse('home'))
+        milestone_id = milestone.pk
+
 
     # Fill in POST with data from the model that is not in the request
     post = request.POST or None
@@ -94,7 +107,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
                 post[attr] = value
 
     form = TaskForms.TaskForm(request.user.id, tasklist_id, post,
-            initial={'tasklist': tasklist_id},
+            initial={'tasklist': tasklist_id, 'milestone': milestone_id},
             instance=task)
     if form.is_valid():
         # Don't really like hitting the database for a copy of this but it will
@@ -280,12 +293,14 @@ def edit_milestone(request, username, listslug, milestone_id=None):
             # New instance, attach tasklist
             milestone.tasklist = tasklist
         milestone.save()
-        return HttpResponseRedirect(reverse('task:list_milestones',
-                                    kwargs={
-                                        "username": request.user.username,
-                                        "listslug": milestone.tasklist.slug
-                                    }))
-    return render(request, "task/changemilestone.html", {"form": form, "milestone": milestone})
+
+        redirect_to = request.POST.get('next', "/")
+        return HttpResponseRedirect(redirect_to)
+
+    redirect_to = request.GET.get('next', "/")
+    return render(request, "task/changemilestone.html", {"form": form,
+                                                    "milestone": milestone,
+                                                    "next": redirect_to})
 
 @login_required
 def add_triage_category(request, username):

@@ -32,6 +32,7 @@
 
 {% block content %}
 <form method="post">
+    <input type="hidden" name="next" value="{{next}}" />
     {% csrf_token %}
     {% crispy form %}
 </form>

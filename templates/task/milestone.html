@@ -13,21 +13,12 @@
                 <a href="{% url 'task:profile' milestone.tasklist.user.username %}">{{ milestone.tasklist.user.username }}</a> / <a href="{% url 'task:view_tasklist' milestone.tasklist.user.username milestone.tasklist.slug %}">{{ milestone.tasklist.name }}</a>
             </h4>
             <h1>{{ milestone.name }}</h1>
-            <span class="label label-default" style="background-color:#{{ task.triage.bg_colour }}; color:#{{ task.triage.fg_colour }}">{{ task.triage.name }}</span>
         </div>
         <div class="col-sm-3">
             {% if edit_permission %}
             <div class="btn-group pull-right">
-                <a class="btn btn-warning" href="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span> Edit Task</a>
-                {% if task.completed %}
-                    <div class="btn-group pull-right">
-                        <a class="btn btn-danger" href="#"><span class="glyphicon glyphicon-remove"></span></a>
-                    </div>
-                {% else %}
-                    <div class="btn-group pull-right">
-                        <a class="btn btn-success" href="{% url 'task:complete_task' task.tasklist.user.username task.local_id %}?next={{ current_url }}"><span class="glyphicon glyphicon-ok-circle"></span></a>
-                    </div>
-                {% endif %}
+                <a class="btn btn-success" href="{% url 'task:new_task' milestone.tasklist.user.username %}?milestone={{ milestone.pk }}&tasklist={{ milestone.tasklist.slug }}&next={{ current_url }}"><span class="glyphicon glyphicon-plus"></span> New Task</a>
+                <a class="btn btn-warning" href="{% url 'task:edit_milestone' milestone.tasklist.user.username milestone.tasklist.slug milestone.pk  %}?next={{ current_url }}"><span class="glyphicon glyphicon-pencil"></span> Edit Milestone</a>
             </div>
             {% endif %}
         </div>
