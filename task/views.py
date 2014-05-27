@@ -75,9 +75,7 @@ def edit_task(request, username, task_id, tasklist_id=None):
         if not tasklist.has_edit_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
 
-    task = None
     milestone_id = None
-
     milestone = request.GET.get("milestone", None)
     if milestone:
         milestone = get_object_or_404(TaskModels.TaskMilestone, tasklist__user__username=username, pk=milestone)
@@ -85,12 +83,15 @@ def edit_task(request, username, task_id, tasklist_id=None):
             return HttpResponseRedirect(reverse('home'))
         milestone_id = milestone.pk
 
+    task = None
     if task_id:
         task = get_object_or_404(TaskModels.Task, tasklist__user__username=username, _id=task_id)
         if not task.has_edit_permission(request.user.pk):
             return HttpResponseRedirect(reverse('home'))
         tasklist_id = task.tasklist_id
-        milestone_id = task.milestone.pk
+
+        if task.milestone:
+            milestone_id = task.milestone.pk
 
 
     # Fill in POST with data from the model that is not in the request
