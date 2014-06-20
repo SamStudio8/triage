@@ -1,0 +1,88 @@
+{% extends "base/base.html" %}
+
+{% block title %}Housekeeping{% endblock %}
+
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Housekeeping</h1>
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<script type="text/javascript">
+    function humanize(timestamp){
+        return moment(timestamp).fromNow();
+    };
+    $(document).ready(function(){
+        $(".due_date").html(function() {
+            return humanize($(this).html());
+        });
+    });
+    $(document).ready(function(){
+        $(".human_date").html(function() {
+            return humanize($(this).html());
+        });
+    });
+
+    $(document).ready(function() {
+        $(".triage-form").submit(function(e){
+            url = $(this).attr('action');
+            data = $(this).serializeArray();
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: data,
+            });
+            e.preventDefault();
+            $("#carousel-housekeeping").carousel('next');
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div id="carousel-housekeeping" class="carousel slide" data-ride="carousel">
+
+            <div class="carousel-inner">
+                {% for task in no_triage %} 
+                    {% if forloop.first %}
+                    <div class="item active">
+                    {% else %}
+                        <div class="item">
+                    {% endif %}
+                            <h3>{{ task.name }}</h3>
+                            <p>{{ task.description }}</p>
+                        {{ forloop.counter }} of {{ no_triage.count }}
+                        <form class="triage-form" action="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}" method="post" role="form">
+                            {% csrf_token %}
+                            <input type="hidden" name="form_type" value="hk-triage" />
+
+                            <select class="select form-control" name="triage" required>
+                                <option value="">Triage</option>
+                                {% for triage in user.triages.all %}
+                                    <option value={{ triage.id }}>{{ triage.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-success btn-block">Triage Task</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <a class="left carousel-control" href="#carousel-housekeeping" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="right carousel-control" href="#carousel-housekeeping" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+        </div> 
+    </div>
+</div>
+{% endblock %}
