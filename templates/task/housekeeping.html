@@ -32,6 +32,11 @@
     });
 
     $(document).ready(function() {
+        $('select').change(function(){
+            $(this).parents('form').submit();
+        });
+    });
+    $(document).ready(function() {
         $(".triage-form").submit(function(e){
             url = $(this).attr('action');
             data = $(this).serializeArray();
@@ -57,21 +62,25 @@
                     {% else %}
                         <div class="item">
                     {% endif %}
-                            <h3>{{ task.name }}</h3>
-                            <p>{{ task.description }}</p>
-                        {{ forloop.counter }} of {{ no_triage.count }}
-                        <form class="triage-form" action="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}" method="post" role="form">
-                            {% csrf_token %}
-                            <input type="hidden" name="form_type" value="hk-triage" />
-
-                            <select class="select form-control" name="triage" required>
-                                <option value="">Triage</option>
-                                {% for triage in user.triages.all %}
-                                    <option value={{ triage.id }}>{{ triage.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <button type="submit" class="btn btn-success btn-block">Triage Task</button>
-                        </form>
+                            <div class="row">
+                                <div class="col-md-6 col-md-push-3">
+                                    <div class="text-center">
+                                        <h3>{{ task.name }}</h3>
+                                        <p>{{ task.description }}</p>
+                                        {{ forloop.counter }} of {{ no_triage.count }}
+                                    </div>
+                                    <form class="triage-form" action="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}" method="post" role="form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="form_type" value="hk-triage" />
+                                        <select class="select form-control" name="triage" required>
+                                            <option value="">Triage</option>
+                                            {% for triage in user.triages.all %}
+                                                <option value={{ triage.id }}>{{ triage.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
                     </div>
                 {% endfor %}
             </div>
