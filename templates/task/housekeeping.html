@@ -47,12 +47,21 @@
             });
             e.preventDefault();
             $("#carousel-housekeeping").carousel('next');
+
+            // Decrement remaining
+            var value = $('.remain').text();
+            value = parseInt(value, 10);
+            $('.remain').text(--value + " remaining...");
+
+            if (value == 0){
+                $('#housekeeper').text("Done!");
+            }
         });
     });
 </script>
 
 <div class="row">
-    <div class="col-md-12">
+    <div id="housekeeper" class="col-md-12">
         <div id="carousel-housekeeping" class="carousel slide" data-ride="carousel">
 
             <div class="carousel-inner">
@@ -67,7 +76,7 @@
                                     <div class="text-center">
                                         <h3>{{ task.name }}</h3>
                                         <p>{{ task.description }}</p>
-                                        {{ forloop.counter }} of {{ no_triage.count }}
+                                        <span class="remain">{{ no_triage.count }} remaining</span>
                                     </div>
                                     <form class="triage-form" action="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}" method="post" role="form">
                                         {% csrf_token %}
