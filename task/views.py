@@ -355,6 +355,11 @@ def housekeeping(request):
     return render(request, "task/housekeeping.html", {
         "no_due": TaskUtils.undue_tasks(request.user.pk),
         "no_triage": TaskUtils.untriage_tasks(request.user.pk),
+
+        # Ordering by id should have the same effect as ordering by creation_date
+        # with the advantage of using an index instead
+        "open_tasks": TaskUtils.open_tasks(request.user.pk).order_by("id")[:30],
+
         "edit_permission": True, # NOTE Currently a user has edit permission for any task on their dashboard
     })
 

@@ -31,12 +31,19 @@ class TaskForm(forms.ModelForm):
         self.fields['milestone'].queryset = TaskModels.TaskMilestone.objects.filter(tasklist_id=tasklist_id)
         self.fields['due_date'].widget = TriageSplitDateTimeWidget()
 
-        if form_type == "hk-triage":
+        if form_type == "quick-triage":
             del self.fields['name']
             del self.fields['description']
             del self.fields['tasklist']
             del self.fields['milestone']
             del self.fields['due_date']
+            del self.fields['completed']
+        elif form_type == "quick-duedate":
+            del self.fields['name']
+            del self.fields['description']
+            del self.fields['tasklist']
+            del self.fields['triage']
+            del self.fields['milestone']
             del self.fields['completed']
         else:
             # django-crispy-forms
