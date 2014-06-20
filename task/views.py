@@ -94,24 +94,17 @@ def edit_task(request, username, task_id, tasklist_id=None):
             milestone_id = task.milestone.pk
 
 
-    # Fill in POST with data from the model that is not in the request
-    post = request.POST or None
-    if task and request.method == "POST":
-        post = request.POST.copy()
-        for field in task._meta.fields:
-            attr = field.name
-            if attr is "completed":
-                continue
+    form = TaskForms.TaskForm(
+               request.user.id,
+               tasklist_id,
+               request.POST.get('form_type', None),
+               request.POST or None,
+               initial={
+                   'tasklist': tasklist_id,
+                   'milestone': milestone_id
+               },
+               instance=task)
 
-            value = getattr(task, attr)
-            if value is not None and isinstance(field, ForeignKey):
-                value = value._get_pk_val()
-            if attr not in post:
-                post[attr] = value
-
-    form = TaskForms.TaskForm(request.user.id, tasklist_id, post,
-            initial={'tasklist': tasklist_id, 'milestone': milestone_id},
-            instance=task)
     if form.is_valid():
         # Don't really like hitting the database for a copy of this but it will
         # more than do for now
@@ -355,6 +348,14 @@ def dashboard(request):
         "closed_tasks": TaskUtils.closed_tasks(request.user.pk),
         "edit_permission": True, # NOTE Currently a user has edit permission for any task on their dashboard
         "dashboard": True
+    })
+
+@login_required
+def housekeeping(request):
+    return render(request, "task/housekeeping.html", {
+        "no_due": TaskUtils.undue_tasks(request.user.pk),
+        "no_triage": TaskUtils.untriage_tasks(request.user.pk),
+        "edit_permission": True, # NOTE Currently a user has edit permission for any task on their dashboard
     })
 
 @login_required

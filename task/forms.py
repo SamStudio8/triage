@@ -18,7 +18,7 @@ def clean_colour(color):
     return color
 
 class TaskForm(forms.ModelForm):
-    def __init__(self, user_id, tasklist_id, *args, **kwargs):
+    def __init__(self, user_id, tasklist_id, form_type, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self._user_id = user_id
         del self.fields['_id']
@@ -31,38 +31,46 @@ class TaskForm(forms.ModelForm):
         self.fields['milestone'].queryset = TaskModels.TaskMilestone.objects.filter(tasklist_id=tasklist_id)
         self.fields['due_date'].widget = TriageSplitDateTimeWidget()
 
-        # django-crispy-forms
-        self.helper = FormHelper()
-        self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-lg-3'
-        self.helper.field_class = 'col-lg-9'
-        self.helper.layout = Layout(
-            Div(
+        if form_type == "hk-triage":
+            del self.fields['name']
+            del self.fields['description']
+            del self.fields['tasklist']
+            del self.fields['milestone']
+            del self.fields['due_date']
+            del self.fields['completed']
+        else:
+            # django-crispy-forms
+            self.helper = FormHelper()
+            self.helper.form_class = 'form-horizontal'
+            self.helper.label_class = 'col-lg-3'
+            self.helper.field_class = 'col-lg-9'
+            self.helper.layout = Layout(
                 Div(
-                    Fieldset('Basic',
-                        'name',
-                        'description',
-                        'tasklist',
+                    Div(
+                        Fieldset('Basic',
+                            'name',
+                            'description',
+                            'tasklist',
+                        ),
+                        css_class="col-lg-6"),
+                    Div(
+                        Fieldset('Meta',
+                            'triage',
+                            'milestone',
+                            AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>'),
+                        ),
+                        css_class="col-lg-6"
                     ),
-                    css_class="col-lg-6"),
-                Div(
-                    Fieldset('Meta',
-                        'triage',
-                        'milestone',
-                        AppendedText('due_date', '<span class="glyphicon glyphicon-calendar"></span>'),
-                    ),
-                    css_class="col-lg-6"
+                    css_class="row"
                 ),
-                css_class="row"
-            ),
-            Fieldset(
-                'Completed',
-                'completed',
-            ),
-            FormActions(
-                Submit('save', 'Save'),
+                Fieldset(
+                    'Completed',
+                    'completed',
+                ),
+                FormActions(
+                    Submit('save', 'Save'),
+                )
             )
-        )
 
     class Meta:
         model = TaskModels.Task
