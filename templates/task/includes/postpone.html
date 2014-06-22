@@ -5,8 +5,8 @@
             <input type="hidden" name="next" value="{{ current_url }}" />
             <input type="hidden" name="form_type" value="quick-duedate" />
             <div class="input-group">
-                <input class="dateinput form-control" data_input="YYYY-MM-DD" id="id_due_date_0" name="due_date_0" type="date">
-                <input class="timeinput form-control" id="id_due_date_1" name="due_date_1" type="time"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <input class="dateinput form-control" data_input="YYYY-MM-DD" id="id_due_date_0" name="due_date_0" type="date" value="{% now "Y-m-d" %}">
+                <input class="timeinput form-control" id="id_due_date_1" name="due_date_1" type="time" value="{{ task.due_date|date:"H:i" }}"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
             </div>
             <button type="submit" class="btn btn-warning btn-block">Reschedule</button>
         </form>
