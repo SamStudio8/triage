@@ -20,14 +20,16 @@
 
 {% block content %}
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('.dateinput').change(function(){
-            if($(".timeinput").prop("value") == ""){
-                // Set the time if no already set to a value
-                $('.timeinput').val('12:00');
-            }
+    {% if user.triageuser.default_due_time %}
+        $(document).ready(function() {
+            $('.dateinput').change(function(){
+                if($(".timeinput").prop("value") == ""){
+                    // Set the time if no already set to a value
+                    $('.timeinput').val("{{ user.triageuser.default_due_time|date:"H:i" }}");
+                }
+            });
         });
-    });
+    {% endif %}
 </script>
 <form method="post">
     {% csrf_token %}
