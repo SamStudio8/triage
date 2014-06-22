@@ -19,6 +19,16 @@
 {% endblock %}
 
 {% block content %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.dateinput').change(function(){
+            if($(".timeinput").prop("value") == ""){
+                // Set the time if no already set to a value
+                $('.timeinput').val('12:00');
+            }
+        });
+    });
+</script>
 <form method="post">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{next}}" />
