@@ -373,3 +373,16 @@ def profile(request, username):
     tasklists = TaskUtils.fetch_public_tasklists(user.pk)
     return render(request, "task/profile.html", {"profile": user,
                                                  "tasklists": tasklists})
+
+@login_required
+def preferences(request):
+    form = TaskForms.TriageUserPreferencesForm(request.POST or None,
+            instance=request.user.triageuser)
+    if form.is_valid():
+        form.save()
+
+        msg = "Preferences updated successfully."
+        messages.add_message(request, messages.SUCCESS, msg, extra_tags='safe')
+        return HttpResponseRedirect("/")
+
+    return render(request, "task/preferences.html", {"form": form})

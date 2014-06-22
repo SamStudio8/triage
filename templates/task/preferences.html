@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Preferences{% endblock %}
+
+{% block content-head-class %}head-dark{% endblock %}
+{% block content-head %}
+<div class="container">
+    <div class="row">
+        <h1>Preferences</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit"></input>
+</form>
+{% endblock %}

@@ -271,3 +271,12 @@ class TaskMilestoneForm(forms.ModelForm):
     def clean_fg_colour(self):
         return clean_colour(self.cleaned_data['fg_colour'])
 
+
+class TriageUserPreferencesForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TriageUserPreferencesForm, self).__init__(*args, **kwargs)
+        del self.fields['user']
+
+    class Meta:
+        model = TaskModels.TriageUser
+
