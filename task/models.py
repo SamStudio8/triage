@@ -8,6 +8,11 @@ from django.utils.timezone import utc
 import event.models as EventModels
 import event.utils as EventUtils
 
+class TriageUser(models.Model):
+    user = models.OneToOneField(User)
+    default_due_time = models.TimeField(null=True, blank=True,
+            help_text=("Default task due time"))
+
 class Task(models.Model):
     _id = models.IntegerField()
     tasklist = models.ForeignKey('TaskList',
