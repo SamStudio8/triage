@@ -60,6 +60,7 @@
         });
     });
 </script>
+{% include 'task/default_due_time_js.html' %}
 
 <div class="row">
     <div id="housekeeper" class="col-md-6">
@@ -127,7 +128,7 @@
                                         {% csrf_token %}
                                         <input type="hidden" name="form_type" value="quick-duedate" />
                                         <div class="input-group">
-                                            <input class="dateinput form-control" data_input="YYYY-MM-DD" id="id_due_date_0" name="due_date_0" type="date">
+                                            <input class="dateinput form-control" data_input="YYYY-MM-DD" id="id_due_date_0" name="due_date_0" type="date" value="{% now "Y-m-d" %}">
                                             <input class="timeinput form-control" id="id_due_date_1" name="due_date_1" type="time"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                         <button type="submit" class="btn btn-warning btn-block">Reschedule</button>
