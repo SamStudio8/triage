@@ -1,0 +1,12 @@
+<script type="text/javascript">
+    {% if user.triageuser.default_due_time %}
+        $(document).ready(function() {
+            $('.timeinput').focus(function(){
+                if($(".timeinput").prop("value") == ""){
+                    // Set the time if no already set to a value
+                    $('.timeinput').val("{{ user.triageuser.default_due_time|date:"H:i" }}");
+                }
+            });
+        });
+    {% endif %}
+</script>

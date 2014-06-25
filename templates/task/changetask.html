@@ -19,18 +19,7 @@
 {% endblock %}
 
 {% block content %}
-<script type="text/javascript">
-    {% if user.triageuser.default_due_time %}
-        $(document).ready(function() {
-            $('.dateinput').change(function(){
-                if($(".timeinput").prop("value") == ""){
-                    // Set the time if no already set to a value
-                    $('.timeinput').val("{{ user.triageuser.default_due_time|date:"H:i" }}");
-                }
-            });
-        });
-    {% endif %}
-</script>
+{% include 'task/default_due_time_js.html' %}
 <form method="post">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{next}}" />

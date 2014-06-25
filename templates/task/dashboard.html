@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block content %}
+{% include 'task/default_due_time_js.html' %}
 <script type="text/javascript">
     function humanize(timestamp){
         return moment(timestamp).fromNow();
