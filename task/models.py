@@ -11,7 +11,7 @@ import event.utils as EventUtils
 class TriageUser(models.Model):
     user = models.OneToOneField(User)
     default_due_time = models.TimeField(null=True, blank=True,
-            help_text=("Default task due time"))
+            help_text=("Default task due time (hh:mm)"))
 
 class Task(models.Model):
     _id = models.IntegerField()

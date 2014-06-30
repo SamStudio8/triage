@@ -277,6 +277,21 @@ class TriageUserPreferencesForm(forms.ModelForm):
         super(TriageUserPreferencesForm, self).__init__(*args, **kwargs)
         del self.fields['user']
 
+        # django-crispy-forms
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Tasks',
+                'default_due_time',
+            ),
+            FormActions(
+                Submit('save', 'Save'),
+            )
+        )
+
     class Meta:
         model = TaskModels.TriageUser
 
