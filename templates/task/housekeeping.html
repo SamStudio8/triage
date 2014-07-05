@@ -50,9 +50,9 @@
             $(this).closest(".carousel-housekeeping").carousel('next');
 
             // Decrement remaining
-            var value = $(this).closest('.remain').text();
+            var value = $(this).closest(".carousel-inner").find("span").text();
             value = parseInt(value, 10);
-            $(this).closest('.remain').text(--value + " remaining...");
+            $(this).closest('.carousel-inner').find("span").text(--value + " remaining...");
 
             if (value == 0){
                 $(this).closest('.housekeeper').text("Done!");
@@ -79,7 +79,6 @@
                                     <div class="text-center">
                                         <h3>{{ task.name }}</h3>
                                         <p>{{ task.description }}</p>
-                                        <span class="remain">{{ no_triage.count }} remaining</span>
                                     </div>
                                     <form class="triage-form" action="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}" method="post" role="form">
                                         {% csrf_token %}
@@ -95,6 +94,7 @@
                             </div>
                     </div>
                 {% endfor %}
+                <span class="remain">{{ no_triage.count }} remaining</span>
             </div>
 
             <a class="left carousel-control" href="#no_triage" data-slide="prev">
@@ -122,7 +122,6 @@
                                     <div class="text-center">
                                         <h3>{{ task.name }}</h3>
                                         <p>{{ task.description }}</p>
-                                        <span class="remain">{{ no_due.count }} remaining</span>
                                     </div>
                                     <form class="triage-form" action="{% url 'task:edit_task' task.tasklist.user.username task.local_id %}" method="post" role="form">
                                         {% csrf_token %}
@@ -137,6 +136,7 @@
                             </div>
                     </div>
                 {% endfor %}
+                <span class="remain">{{ no_due.count }} remaining</span>
             </div>
 
             <a class="left carousel-control" href="#no_due" data-slide="prev">
