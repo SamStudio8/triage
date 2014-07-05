@@ -165,6 +165,12 @@ class TaskMilestone(models.Model):
     def has_edit_permission(self, uid):
           return uid == self.tasklist.user.pk
 
+    def open_tasks(self):
+        return self.task_set.filter(completed=False)
+
+    def closed_tasks(self):
+        return self.task_set.filter(completed=True).order_by("-completed_date")
+
 #class TaskStatus(models.Model):
 #    user = models.ForeignKey(User)
 #    name = models.CharField(max_length=30)
